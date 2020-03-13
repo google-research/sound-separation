@@ -17,27 +17,27 @@ start=$(date +"%T")
 echo "Start time : $start"
 
 if [[ $# -lt 3 ]]; then
-  echo "Usage: $0 RAW_DIR BARE_ROOT_DIR RANDOM_SEED"
+  echo "Usage: $0 RAW_DATA_DIR BARE_GEN_DATA_DIR RANDOM_SEED"
   exit 1
 fi
 
-RAW_DIR=$1
-BARE_ROOT_DIR=$2
+RAW_DATA_DIR=$1
+BARE_GEN_DATA_DIR=$2
 RANDOM_SEED=$3
 
 # Define top level variables.
 TOOLPATH=`dirname $0`
 # This is the main directory where the prepared data will reside.
-ROOT_DIR=${BARE_ROOT_DIR}_${RANDOM_SEED}
+GEN_DATA_DIR=${BARE_GEN_DATA_DIR}_${RANDOM_SEED}
 
 NPARTS_REVERB=24  # number of parallel jobs for reverb-and-mix.
 
 # No need to change below this line
 
-FSD_DIR=${RAW_DIR}/fsd_data
-RIR_DIR=${RAW_DIR}/rir_data
-MIX_DIR=${ROOT_DIR}/ssdata
-REVERB_MIX_DIR=${ROOT_DIR}/ssdata_reverb
+FSD_DIR=${RAW_DATA_DIR}/fsd_data
+RIR_DIR=${RAW_DATA_DIR}/rir_data
+MIX_DIR=${GEN_DATA_DIR}/ssdata
+REVERB_MIX_DIR=${GEN_DATA_DIR}/ssdata_reverb
 
 # Reverberate and remix data.
 

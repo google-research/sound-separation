@@ -13,23 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Make sure python3 and pip3 are installed.
+# sudo apt-get install python3
+# sudo apt-get install python3-pip
 
-# TOP LEVEL VARIABLES ARE DEFINED IN setup.sh
+start=$(date +"%T")
+echo "Start time : $start"
 
-SCRIPT_PATH=`dirname $0`
+# Install necessary python libraries as --user.
+pip3 install --user numpy
+pip3 install --user pandas
 
-source ${SCRIPT_PATH}/setup.sh
-
-bash ${SCRIPT_PATH}/get_raw_data.sh ${DOWNLOAD_DIR} ${RAW_DATA_DIR} ${FSD_DATA_URL} ${RIR_DATA_URL}
-
-bash ${SCRIPT_PATH}/install_dependencies.sh
-
-bash ${SCRIPT_PATH}/run_scaper.sh ${RAW_DATA_DIR} ${AUG_DATA_DIR} ${RANDOM_SEED} ${NUM_TRAIN} ${NUM_VAL}
-
-bash ${SCRIPT_PATH}/run_reverb_and_mix.sh ${RAW_DATA_DIR} ${AUG_DATA_DIR} ${RANDOM_SEED}
-
-echo Done!
-echo Check directory ${AUG_DATA_DIR}_${RANDOM_SEED} to access the augmented
-echo train/validation data.
-
-
+end=$(date +"%T")
+echo "Start time: $start, installation end time: $end"

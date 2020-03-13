@@ -16,23 +16,20 @@
 start=$(date +"%T")
 echo "Start time : $start"
 
-if [[ $# -lt 2 ]]; then
-  echo "Usage: $0 DOWNLOAD_DIR RAW_DIR"
+if [[ $# -lt 4 ]]; then
+  echo "Usage: $0 DOWNLOAD_DIR RAW_DATA_DIR FSD_DATA_URL RIR_DATA_URL"
   exit 1
 fi
 
 DOWNLOAD_DIR=$1
-RAW_DIR=$2
-
-# The fsd data archive file is assumed to include a top folder named fsd_data.
-FSD_DATA_URL="https://zenodo.org/record/3694384/files/FUSS_fsd_data.tar.gz"
-# The rir data archive file is assumed to include a top folder named rir_data.
-RIR_DATA_URL="https://zenodo.org/record/3694384/files/FUSS_rir_data.tar.gz"
+RAW_DATA_DIR=$2
+FSD_DATA_URL=$3
+RIR_DATA_URL=$4
 
 # No need to change below this line
 
-FSD_DIR=${RAW_DIR}/fsd_data
-RIR_DIR=${RAW_DIR}/rir_data
+FSD_DIR=${RAW_DATA_DIR}/fsd_data
+RIR_DIR=${RAW_DATA_DIR}/rir_data
 
 # Download and unarchive FSD data.
 # fsd_data.tar.gz should have a directory fsd_data which has
@@ -41,7 +38,7 @@ RIR_DIR=${RAW_DIR}/rir_data
 # under the sound folder there should be multiple wav files that will be used
 # in train, validation and eval mixtures.
 mkdir -p ${DOWNLOAD_DIR}
-mkdir -p ${RAW_DIR}
+mkdir -p ${RAW_DATA_DIR}
 
 if [ ! -s ${DOWNLOAD_DIR}/fsd_data.tar.gz ]; then
   curl --output ${DOWNLOAD_DIR}/fsd_data.tar.gz ${FSD_DATA_URL}
@@ -50,7 +47,7 @@ else
 fi
 
 if [ ! -d ${FSD_DIR} ]; then
-  tar xzf ${DOWNLOAD_DIR}/fsd_data.tar.gz -C ${RAW_DIR}
+  tar xzf ${DOWNLOAD_DIR}/fsd_data.tar.gz -C ${RAW_DATA_DIR}
 else
   echo "${FSD_DIR} directory exists, skipping unarchiving."
 fi
@@ -69,7 +66,7 @@ else
 fi
 
 if [ ! -d ${RIR_DIR} ]; then
-  tar xzf ${DOWNLOAD_DIR}/rir_data.tar.gz -C ${RAW_DIR}
+  tar xzf ${DOWNLOAD_DIR}/rir_data.tar.gz -C ${RAW_DATA_DIR}
 else
   echo "${RIR_DIR} directory exists, skipping unarchiving."
 fi

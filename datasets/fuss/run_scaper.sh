@@ -17,19 +17,19 @@ start=$(date +"%T")
 echo "Start time : $start"
 
 if [[ $# -lt 5 ]]; then
-  echo "Usage: $0 RAW_DIR BARE_ROOT_DIR RANDOM_SEED NUM_TRAIN NUM_VAL"
+  echo "Usage: $0 RAW_DATA_DIR BARE_GEN_DATA_DIR RANDOM_SEED NUM_TRAIN NUM_VAL"
   exit 1
 fi
 
-RAW_DIR=$1
-BARE_ROOT_DIR=$2
+RAW_DATA_DIR=$1
+BARE_GEN_DATA_DIR=$2
 RANDOM_SEED=$3
 NUM_TRAIN_MIX=$4
 NUM_VALIDATION_MIX=$5
 NUM_EVAL_MIX=0
 
-# Actual ROOT_DIR to use for data generation outputs.
-ROOT_DIR=${BARE_ROOT_DIR}_${RANDOM_SEED}
+# Actual GEN_DATA_DIR to use for data generation outputs.
+GEN_DATA_DIR=${BARE_GEN_DATA_DIR}_${RANDOM_SEED}
 
 # Define top level variables.
 TOOLPATH=`dirname $0`
@@ -37,9 +37,9 @@ TOOLPATH=`dirname $0`
 
 # No need to change below this line
 
-FSD_DIR=${RAW_DIR}/fsd_data
-MIX_DIR=${ROOT_DIR}/ssdata
-REVERB_MIX_DIR=${ROOT_DIR}/ssdata_reverb
+FSD_DIR=${RAW_DATA_DIR}/fsd_data
+MIX_DIR=${GEN_DATA_DIR}/ssdata
+REVERB_MIX_DIR=${GEN_DATA_DIR}/ssdata_reverb
 
 # Makes foreground and background wav file lists from fsd_data used as
 # foreground and background events in scaper.

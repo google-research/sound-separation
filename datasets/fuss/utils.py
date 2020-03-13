@@ -90,10 +90,13 @@ def make_example_dict_from_folder(
   return sources_for_mix
 
 
-def make_example_list_from_folder(folder_sources, subset='all',
-                                  ss_regex=re.compile(r'example.*_sources')):
-  example_dict = make_example_dict_from_folder(folder_sources, subset=subset,
-                                               ss_regex=ss_regex)
+def make_example_list_from_folder(
+    folder_sources, subset='all', ss_regex=re.compile(r'example.*_sources'),
+    pattern='_sources', subfolder_events=('background', 'foreground')):
+  """Makes a tab separated list of examples from a top folder."""
+  example_dict = make_example_dict_from_folder(
+      folder_sources, subset=subset, ss_regex=ss_regex, pattern=pattern,
+      subfolder_events=subfolder_events)
   example_list = []
   for subset in example_dict:
     for example in example_dict[subset]:
@@ -109,7 +112,7 @@ def check_and_correct_example(example, root_dir,
   """Checks and possibly corrects a scaper produced example."""
   # Earlier versions of scaper had a tendency to make mistakes every
   # once in a while.
-  # This has most likely fixed in the latest scaper release, at least
+  # This has most likely been fixed in the latest scaper release, at least
   # for the parameter settings we are using, but this test and correction
   # can serve to catch failures that may be introduced by using the wrong
   # scaper version, or by using parameters in scaper that do not maintain
@@ -123,6 +126,11 @@ def check_and_correct_example(example, root_dir,
     fix_length = True
   if fix_length:
     check_length = True
+
+  length_problem = 0
+  fixed_length = 0
+  mix_problem = 0
+  fixed_mix = 0
 
   files = example.split('\t')
   mixfile = files[0]
@@ -147,6 +155,7 @@ def check_and_correct_example(example, root_dir,
       num_samples = int(file_info.duration * file_info.samplerate)
 
       if num_samples != expected_samples:
+        length_problem += 1
         print('Warning: scaper output on {:s} is {:d} samples; '
               'expected {:d}'.format(file_abs, num_samples, expected_samples))
 
@@ -158,6 +167,7 @@ def check_and_correct_example(example, root_dir,
           # rewrite corrected source
           print('Adjusting length of {:s}'.format(file_abs))
           write_wav(file_abs, audio, sample_rate, subtype=file_info.subtype)
+          fixed_length += 1
 
   def check_mixture(mixed_data, remixed_data, mixfile):
     if not np.allclose(mixed_data, remixed_data, rtol=1e-4, atol=1e-5):
@@ -165,7 +175,7 @@ def check_and_correct_example(example, root_dir,
       err_norm = np.linalg.norm(mixed_data - remixed_data)
       normalized_err = err_norm / mixed_norm
       print('WARNING: Mismatched mixed data found {}. '
-            'Normalized error {}, mixed norm {}'.format(
+            'Normalized error {}, mixed signal norm {}'.format(
                 mixfile, normalized_err, mixed_norm))
       return False
     return True
@@ -185,6 +195,7 @@ def check_and_correct_example(example, root_dir,
       source_sum += source
 
     if not check_mixture(mixture, source_sum, mixfile):
+      mix_problem += 1
       if fix_mix:
         print('Rewriting corrected mixture file {}.'.format(mixfile_abs))
         # write new mixture
@@ -192,4 +203,5 @@ def check_and_correct_example(example, root_dir,
         # so if mismatch is due to clipping it will clip again on writing.
         mixture = source_sum
         write_wav(mixfile_abs, mixture, sample_rate, subtype=mix_info.subtype)
-
+        fixed_mix += 1
+  return length_problem, fixed_length, mix_problem, fixed_mix

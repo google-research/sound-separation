@@ -41,17 +41,34 @@ def check_folder(root_dir, ss_regex=re.compile(r'example.*_sources'),
     duration: Duration of wavs in seconds.
   """
   example_list = make_example_list_from_folder(root_dir, subset='all',
-                                               ss_regex=ss_regex)
+                                               ss_regex=ss_regex,
+                                               pattern='_sources',
+                                               subfolder_events=None)
   check_list(example_list, root_dir, check_length, fix_length,
              check_mix, fix_mix, sample_rate=sample_rate, duration=duration)
 
 
 def check_list(example_list, root_dir, check_length=True, fix_length=True,
                check_mix=True, fix_mix=True, sample_rate=16000, duration=10.0):
+  num_examples = len(example_list)
+  print('Starting to check {} examples.'.format(num_examples))
+  length_problem = 0
+  fixed_length = 0
+  mix_problem = 0
+  fixed_mix = 0
   for example in example_list:
-    check_and_correct_example(example, root_dir, check_length, fix_length,
-                              check_mix, fix_mix, sample_rate=sample_rate,
-                              duration=duration)
+    lp, fl, mp, fm = check_and_correct_example(
+        example, root_dir, check_length, fix_length, check_mix, fix_mix,
+        sample_rate=sample_rate, duration=duration)
+    length_problem += lp
+    fixed_length += fl
+    mix_problem += mp
+    fixed_mix += fm
+  print('Finished checking {} examples.'.format(num_examples))
+  print('{} source and mixture files had length problems, {} of them '
+        'fixed.'.format(length_problem, fixed_length))
+  print('{} examples out of {} had mixture consistency problems, {} of them '
+        'fixed.'.format(mix_problem, num_examples, fixed_mix))
 
 
 def main():
