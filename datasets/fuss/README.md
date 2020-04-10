@@ -1,6 +1,9 @@
 # README for the Free Universal Sound Separation (FUSS) Dataset
-This data is used in DCASE2020 Challenge Task 4: Sound Event Detection and
-Separation in Domestic Environments (SEDSDE)
+This data is used in
+<a href="http://dcase.community/challenge2020/task-sound-event-detection-and-separation-in-domestic-environments">
+DCASE2020 Challenge Task 4: Sound Event Detection and Separation in Domestic
+Environments</a>, and uses
+<a href="https://github.com/justinsalamon/scaper">scaper</a> for mixing.
 
 You can use the scripts in this directory for data preparation for source
 separation training in the DCASE2020 Challenge Task 4, or for stand-alone
@@ -61,5 +64,7 @@ training and validation data.
 
 ## Data License
 
-See the FUSS_license_doc/README.md for information about the license
-for data downloaded by the scripts in this directory.
+See the
+<a href=https://github.com/google-research/sound-separation/blob/master/datasets/fuss/FUSS_license_doc/README.md>
+FUSS_license_doc/README.md</a> for information about the license for data
+downloaded by the scripts in this directory.

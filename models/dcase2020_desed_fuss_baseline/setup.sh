@@ -16,9 +16,21 @@
 # Define ROOT_DIR variable which will hold all downloaded/generated model data.
 # Uncomment next line and change to the directory for storing model data.
 # ROOT_DIR=/model_data
+# DESED_ROOT_DIR=
+# FUSS_ROOT_DIR=
 
 if [ x${ROOT_DIR} == x ]; then
   echo "Please define ROOT_DIR variable inside `dirname $0`/setup.sh."
+  exit 1
+fi
+
+if [ x${DESED_ROOT_DIR} == x ]; then
+  echo "Please define DESED_ROOT_DIR variable inside `dirname $0`/setup.sh."
+  exit 1
+fi
+
+if [ x${FUSS_ROOT_DIR} == x ]; then
+  echo "Please define FUSS_ROOT_DIR variable inside `dirname $0`/setup.sh."
   exit 1
 fi
 
@@ -29,12 +41,10 @@ DOWNLOAD_DIR=${ROOT_DIR}/download
 # The following should not be changed:
 
 # Main directory for model data (e.g. trained model weights, eval results).
-MODEL_DIR=${ROOT_DIR}/dcase2020_fuss
+MODEL_DIR=${ROOT_DIR}/dcase2020_desed_fuss
 
-# Directory for pretrained baseline model (reverberant data).
-BASELINE_MODEL_DIR=${MODEL_DIR}/baseline_model
-# Directory for pretrained baseline model (non-reverberant data).
-BASELINE_DRY_MODEL_DIR=${MODEL_DIR}/baseline_dry_model
+# Directory for pretrained baseline model.
+BASELINE_MODEL_DIR=${MODEL_DIR}/fuss_desed_baseline_dry_2_model
 
-BASELINE_MODEL_URL="https://zenodo.org/record/3743844/files/FUSS_baseline_model.tar.gz"
-BASELINE_DRY_MODEL_URL="https://zenodo.org/record/3743844/files/FUSS_baseline_dry_model.tar.gz"
+BASELINE_MODEL_URL="https://zenodo.org/record/3743844/files/FUSS_DESED_baseline_dry_2_model.tar.gz"
+

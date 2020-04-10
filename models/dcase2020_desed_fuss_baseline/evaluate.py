@@ -15,6 +15,10 @@
 
 import argparse
 import os
+import sys
+cur_path = os.path.dirname(os.path.realpath(__file__))
+parent_path = os.path.dirname(cur_path)
+sys.path.append(os.path.join(parent_path, 'dcase2020_fuss_baseline'))
 
 import numpy as np
 import pandas as pd
@@ -26,47 +30,25 @@ from train import metrics
 from train import permutation_invariant
 
 
-def _weights_for_nonzero_refs(source_waveforms):
-  """Return shape (batch, source) weights for signals that are nonzero."""
-  source_norms = tf.sqrt(tf.reduce_mean(tf.square(source_waveforms), axis=-1))
-  return tf.greater(source_norms, 1e-8)
-
-
-def compute_perminv_sisnri(source_waveforms, separated_waveforms,
-                           mixture_waveform):
-  """Compute permutation-invariant, scale-invariant SNR."""
-  perm_inv_loss = permutation_invariant.wrap(
-      lambda tar, est: -metrics.signal_to_noise_ratio_gain_invariant(est, tar))
-  _, separated_waveforms = perm_inv_loss(source_waveforms[tf.newaxis],
-                                         separated_waveforms[tf.newaxis])
-  separated_waveforms = separated_waveforms[0]
-  weights_nonzero_refs = _weights_for_nonzero_refs(source_waveforms)
-  source_waveforms = tf.boolean_mask(source_waveforms,
-                                     weights_nonzero_refs, axis=0)
-  separated_waveforms = tf.boolean_mask(separated_waveforms,
-                                        weights_nonzero_refs, axis=0)
+def compute_sisnri(source_waveforms, separated_waveforms, mixture_waveform):
+  """Compute scale-invariant SNR."""
   sisnr_separated = metrics.signal_to_noise_ratio_gain_invariant(
       separated_waveforms, source_waveforms)
-  num_sources = tf.reduce_sum(tf.cast(weights_nonzero_refs, tf.int32))
+  num_sources = source_waveforms.shape[0]
   sisnr_mixture = metrics.signal_to_noise_ratio_gain_invariant(
       tf.tile(mixture_waveform[tf.newaxis], (num_sources, 1)),
       source_waveforms)
   return sisnr_separated, sisnr_mixture
 
 
-def _print_score_stats(sisnri_per_source_count, label=''):
+def _print_score_stats(sisnri_per_source, label=''):
   values_all = []
-  values_two_or_more = []
-  for count, values in sisnri_per_source_count.items():
-    print('SI-SNR%s for source count %d = %.1f +/- %.1f dB' % (
-        label, count, np.mean(values), np.std(values)))
+  for idx, values in sisnri_per_source.items():
+    print('SI-SNR%s for source %s = %.1f +/- %.1f dB' % (
+        label, idx, np.mean(values), np.std(values)))
     values_all.extend(list(values))
-    if count > 1:
-      values_two_or_more.extend(list(values))
   print('Overall SI-SNR%s = %.1f +/- %.1f dB' % (
       label, np.mean(values_all), np.std(values_all)))
-  print('SI-SNR%s for 2 or more = %.1f +/- %.1f dB' % (
-      label, np.mean(values_two_or_more), np.std(values_two_or_more)))
 
 
 def main():
@@ -89,25 +71,28 @@ def main():
   model = inference.SeparationModel(args.checkpoint_path,
                                     args.metagraph_path)
 
-  file_list = data_io.read_lines_from_file(args.data_list_path, skip_fields=1)
+  file_list = data_io.read_lines_from_file(args.data_list_path, skip_fields=1,
+                                           base_path=None)
   with model.graph.as_default():
     dataset = data_io.wavs_to_dataset(file_list, batch_size=1,
                                       num_samples=160000,
-                                      repeat=False)
+                                      repeat=False,
+                                      combine_by_class=True,
+                                      fixed_classes=['BG_DSD', 'FG_DSD',
+                                                     'FUSS_mixture'])
     # Strip batch and mic dimensions.
     dataset['receiver_audio'] = dataset['receiver_audio'][0, 0]
     dataset['source_images'] = dataset['source_images'][0, :, 0]
 
   # Separate with a trained model.
   i = 1
-  min_count = 1
-  max_count = 4
-  sisnr_per_source_count = {c: [] for c in range(min_count, max_count + 1)}
-  sisnri_per_source_count = {c: [] for c in range(min_count, max_count + 1)}
+  num_sources = 3
+  sisnr_per_source = {c: [] for c in range(num_sources)}
+  sisnri_per_source = {c: [] for c in range(num_sources)}
   columns_mix = ['SISNR_mixture_source%d' % j
-                 for j in range(min_count, max_count + 1)]
+                 for j in range(num_sources)]
   columns_sep = ['SISNR_separated_source%d' % j
-                 for j in range(min_count, max_count + 1)]
+                 for j in range(num_sources)]
   df = pd.DataFrame(columns=columns_mix + columns_sep)
   while True:
     try:
@@ -120,13 +105,12 @@ def main():
       print('WARNING: all-zeros source_waveforms tensor encountered.'
             'Skiping this example...')
       continue
-    sisnr_sep, sisnr_mix = compute_perminv_sisnri(source_waveforms,
-                                                  separated_waveforms,
-                                                  waveforms['receiver_audio'])
+    sisnr_sep, sisnr_mix = compute_sisnri(source_waveforms,
+                                          separated_waveforms,
+                                          waveforms['receiver_audio'])
     sisnr_sep = sisnr_sep.numpy()
     sisnr_mix = sisnr_mix.numpy()
-    sisnr_imp = np.mean(sisnr_sep - sisnr_mix)
-    source_count = len(sisnr_sep)
+    sisnr_imp = sisnr_sep - sisnr_mix
 
     row_dict = {col: sisnr for col, sisnr
                 in zip(columns_mix[:len(sisnr_mix)], sisnr_mix)}
@@ -134,22 +118,23 @@ def main():
                      in zip(columns_sep[:len(sisnr_sep)], sisnr_sep)})
     new_row = pd.Series(row_dict)
     df = df.append(new_row, ignore_index=True)
-    sisnr_per_source_count[source_count].append(np.mean(sisnr_sep))
-    sisnri_per_source_count[source_count].append(sisnr_imp)
+    for j in range(num_sources):
+      sisnr_per_source[j].append(sisnr_sep[j])
+      sisnri_per_source[j].append(sisnr_imp[j])
     print('Example %d: SI-SNR sep = %.1f dB, SI-SNR mix = %.1f dB,'
-          'SI-SNR imp = %.1f dB, source count = %d' % (
+          'SI-SNR imp = %.1f dB' % (
               i, np.mean(sisnr_sep), np.mean(sisnr_mix),
-              np.mean(sisnr_sep - sisnr_mix), source_count))
+              np.mean(sisnr_sep - sisnr_mix)))
     if not i % 20:
       # Report mean statistics every so often.
-      _print_score_stats(sisnr_per_source_count)
-      _print_score_stats(sisnri_per_source_count, ' imp')
+      _print_score_stats(sisnr_per_source)
+      _print_score_stats(sisnri_per_source, ' imp')
     i += 1
 
   # Report final mean statistics.
   print('\nFinal statistics:')
-  _print_score_stats(sisnr_per_source_count)
-  _print_score_stats(sisnri_per_source_count, ' imp')
+  _print_score_stats(sisnr_per_source)
+  _print_score_stats(sisnri_per_source, ' imp')
 
   # Write csv.
   csv_path = os.path.join(args.output_path, 'scores.csv')

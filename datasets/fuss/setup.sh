@@ -29,16 +29,16 @@ DOWNLOAD_DIR=${ROOT_DIR}/download
 DEV_DATA_DIR=${ROOT_DIR}/fuss_dev
 
 # The ssdata archive file is assumed to include a top folder named ssdata.
-SSDATA_URL="https://zenodo.org/record/3710392/files/FUSS_ssdata.tar.gz"
+SSDATA_URL="https://zenodo.org/record/3743844/files/FUSS_ssdata.tar.gz"
 
 # The archive file is assumed to include a top folder named ssdata_reverb.
-SSDATA_REVERB_URL="https://zenodo.org/record/3710392/files/FUSS_ssdata_reverb.tar.gz"
+SSDATA_REVERB_URL="https://zenodo.org/record/3743844/files/FUSS_ssdata_reverb.tar.gz"
 
 # The fsd data archive file is assumed to include a top folder named fsd_data.
-FSD_DATA_URL="https://zenodo.org/record/3710392/files/FUSS_fsd_data.tar.gz"
+FSD_DATA_URL="https://zenodo.org/record/3743844/files/FUSS_fsd_data.tar.gz"
 
 # The rir data archive file is assumed to include a top folder named rir_data.
-RIR_DATA_URL="https://zenodo.org/record/3710392/files/FUSS_rir_data.tar.gz"
+RIR_DATA_URL="https://zenodo.org/record/3743844/files/FUSS_rir_data.tar.gz"
 
 # Random seed to use for augmented data generation.
 RANDOM_SEED=2020

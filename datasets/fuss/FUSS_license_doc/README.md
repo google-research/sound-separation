@@ -31,7 +31,7 @@ FUSS audio data is sourced from a prerelease of <a href="https://annotator.frees
 To create mixtures, 10 second clips of sources are convolved with simulated room impulse responses and added together. Each 10 second mixture contains between 1 and 4 sources. Source files longer than 10 seconds are considered "background" sources. Every mixture contains one background source, which is active for the entire duration.
 We provide: a software recipe to create the dataset, the room impulse responses, and the original source audio.
 
-### Motivation for use in DCASE2020 Challenge Task 4
+### Motivation for use in <a href="http://dcase.community/challenge2020/task-sound-event-detection-and-separation-in-domestic-environments">DCASE2020 Challenge Task 4</a>
 
 This dataset provides a platform to investigate how source separation may help with event detection and vice versa.  Previous work has shown that universal sound separation (separation of arbitrary sounds) is possible [3], and that event detection can help with universal sound separation [4].  It remains to be seen whether sound separation can help with event detection. Event detection is more difficult in noisy environments, and so separation could be a useful pre-processing step. Data with strong labels for event detection are relatively scarce, especially when restricted to specific classes within a domain. In contrast, source separation data needs no event labels for training, and may be more plentiful. In this setting, the idea is to utilize larger unlabeled separation data to train separation systems, which can serve as a front-end to event-detection systems trained on more limited data.
 

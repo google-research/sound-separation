@@ -16,12 +16,13 @@
 import attr
 import typing
 
+import numpy as np
 import tensorflow.compat.v1 as tf
 
 from . import consistency
+from . import groupwise
 from . import network
 from . import network_config
-from . import permutation_invariant
 from . import signal_transformer
 from . import signal_util
 from . import summaries
@@ -69,7 +70,6 @@ def _weights_for_num_sources(source_waveforms, num_sources):
   return tf.tile(has_num_sources, (1, max_sources))
 
 
-# Hyperparameters:
 @attr.attrs
 class HParams(object):
   """Model hyperparameters."""
@@ -86,6 +86,10 @@ class HParams(object):
   signal_names = attr.attrib(type=typing.List[typing.Text],
                              default=['background', 'foreground_1',
                                       'foreground_2', 'foreground_3'])
+  # A list of strings same length as signal_names specifying signal type, used
+  # for groupwise permutation-invariance.
+  signal_types = attr.attrib(type=typing.List[typing.Text],
+                             default=['source'] * 4)
   # Sample rate of the input audio in hertz.
   sr = attr.attrib(type=float, default=16000.0)
   # Initial learning rate used by the optimizer.
@@ -236,19 +240,22 @@ def model_fn(features, labels, mode, params):
 
   # Get reference sources.
   source_waveforms = features['source_images'][:, :, 0]
+  batch_size = signal_util.static_or_dynamic_dim_size(source_waveforms, 0)
 
   # Permute separated to match references.
-  perm_inv_loss = permutation_invariant.wrap(log_mse_loss)
-  _, separated_waveforms = perm_inv_loss(source_waveforms, separated_waveforms)
-  # Permutation-invariant training requires realigning the sources to match the
-  # references, both in loss computations and in computing summary metrics.
+  unique_signal_types = list(set(hparams.signal_types))
+  loss_fns = {signal_type: log_mse_loss for signal_type in unique_signal_types}
+  _, separated_waveforms = groupwise.apply(
+      loss_fns, hparams.signal_types, source_waveforms, separated_waveforms,
+      unique_signal_types)
+  # Permutation-invariant training requires realigning the sources to match
+  # the references, both in loss computations and computing summary metrics.
 
   # Build loss split between all-zero and nonzero reference signals.
   source_is_nonzero = _weights_for_nonzero_refs(source_waveforms)
   source_is_zero = tf.logical_not(source_is_nonzero)
 
   # Get batch size and (max) number of sources.
-  batch_size = signal_util.static_or_dynamic_dim_size(source_waveforms, 0)
   num_sources = signal_util.static_or_dynamic_dim_size(source_waveforms, 1)
 
   # Waveforms with nonzero references.
