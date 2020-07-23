@@ -29,6 +29,15 @@ from utils import read_wav
 from utils import write_wav
 
 
+def multimic_convolve(src_data, rir_data, conv_type='same'):
+  """Performs convolution of a single channel src and multi-channel rir."""
+  num_mics = np.shape(rir_data)[-1]
+  out = []
+  for i in range(num_mics):
+    out.append(np.convolve(src_data, rir_data[:, i], conv_type))
+  return np.stack(out, axis=-1)
+
+
 def make_rir_dict_from_folder(folder_rir,
                               rir_regex=re.compile(r'rirs_.*')):
   """Makes an rirs hierarchical dictionary.
@@ -149,7 +158,7 @@ def make_mix_info_subsources(mix_info, sub_source, sub_rir,
 
 def reverberate_and_mix(out_folder, sources_folder, rir_folder,
                         mix_info, scale_rirs=10.0,
-                        part=0, nparts=8, chat=True):
+                        part=0, nparts=8, num_mics=1, chat=True):
   """Reverberate and mix sources."""
   list_mix = sorted(mix_info.keys())
   list_len = len(list_mix)
@@ -177,9 +186,20 @@ def reverberate_and_mix(out_folder, sources_folder, rir_folder,
       assert samplerate_src == samplerate_rir
       # Pick channel 0 of src_data.
       src_data = src_data[:, 0]
-      # Pick channel 0 of rirs and scale it.
-      rir_data = scale_rirs * rir_data[:, 0]
-      rir_len = len(rir_data)
+      # Pick num_mics channels of rirs and scale them.
+      if len(rir_data.shape) == 2:
+        rir_mics = np.shape(rir_data)[1]
+        if rir_mics < num_mics:
+          raise ValueError(f'The rir {rir_path} has only {rir_mics} channel '
+                           f'data but specified num_mics={num_mics}')
+        rir_data = rir_data[:, :num_mics]
+      else:
+        if num_mics > 1:
+          raise ValueError(f'The rir {rir_path} has only single channel data '
+                           f'but specified num_mics={num_mics}')
+        rir_data = np.reshape(rir_data, [-1, 1])
+      rir_data = scale_rirs * rir_data
+      rir_len = len(rir_data[:, 0])
       src_len = len(src_data)
       rir_max = np.max(np.abs(rir_data))
       src_max = np.max(np.abs(src_data))
@@ -200,7 +220,7 @@ def reverberate_and_mix(out_folder, sources_folder, rir_folder,
               'to size {}.'.format(src_len, source_relpath, max_src_len))
         src_data = np.concatenate((src_data, np.zeros(
             max_src_len - src_len)), axis=0)
-      rev_src_data = np.convolve(src_data, rir_data, 'same')
+      rev_src_data = multimic_convolve(src_data, rir_data, 'same')
       # Write reverberated source data.
       rev_src_path = os.path.join(out_folder, source_relpath)
       os.makedirs(os.path.dirname(rev_src_path), exist_ok=True)
@@ -226,8 +246,8 @@ def reverberate_and_mix(out_folder, sources_folder, rir_folder,
 def write_mix_info(mix_info, info_file):
   """Prints the content of mix_info dictionary into file."""
   if os.path.isfile(info_file):
-    raise ValueError('mix_info file {} already exists. Please '
-                     'delete {} and re-run.'.format(info_file, info_file))
+    raise ValueError(f'mix_info file {info_file} already exists. Please '
+                     f'delete {info_file} and re-run.')
   with open(info_file, 'w') as f:
     for mix in mix_info:
       line = '{} = '.format(mix)
@@ -314,8 +334,15 @@ def main():
       '-p', '--part', help='Part number.', required=False, default=0,
       type=int)
   parser.add_argument(
-      '-n', '--nparts', help='Number of parts.', required=False, default=1,
+      '-n', '--nparts', help='Number of parts to divide the mix_info list '
+      'for parallel generation of reverberated mixtures from each sub-list.',
+      required=False, default=1, type=int)
+  parser.add_argument(
+      '-m', '--num_mics', help='Number of mics.', required=False, default=1,
       type=int)
+  parser.add_argument(
+      '-sc', '--scale_rirs', help='Scale factor for RIRs.', required=False,
+      default=10.0, type=float)
   parser.add_argument(
       '-w', '--write_mix_info',
       help='A file name to write out a list of to be reverberated and mixed '
@@ -364,6 +391,7 @@ def main():
     print('Generating data using mix info in {}.'.format(args.read_mix_info))
     reverberate_and_mix(args.output_dir, args.source_dir, args.rir_dir,
                         mix_info, part=args.part, nparts=args.nparts,
+                        num_mics=args.num_mics, scale_rirs=args.scale_rirs,
                         chat=args.chat)
   else:
     np.random.seed(args.random_seed)
