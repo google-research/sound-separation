@@ -54,8 +54,8 @@ def enforce_mixture_consistency_time_domain(mixture_waveforms,
   # (batch_size, 1, num_mics, samples).
   if mix_weights is None:
     if mix_weights_type == 'magsq':
-      mix_weights = tf.reduce_mean(tf.square(separated_waveforms), axis=[2, 3],
-                                   keepdims=True)
+      mix_weights = 1e-8 + tf.reduce_mean(
+          tf.square(separated_waveforms), axis=[2, 3], keepdims=True)
       mix_weights /= tf.reduce_sum(mix_weights, axis=1, keepdims=True)
     else:
       mix_weights = (1.0 / num_sources)

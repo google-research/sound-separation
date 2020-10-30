@@ -57,12 +57,12 @@ def signal_to_noise_ratio_gain_invariant(estimate, target, epsilon=1.0e-5):
     input signal and noise tensors.
   """
   scaling_factors = tf.rsqrt(
-      tf.reduce_sum(tf.square(target), keep_dims=True, reduction_indices=[-1]) +
+      tf.reduce_sum(tf.square(target), keepdims=True, reduction_indices=[-1]) +
       epsilon**2.0)
   scaled_target = tf.multiply(target, scaling_factors)
   signal = tf.reduce_sum(
       tf.multiply(estimate, scaled_target),
-      keep_dims=True,
+      keepdims=True,
       reduction_indices=[-1]) * scaled_target
   noise = estimate - signal
 

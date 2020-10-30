@@ -180,6 +180,8 @@ def wavs_to_dataset(file_list,
 
   if not combine_by_class:
     # Not combining by class.
+    if max_sources_override and max_sources_override > max_component_sources:
+      max_component_sources = max_sources_override
     max_combined_sources = max_component_sources
 
   else:

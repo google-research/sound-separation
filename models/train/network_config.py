@@ -24,9 +24,9 @@ class NormLayer(object):
   """Normalization layer configurations."""
   # Options for norm_type string are:
   # 'global_layer_norm': layer normalization over time_axis and bin_axis.
+  # 'instance_norm': layer normalization over time_axis.
+  # 'layer_norm': layer normalization over bin_axis.
   norm_type = attr.attrib(type=typing.Text, default='none')
-  # If True, normalize each bin independently (do not reduce over bins)
-  bin_wise = attr.attrib(type=bool, default=False)
   # time axis
   time_axis = attr.attrib(type=int, default=-3)
   # bin (frequency or time dependent feature vector) axis
@@ -200,25 +200,51 @@ class ImprovedTDCN(object):
   scale_tdcn_block = attr.attrib(type=typing.Text, default='none')
 
 
-def improved_tdcn(depth_multiplier=1):
-  """Build ImprovedTDCN object for improved_tdcn."""
+def improved_tdcn(bottleneck=256, conv_channels=512, kernel_size=3,
+                  num_dilations=8, num_repeats=4,
+                  norm_type='instance_norm',
+                  add_skip_residual_connections=False,
+                  scale_type='exponential'):
+  """Build ImprovedTDCN object for improved_tdcn.
+
+  Args:
+    bottleneck: Bottleneck dimension.
+    conv_channels: Number of convolutional channels.
+    kernel_size: Kernel size for separable convolutions.
+    num_dilations: Number of dilated convolution blocks in each repeat.
+    num_repeats: How many repeats are performed.
+    norm_type: Type of normalization. Options are 'instance_norm', 'layer_norm',
+      and 'global_layer_norm'.
+    add_skip_residual_connections: If True, add skip-residual connections from
+      earlier blocks to later blocks.
+    scale_type: How to scale each TDCN block. Options: 'none', 'linear',
+      'reciprocal', 'exponential', 'zero'.
+  Returns:
+    A config for a TDCN++ network.
+  """
   normact = NormAndActivationLayer(
-      norm_layer=NormLayer(
-          norm_type='global_layer_norm', bin_wise=True),
-      activation='prelu')
+      norm_layer=NormLayer(norm_type=norm_type), activation='prelu')
+  num_layers = num_repeats * num_dilations
+  from_block = []
+  to_block = []
+  if add_skip_residual_connections:
+    for k in range(num_repeats):
+      for j in range(k):
+        from_block.append(j * num_dilations)
+        to_block.append(k * num_dilations)
   netcfg = ImprovedTDCN(
-      block_prototype_indices=([0] * (32 * depth_multiplier)),
-      block_dilations=([1, 2, 4, 8, 16, 32, 64, 128] * (4 * depth_multiplier)),
-      skip_residue_connection_from_input_of_block=[0, 0, 0, 8, 8, 16],
-      skip_residue_connection_to_input_of_block=[8, 16, 24, 16, 24, 24],
-      scale_tdcn_block='exponential')
+      block_prototype_indices=([0] * (num_layers)),
+      block_dilations=[2**i for i in range(num_dilations)] * num_repeats,
+      skip_residue_connection_from_input_of_block=from_block,
+      skip_residue_connection_to_input_of_block=to_block,
+      scale_tdcn_block=scale_type)
   dense_biased = DenseLayer(scale=1.0, use_bias=True)
   netcfg.initial_dense_layer = copy.deepcopy(dense_biased)
   netcfg.residue_dense_layer = copy.deepcopy(dense_biased)
   netcfg.prototype_block = [TDCNBlock(
-      bottleneck=256,
-      num_conv_channels=512,
-      kernel_size=3,
+      bottleneck=bottleneck,
+      num_conv_channels=conv_channels,
+      kernel_size=kernel_size,
       dense1=DenseLayer(scale=1.0, activation='external'),
       dense2=DenseLayer(scale=-99, activation='external'),
       normact1=normact,

@@ -29,12 +29,23 @@ from utils import read_wav
 from utils import write_wav
 
 
-def multimic_convolve(src_data, rir_data, conv_type='same'):
-  """Performs convolution of a single channel src and multi-channel rir."""
+def multimic_convolve(src_data, rir_data, output_advance=0):
+  """Performs convolution for single channel src and multi channel rir data.
+
+  Args:
+    src_data: Source signal with shape [src_len].
+    rir_data: RIR signals with shape [rir_len, num_mics].
+    output_advance: How many samples to advance (move forward in time)
+      the output signals by.
+  Returns:
+    reverberated sources of shape [src_len, num_mics].
+  """
   num_mics = np.shape(rir_data)[-1]
   out = []
+  src_len = np.shape(src_data)[-1]
+  out_range = np.arange(output_advance, output_advance+src_len)
   for i in range(num_mics):
-    out.append(np.convolve(src_data, rir_data[:, i], conv_type))
+    out.append(np.convolve(src_data, rir_data[:, i], 'full')[out_range])
   return np.stack(out, axis=-1)
 
 
@@ -158,8 +169,31 @@ def make_mix_info_subsources(mix_info, sub_source, sub_rir,
 
 def reverberate_and_mix(out_folder, sources_folder, rir_folder,
                         mix_info, scale_rirs=10.0,
-                        part=0, nparts=8, num_mics=1, chat=True):
-  """Reverberate and mix sources."""
+                        part=0, nparts=8, num_mics=1, chat=True,
+                        output_align='causal'):
+  """Reverberate and mix sources.
+
+  Args:
+    out_folder: Output folder to write reverberated sources and mixtures.
+    sources_folder: Sources folder to read sources from.
+    rir_folder: RIR folder to read rirs from.
+    mix_info: A dictionary : mix_file_name -> (sources, rirs)
+      where sources and rirs are paired lists of relative paths to source
+      and rir signal wav files used in reverberate and mix operation to be
+      performed.
+    scale_rirs: A value to scale the RIR signals (float).
+    part: Integer value indicating which part of parallel jobs to run (int).
+    nparts: Number of parts considered for parallel runs (int).
+    num_mics: Number of mics to use at the output (int).
+    chat: If True, display more messages (bool).
+    output_align: Output signal alignment type.
+      'causal: Uses causal RIR filtering with no additional shift. '
+      'align_sources': Find the average peak index of RIR(s) corresponding '
+      '  each source and advance each source with that index. This has an '
+      '  effect of aligning each source with their non-reverberated version.'
+  Returns:
+    None, but writes reverberated sources and mixtures into files.
+  """
   list_mix = sorted(mix_info.keys())
   list_len = len(list_mix)
   partsize = list_len // nparts
@@ -175,6 +209,7 @@ def reverberate_and_mix(out_folder, sources_folder, rir_folder,
   for mix in list_mix[start:end]:
     sources, rirs = mix_info[mix]
     mix_to_data = []
+    rir_peak_delays = []
     max_src_len = -1
     if chat:
       print('--\n{} ='.format(mix))
@@ -191,7 +226,7 @@ def reverberate_and_mix(out_folder, sources_folder, rir_folder,
         rir_mics = np.shape(rir_data)[1]
         if rir_mics < num_mics:
           raise ValueError(f'The rir {rir_path} has only {rir_mics} channel '
-                           f'data but specified num_mics={num_mics}')
+                           f'data where the specified num_mics={num_mics}')
         rir_data = rir_data[:, :num_mics]
       else:
         if num_mics > 1:
@@ -202,16 +237,17 @@ def reverberate_and_mix(out_folder, sources_folder, rir_folder,
       rir_len = len(rir_data[:, 0])
       src_len = len(src_data)
       rir_max = np.max(np.abs(rir_data))
+      rir_peaks = np.argmax(np.abs(rir_data), axis=0)
       src_max = np.max(np.abs(src_data))
       max_src_len = np.maximum(src_len, max_src_len)
       if chat:
-        print('+ {} [{}, {:1.2f}] * {} [{}, {:1.2f}]'.format(
-            source, src_len, src_max, rir, rir_len, rir_max))
-      mix_to_data.append([src_data, rir_data, source, rir])
+        print('+ {} [{}, {:1.2f}] * {} [{}, {:1.2f}, {}]'.format(
+            source, src_len, src_max, rir, rir_len, rir_max, rir_peaks))
+      mix_to_data.append([src_data, rir_data, source, rir, rir_peaks])
     mix_rev_sources = []
     rir_paths_used = []
     for data in mix_to_data:
-      src_data, rir_data, source_relpath, rir_relpath = data
+      src_data, rir_data, source_relpath, rir_relpath, rir_peaks = data
       rir_paths_used.append(rir_relpath)
       src_len = len(src_data)
       if src_len < max_src_len:
@@ -220,7 +256,17 @@ def reverberate_and_mix(out_folder, sources_folder, rir_folder,
               'to size {}.'.format(src_len, source_relpath, max_src_len))
         src_data = np.concatenate((src_data, np.zeros(
             max_src_len - src_len)), axis=0)
-      rev_src_data = multimic_convolve(src_data, rir_data, 'same')
+      if output_align == 'align_sources':
+        output_advance = np.round(np.mean(np.asarray(
+            rir_peaks))).astype(np.int32)
+      elif output_align == 'causal':
+        output_advance = 0
+      else:
+        raise ValueError(f'Unknown output_align={output_align}')
+      if chat and output_advance != 0:
+        print(f'Source {source_relpath} advanced by {output_advance} samples.')
+      rev_src_data = multimic_convolve(src_data, rir_data,
+                                       output_advance=output_advance)
       # Write reverberated source data.
       rev_src_path = os.path.join(out_folder, source_relpath)
       os.makedirs(os.path.dirname(rev_src_path), exist_ok=True)
@@ -377,6 +423,16 @@ def main():
   parser.add_argument(
       '-c', '--chat', type=bool, default=False, help='Enable chatty output.')
   parser.add_argument(
+      '-oa', '--output_align', type=str, default='causal',
+      choices=['causal', 'align_sources'],
+      help='Alignment type of output signals. '
+      'causal: Uses causal RIR filtering with no additional shift. '
+      'align_sources: Find the average peak index of RIR(s) corresponding '
+      '  each source and advance each source with that index. This has an '
+      '  effect of aligning each source with their non-reverberated version.'
+      'Note that using align_sources will make the average delay '
+      '  between clean source signals and reverberated source signals zero.')
+  parser.add_argument(
       '-rs', '--random_seed', help='Random seed.', required=False, default=123,
       type=int)
   args = parser.parse_args()
@@ -392,7 +448,7 @@ def main():
     reverberate_and_mix(args.output_dir, args.source_dir, args.rir_dir,
                         mix_info, part=args.part, nparts=args.nparts,
                         num_mics=args.num_mics, scale_rirs=args.scale_rirs,
-                        chat=args.chat)
+                        chat=args.chat, output_align=args.output_align)
   else:
     np.random.seed(args.random_seed)
     if args.read_sources:

@@ -240,8 +240,6 @@ def norm_fn_from_type(norm_type, **kwargs):
 def norm_fn(config, **kwargs):
   """Returns a normalization function/layer.
 
-  Note: A tf.identity is returned if config.norm_type == None or
-    config.norm_type == "none" or config.norm_type == "".
   Args:
     config: network_config.NormLayer object.
     **kwargs: Keyword arguments to overwrite config entries.
@@ -253,15 +251,16 @@ def norm_fn(config, **kwargs):
   """
   config = update_config_from_kwargs(config, **kwargs)
   if config.norm_type == 'global_layer_norm':
-    if config.bin_wise:  # normalize over time only
-      reduction_axes = [config.time_axis]
-    else:  # normalize over time and feature
-      reduction_axes = [config.time_axis, config.bin_axis]
-    norm_fn_out = LayerNormalizationScalarParams(
-        axis=reduction_axes,
-        name='global_layer_norm').apply
+    reduction_axes = [config.time_axis, config.bin_axis]
+  elif config.norm_type == 'instance_norm':
+    reduction_axes = [config.time_axis]
+  elif config.norm_type == 'layer_norm':
+    reduction_axes = [config.bin_axis]
   else:
-    raise ValueError('Unknown norm layer type ' + config.norm_type)
+    raise ValueError('Unknown norm layer type: ' + config.norm_type)
+  norm_fn_out = LayerNormalizationScalarParams(
+      axis=reduction_axes,
+      name=config.norm_type).apply
   return norm_fn_out
 
 
