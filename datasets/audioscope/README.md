@@ -20,7 +20,7 @@ The same train/validation/test splits are used as in <a href="https://github.com
 
 \* The paper [2] gives the incorrect count of 3681.
 
-Addionally, we provide lists of the pairs of clips used to create MoMs for validation and test, where the MoM video uses video frames from the first clip, and a soundtrack that is the sum of the audio from both clips.
+Additionally, we provide lists of the pairs of clips used to create MoMs for validation and test, where the MoM video uses video frames from the first clip, and a soundtrack that is the sum of the audio from both clips.
 
 | Split     | Label                   | Count       | CSV name                                                                    |
 |-----------|-------------------------|-------------|-----------------------------------------------------------------------------|
