@@ -20,6 +20,7 @@ import typing
 
 import attr
 import tensorflow.compat.v1 as tf
+from tensorflow.compat.v1 import estimator as tf_estimator
 
 cur_path = os.path.dirname(os.path.realpath(__file__))
 parent_path = os.path.dirname(os.path.dirname(cur_path))
@@ -335,7 +336,7 @@ def model_fn(features, labels, mode, params):
   batch_size = signal_util.static_or_dynamic_dim_size(mixture_waveforms, 0)
 
   # Create mixtures of mixtures (MoMs) on-the-fly by splitting batch in half.
-  if mode == tf.estimator.ModeKeys.TRAIN or mode == tf.estimator.ModeKeys.EVAL:
+  if mode == tf_estimator.ModeKeys.TRAIN or mode == tf_estimator.ModeKeys.EVAL:
     mixture_waveforms_1mix = mixture_waveforms
     # Build MoMs by splitting batch in half.
     with tf.control_dependencies([tf.compat.v1.assert_equal(
@@ -352,7 +353,7 @@ def model_fn(features, labels, mode, params):
     mix_of_mix_waveforms = mixture_waveforms
 
   # In eval mode, separate both MoMs and single mixtures.
-  if mode == tf.estimator.ModeKeys.EVAL:
+  if mode == tf_estimator.ModeKeys.EVAL:
     input_waveforms = tf.concat([mix_of_mix_waveforms,
                                  mixture_waveforms_1mix], axis=0)
   else:
@@ -362,15 +363,15 @@ def model_fn(features, labels, mode, params):
   separated_waveforms = separate_waveforms(input_waveforms, hparams)
 
   # In eval mode, split into separated from MoMs and from single mixtures.
-  if mode == tf.estimator.ModeKeys.EVAL:
+  if mode == tf_estimator.ModeKeys.EVAL:
     # Separated sources from single mixtures.
     separated_waveforms_1mix = separated_waveforms[batch_size // 2:, :, :]
     # Separated sources from MoMs.
     separated_waveforms = separated_waveforms[:batch_size // 2, :, :]
 
   predictions = {'separated_waveforms': separated_waveforms}
-  if mode == tf.estimator.ModeKeys.PREDICT:
-    return tf.estimator.EstimatorSpec(mode=mode, predictions=predictions)
+  if mode == tf_estimator.ModeKeys.PREDICT:
+    return tf_estimator.EstimatorSpec(mode=mode, predictions=predictions)
 
   # Get reference sources.
   source_waveforms = features['source_images'][:, :, 0]
@@ -411,14 +412,14 @@ def model_fn(features, labels, mode, params):
   _, separated_waveforms = groupwise.apply(
       loss_fns, hparams.signal_types, source_waveforms, separated_waveforms,
       unique_signal_types)
-  if mode == tf.estimator.ModeKeys.EVAL:
+  if mode == tf_estimator.ModeKeys.EVAL:
     # Also align sources separated from single mixtures.
     _, separated_waveforms_1mix = groupwise.apply(
         loss_fns, hparams.signal_types, source_waveforms_1mix,
         separated_waveforms_1mix, unique_signal_types)
 
   # In eval mode, evaluate separated from single mixtures, instead of from MoMs.
-  if mode == tf.estimator.ModeKeys.EVAL:
+  if mode == tf_estimator.ModeKeys.EVAL:
     separated_waveforms = separated_waveforms_1mix
     source_waveforms = source_waveforms_1mix
     mix_of_mix_waveforms = mixture_waveforms_1mix
@@ -495,7 +496,7 @@ def model_fn(features, labels, mode, params):
 
   logging_hook = tf.train.LoggingTensorHook({'loss': loss}, every_n_secs=10)
 
-  return tf.estimator.EstimatorSpec(
+  return tf_estimator.EstimatorSpec(
       mode=mode,
       predictions=predictions,
       loss=loss,

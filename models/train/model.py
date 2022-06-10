@@ -24,6 +24,7 @@ import typing
 import attr
 
 import tensorflow.compat.v1 as tf
+from tensorflow.compat.v1 import estimator as tf_estimator
 
 from . import consistency
 from . import groupwise
@@ -222,7 +223,7 @@ def _get_input_feature(mixture_coeffs, norm_type=''):
   if norm_type == 'mean_and_variance':
     input_feature = network.LayerNormalizationScalarParams(
         axis=[-3, -2, -1],
-        name='layer_norm_on_mag').apply(input_feature)
+        name='layer_norm_on_mag')(input_feature)
   elif norm_type == 'compress_and_max':
     input_feature = tf.pow(input_feature, 0.3)
     input_feature_max = 1e-3 + tf.reduce_max(input_feature, axis=[-3, -2, -1],
@@ -614,7 +615,7 @@ def model_fn(features, labels, mode, params):
 
   refmic = hparams.refmic
   mixture_waveforms_refmic = mixture_waveforms[:, refmic:refmic+1]
-  if mode != tf.estimator.ModeKeys.PREDICT:
+  if mode != tf_estimator.ModeKeys.PREDICT:
     # Get reference sources at reference mic.
     source_waveforms = features['source_images'][:, :, refmic]
     loss_maker = LossMaker(source_waveforms, hparams.signal_types,
@@ -655,7 +656,7 @@ def model_fn(features, labels, mode, params):
       if scope_prefix in prefixes_in_summaries:
         waveforms_to_summaries[scope_prefix] = separated_waveforms
 
-      if mode != tf.estimator.ModeKeys.PREDICT and not last_iter:
+      if mode != tf_estimator.ModeKeys.PREDICT and not last_iter:
 
         if hparams.iter_reploss:
           # Add loss on this iteration's separated waveforms.
@@ -690,8 +691,8 @@ def model_fn(features, labels, mode, params):
 
   separated_waveforms = tf.identity(separated_waveforms,
                                     name='denoised_waveforms')
-  if mode == tf.estimator.ModeKeys.PREDICT:
-    return tf.estimator.EstimatorSpec(mode=mode, predictions=predictions)
+  if mode == tf_estimator.ModeKeys.PREDICT:
+    return tf_estimator.EstimatorSpec(mode=mode, predictions=predictions)
 
   # Add loss function on final separated_waveforms.
   loss_maker.add_loss(separated_waveforms)
@@ -730,7 +731,7 @@ def model_fn(features, labels, mode, params):
 
   logging_hook = tf.train.LoggingTensorHook({'loss': loss}, every_n_secs=10)
 
-  return tf.estimator.EstimatorSpec(
+  return tf_estimator.EstimatorSpec(
       mode=mode,
       predictions=predictions,
       loss=loss,

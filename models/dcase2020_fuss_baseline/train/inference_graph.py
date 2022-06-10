@@ -28,6 +28,7 @@ import copy
 import os
 
 import tensorflow.compat.v1 as tf
+from tensorflow.compat.v1 import estimator as tf_estimator
 
 
 def write(model_fn, input_fn, params, directory):
@@ -43,7 +44,7 @@ def write(model_fn, input_fn, params, directory):
     features = input_fn(input_fn_params)
     model_fn(features=features,
              labels=None,
-             mode=tf.estimator.ModeKeys.PREDICT,
+             mode=tf_estimator.ModeKeys.PREDICT,
              params=model_fn_params)
 
     tf.train.Saver()

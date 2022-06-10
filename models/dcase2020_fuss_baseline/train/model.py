@@ -18,6 +18,7 @@ import typing
 
 import numpy as np
 import tensorflow.compat.v1 as tf
+from tensorflow.compat.v1 import estimator as tf_estimator
 
 from . import consistency
 from . import groupwise
@@ -131,7 +132,7 @@ def separate_waveforms(mixture_waveforms, hparams):
   mixture_coeffs_input = tf.abs(mixture_coeffs)
   mixture_coeffs_input = network.LayerNormalizationScalarParams(
       axis=[-3, -2, -1],
-      name='layer_norm_on_mag').apply(mixture_coeffs_input)
+      name='layer_norm_on_mag')(mixture_coeffs_input)
   shaper.register_axes(mixture_coeffs, ['batch', 'mic', 'frame', 'bin'])
   mixture_coeffs_input = shaper.change(mixture_coeffs_input[:, :, tf.newaxis],
                                        ['batch', 'mic', '1', 'frame', 'bin'],
@@ -230,8 +231,8 @@ def model_fn(features, labels, mode, params):
 
   predictions = {'separated_waveforms': separated_waveforms}
 
-  if mode == tf.estimator.ModeKeys.PREDICT:
-    return tf.estimator.EstimatorSpec(mode=mode, predictions=predictions)
+  if mode == tf_estimator.ModeKeys.PREDICT:
+    return tf_estimator.EstimatorSpec(mode=mode, predictions=predictions)
 
   transformer = signal_transformer.SignalTransformer(
       sample_rate=hparams.sr,
@@ -372,7 +373,7 @@ def model_fn(features, labels, mode, params):
 
   logging_hook = tf.train.LoggingTensorHook({'loss': loss}, every_n_secs=10)
 
-  return tf.estimator.EstimatorSpec(
+  return tf_estimator.EstimatorSpec(
       mode=mode,
       predictions=predictions,
       loss=loss,

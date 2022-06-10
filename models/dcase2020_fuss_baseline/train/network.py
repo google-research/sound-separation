@@ -220,7 +220,7 @@ def dense_layer(x, config):
       use_bias=config.use_bias,
       kernel_initializer=config.kernel_initializer,
       bias_initializer=bias_initializer,
-      name='dense').apply(x)
+      name='dense')(x)
   if config.scale >= 0.0:
     dense_output = scale_layer(dense_output,
                                scope='dense_scale',
@@ -259,7 +259,7 @@ def norm_fn(config, **kwargs):
       reduction_axes = [config.time_axis, config.bin_axis]
     norm_fn_out = LayerNormalizationScalarParams(
         axis=reduction_axes,
-        name='global_layer_norm').apply
+        name='global_layer_norm')
   else:
     raise ValueError('Unknown norm layer type ' + config.norm_type)
   return norm_fn_out
@@ -299,7 +299,7 @@ def time_convolution_layer(x, config):
         dilation_rate=dilation_rate,
         activation=None,
         name='separable_conv',
-        ).apply(x)
+        )(x)
   else:
     filters = tf.shape(x)[-1]
     y = tf.layers.Conv2D(
@@ -309,7 +309,7 @@ def time_convolution_layer(x, config):
         rate=dilation_rate,
         activation_fn=None,
         scope='2d_conv',
-        ).apply(x)
+        )(x)
   return y
 
 

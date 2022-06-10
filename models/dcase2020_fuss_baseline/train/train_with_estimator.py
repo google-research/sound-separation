@@ -13,9 +13,9 @@
 # limitations under the License.
 """Train helper for source separation using tf.estimator."""
 
-import tensorflow.compat.v1 as tf
 
 from . import inference_graph
+from tensorflow.compat.v1 import estimator as tf_estimator
 
 
 def execute(model_fn, input_fn, **params):
@@ -50,24 +50,24 @@ def execute(model_fn, input_fn, **params):
     eval_params['batch_size'] = params['eval_batch_size']
     return input_fn(eval_params)
 
-  train_spec = tf.estimator.TrainSpec(input_fn=train_input_fn,
+  train_spec = tf_estimator.TrainSpec(input_fn=train_input_fn,
                                       max_steps=params['train_steps'])
 
   eval_steps = int(round(params['eval_examples'] / params['eval_batch_size']))
 
-  eval_spec = tf.estimator.EvalSpec(
+  eval_spec = tf_estimator.EvalSpec(
       name=params['eval_suffix'], input_fn=eval_input_fn, steps=eval_steps,
       throttle_secs=params.get('eval_throttle_secs', 600))
 
-  run_config = tf.estimator.RunConfig(
+  run_config = tf_estimator.RunConfig(
       model_dir=params['model_dir'],
       save_summary_steps=params['save_summary_steps'],
       save_checkpoints_secs=params['save_checkpoints_secs'],
       keep_checkpoint_every_n_hours=params['keep_checkpoint_every_n_hours'])
 
-  estimator = tf.estimator.Estimator(
+  estimator = tf_estimator.Estimator(
       model_fn=estimator_model_fn,
       params=params,
       config=run_config)
 
-  tf.estimator.train_and_evaluate(estimator, train_spec, eval_spec)
+  tf_estimator.train_and_evaluate(estimator, train_spec, eval_spec)
