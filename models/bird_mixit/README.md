@@ -50,4 +50,4 @@ which will result in 8 wav files `<output_name>_source0.wav`, ... , `<output_nam
 
 <a href="https://arxiv.org/pdf/2006.12701.pdf">[1] Scott Wisdom, Efthymios Tzinis, Hakan Erdogan, Ron J. Weiss, Kevin Wilson, John R. Hershey, "Unsupervised Sound Separation Using Mixture Invariant Training", Advances in Neural Information Processing Systems, 2020.</a>
 
-<a href="https://arxiv.org/pdf/2110.03209.pdf">[2] Tom Denton, Scott Wisdom, John R. Hershey, "Improving Bird Classification with Unsupervised Sound Separation", arXiv:2110.03209, Oct. 2021.</a>
+<a href="https://arxiv.org/pdf/2110.03209.pdf">[2] Tom Denton, Scott Wisdom, John R. Hershey, "Improving Bird Classification with Unsupervised Sound Separation", Proc. IEEE International Conference on Audio, Speech, and Signal Processing (ICASSP), 2022.</a>
