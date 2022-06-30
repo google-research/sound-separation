@@ -1,0 +1,995 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+  <style>
+  table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+  </style>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>
+  Distance-based separation demos, SPP=0.5
+  </title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+  <div class="container">
+    <p>&nbsp;</p>
+    <p><span class="title">Distance-based separation demos, SPP=0.5</span></p>
+    <br />
+  
+<div class="topnav">
+<a href="#Example1">Example 1</a>
+<a href="#Example2">Example 2</a>
+<a href="#Example3">Example 3</a>
+<a href="#Example4">Example 4</a>
+<a href="#Example5">Example 5</a>
+<a href="#Example6">Example 6</a>
+<a href="#Example7">Example 7</a>
+<a href="#Example8">Example 8</a>
+<a href="#Example9">Example 9</a>
+<a href="#Example10">Example 10</a>
+</div>
+
+  <p><span class="section"><a name=Example1>Example 1</a></span></p>
+  <br />
+  <table style="width:100%">
+    <tr>
+      <th align="center">Mixture</th>
+      <td align="center">
+        <img src="images/Example_1_mix.png" width="500" alt=""/>
+        <br />
+        <audio controls style="width: 300px;"><source src="audio/Example_1_mix.wav"></audio>
+  
+      </td>
+      <td align="center">
+        <img src="images/Example_1_locations.png" width="500" alt=""/>
+      </td>
+    </tr>
+    
+
+      <tr>
+        <th align="center"></th>
+      
+        <th style="color:green;">Ground-truth near</th>
+      
+        <th style="color:red;">Ground-truth far</th>
+      
+      </td>
+    </tr>
+    
+
+      <tr>
+        <th align="center"></th>
+    
+
+        <td align="center">
+          <img src="images/Example_1_src0.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_1_src0.wav"></audio>
+      
+        <br />
+          Input SI-SDR = -80.00 dB
+
+        <td align="center">
+          <img src="images/Example_1_src1.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_1_src1.wav"></audio>
+      
+        <br />
+          Input SI-SDR = 80.00 dB  </tr>
+      <tr>
+        <th>Method</th>
+      
+        <th style="color:green;">Separated near</th>
+      
+        <th style="color:red;">Separated far</th>
+      
+      </td>
+    </tr>
+    
+      <tr>
+        <td align="center">L=4, N=400, 1.5m, SPP=1.0</td>
+      
+        <td align="center">
+          <img src="images/Example_1_L=4,_N=400,_1.5m,_SPP=1.0_sep0.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_1_L=4,_N=400,_1.5m,_SPP=1.0_sep0.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = -80.00 dB
+        <td align="center">
+          <img src="images/Example_1_L=4,_N=400,_1.5m,_SPP=1.0_sep1.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_1_L=4,_N=400,_1.5m,_SPP=1.0_sep1.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = 17.84 dB
+      <tr>
+        <td align="center">L=4, N=400, 1.5m, SPP=0.5</td>
+      
+        <td align="center">
+          <img src="images/Example_1_L=4,_N=400,_1.5m,_SPP=0.5_sep0.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_1_L=4,_N=400,_1.5m,_SPP=0.5_sep0.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = -80.00 dB
+        <td align="center">
+          <img src="images/Example_1_L=4,_N=400,_1.5m,_SPP=0.5_sep1.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_1_L=4,_N=400,_1.5m,_SPP=0.5_sep1.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = 16.45 dB
+      </td>
+    </tr>
+  </table>
+  
+
+  <p><span class="section"><a name=Example2>Example 2</a></span></p>
+  <br />
+  <table style="width:100%">
+    <tr>
+      <th align="center">Mixture</th>
+      <td align="center">
+        <img src="images/Example_2_mix.png" width="500" alt=""/>
+        <br />
+        <audio controls style="width: 300px;"><source src="audio/Example_2_mix.wav"></audio>
+  
+      </td>
+      <td align="center">
+        <img src="images/Example_2_locations.png" width="500" alt=""/>
+      </td>
+    </tr>
+    
+
+      <tr>
+        <th align="center"></th>
+      
+        <th style="color:green;">Ground-truth near</th>
+      
+        <th style="color:red;">Ground-truth far</th>
+      
+      </td>
+    </tr>
+    
+
+      <tr>
+        <th align="center"></th>
+    
+
+        <td align="center">
+          <img src="images/Example_2_src0.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_2_src0.wav"></audio>
+      
+        <br />
+          Input SI-SDR = 5.16 dB
+
+        <td align="center">
+          <img src="images/Example_2_src1.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_2_src1.wav"></audio>
+      
+        <br />
+          Input SI-SDR = -5.02 dB  </tr>
+      <tr>
+        <th>Method</th>
+      
+        <th style="color:green;">Separated near</th>
+      
+        <th style="color:red;">Separated far</th>
+      
+      </td>
+    </tr>
+    
+      <tr>
+        <td align="center">L=4, N=400, 1.5m, SPP=1.0</td>
+      
+        <td align="center">
+          <img src="images/Example_2_L=4,_N=400,_1.5m,_SPP=1.0_sep0.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_2_L=4,_N=400,_1.5m,_SPP=1.0_sep0.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = 12.05 dB
+        <td align="center">
+          <img src="images/Example_2_L=4,_N=400,_1.5m,_SPP=1.0_sep1.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_2_L=4,_N=400,_1.5m,_SPP=1.0_sep1.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = 6.49 dB
+      <tr>
+        <td align="center">L=4, N=400, 1.5m, SPP=0.5</td>
+      
+        <td align="center">
+          <img src="images/Example_2_L=4,_N=400,_1.5m,_SPP=0.5_sep0.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_2_L=4,_N=400,_1.5m,_SPP=0.5_sep0.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = 11.19 dB
+        <td align="center">
+          <img src="images/Example_2_L=4,_N=400,_1.5m,_SPP=0.5_sep1.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_2_L=4,_N=400,_1.5m,_SPP=0.5_sep1.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = 5.92 dB
+      </td>
+    </tr>
+  </table>
+  
+
+  <p><span class="section"><a name=Example3>Example 3</a></span></p>
+  <br />
+  <table style="width:100%">
+    <tr>
+      <th align="center">Mixture</th>
+      <td align="center">
+        <img src="images/Example_3_mix.png" width="500" alt=""/>
+        <br />
+        <audio controls style="width: 300px;"><source src="audio/Example_3_mix.wav"></audio>
+  
+      </td>
+      <td align="center">
+        <img src="images/Example_3_locations.png" width="500" alt=""/>
+      </td>
+    </tr>
+    
+
+      <tr>
+        <th align="center"></th>
+      
+        <th style="color:green;">Ground-truth near</th>
+      
+        <th style="color:red;">Ground-truth far</th>
+      
+      </td>
+    </tr>
+    
+
+      <tr>
+        <th align="center"></th>
+    
+
+        <td align="center">
+          <img src="images/Example_3_src0.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_3_src0.wav"></audio>
+      
+        <br />
+          Input SI-SDR = -80.00 dB
+
+        <td align="center">
+          <img src="images/Example_3_src1.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_3_src1.wav"></audio>
+      
+        <br />
+          Input SI-SDR = 80.00 dB  </tr>
+      <tr>
+        <th>Method</th>
+      
+        <th style="color:green;">Separated near</th>
+      
+        <th style="color:red;">Separated far</th>
+      
+      </td>
+    </tr>
+    
+      <tr>
+        <td align="center">L=4, N=400, 1.5m, SPP=1.0</td>
+      
+        <td align="center">
+          <img src="images/Example_3_L=4,_N=400,_1.5m,_SPP=1.0_sep0.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_3_L=4,_N=400,_1.5m,_SPP=1.0_sep0.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = -80.00 dB
+        <td align="center">
+          <img src="images/Example_3_L=4,_N=400,_1.5m,_SPP=1.0_sep1.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_3_L=4,_N=400,_1.5m,_SPP=1.0_sep1.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = 16.08 dB
+      <tr>
+        <td align="center">L=4, N=400, 1.5m, SPP=0.5</td>
+      
+        <td align="center">
+          <img src="images/Example_3_L=4,_N=400,_1.5m,_SPP=0.5_sep0.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_3_L=4,_N=400,_1.5m,_SPP=0.5_sep0.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = -80.00 dB
+        <td align="center">
+          <img src="images/Example_3_L=4,_N=400,_1.5m,_SPP=0.5_sep1.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_3_L=4,_N=400,_1.5m,_SPP=0.5_sep1.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = 23.77 dB
+      </td>
+    </tr>
+  </table>
+  
+
+  <p><span class="section"><a name=Example4>Example 4</a></span></p>
+  <br />
+  <table style="width:100%">
+    <tr>
+      <th align="center">Mixture</th>
+      <td align="center">
+        <img src="images/Example_4_mix.png" width="500" alt=""/>
+        <br />
+        <audio controls style="width: 300px;"><source src="audio/Example_4_mix.wav"></audio>
+  
+      </td>
+      <td align="center">
+        <img src="images/Example_4_locations.png" width="500" alt=""/>
+      </td>
+    </tr>
+    
+
+      <tr>
+        <th align="center"></th>
+      
+        <th style="color:green;">Ground-truth near</th>
+      
+        <th style="color:red;">Ground-truth far</th>
+      
+      </td>
+    </tr>
+    
+
+      <tr>
+        <th align="center"></th>
+    
+
+        <td align="center">
+          <img src="images/Example_4_src0.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_4_src0.wav"></audio>
+      
+        <br />
+          Input SI-SDR = 2.20 dB
+
+        <td align="center">
+          <img src="images/Example_4_src1.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_4_src1.wav"></audio>
+      
+        <br />
+          Input SI-SDR = -2.19 dB  </tr>
+      <tr>
+        <th>Method</th>
+      
+        <th style="color:green;">Separated near</th>
+      
+        <th style="color:red;">Separated far</th>
+      
+      </td>
+    </tr>
+    
+      <tr>
+        <td align="center">L=4, N=400, 1.5m, SPP=1.0</td>
+      
+        <td align="center">
+          <img src="images/Example_4_L=4,_N=400,_1.5m,_SPP=1.0_sep0.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_4_L=4,_N=400,_1.5m,_SPP=1.0_sep0.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = 5.54 dB
+        <td align="center">
+          <img src="images/Example_4_L=4,_N=400,_1.5m,_SPP=1.0_sep1.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_4_L=4,_N=400,_1.5m,_SPP=1.0_sep1.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = 6.53 dB
+      <tr>
+        <td align="center">L=4, N=400, 1.5m, SPP=0.5</td>
+      
+        <td align="center">
+          <img src="images/Example_4_L=4,_N=400,_1.5m,_SPP=0.5_sep0.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_4_L=4,_N=400,_1.5m,_SPP=0.5_sep0.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = 8.64 dB
+        <td align="center">
+          <img src="images/Example_4_L=4,_N=400,_1.5m,_SPP=0.5_sep1.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_4_L=4,_N=400,_1.5m,_SPP=0.5_sep1.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = 5.42 dB
+      </td>
+    </tr>
+  </table>
+  
+
+  <p><span class="section"><a name=Example5>Example 5</a></span></p>
+  <br />
+  <table style="width:100%">
+    <tr>
+      <th align="center">Mixture</th>
+      <td align="center">
+        <img src="images/Example_5_mix.png" width="500" alt=""/>
+        <br />
+        <audio controls style="width: 300px;"><source src="audio/Example_5_mix.wav"></audio>
+  
+      </td>
+      <td align="center">
+        <img src="images/Example_5_locations.png" width="500" alt=""/>
+      </td>
+    </tr>
+    
+
+      <tr>
+        <th align="center"></th>
+      
+        <th style="color:green;">Ground-truth near</th>
+      
+        <th style="color:red;">Ground-truth far</th>
+      
+      </td>
+    </tr>
+    
+
+      <tr>
+        <th align="center"></th>
+    
+
+        <td align="center">
+          <img src="images/Example_5_src0.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_5_src0.wav"></audio>
+      
+        <br />
+          Input SI-SDR = -80.00 dB
+
+        <td align="center">
+          <img src="images/Example_5_src1.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_5_src1.wav"></audio>
+      
+        <br />
+          Input SI-SDR = 80.00 dB  </tr>
+      <tr>
+        <th>Method</th>
+      
+        <th style="color:green;">Separated near</th>
+      
+        <th style="color:red;">Separated far</th>
+      
+      </td>
+    </tr>
+    
+      <tr>
+        <td align="center">L=4, N=400, 1.5m, SPP=1.0</td>
+      
+        <td align="center">
+          <img src="images/Example_5_L=4,_N=400,_1.5m,_SPP=1.0_sep0.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_5_L=4,_N=400,_1.5m,_SPP=1.0_sep0.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = -80.00 dB
+        <td align="center">
+          <img src="images/Example_5_L=4,_N=400,_1.5m,_SPP=1.0_sep1.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_5_L=4,_N=400,_1.5m,_SPP=1.0_sep1.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = 33.48 dB
+      <tr>
+        <td align="center">L=4, N=400, 1.5m, SPP=0.5</td>
+      
+        <td align="center">
+          <img src="images/Example_5_L=4,_N=400,_1.5m,_SPP=0.5_sep0.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_5_L=4,_N=400,_1.5m,_SPP=0.5_sep0.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = -80.00 dB
+        <td align="center">
+          <img src="images/Example_5_L=4,_N=400,_1.5m,_SPP=0.5_sep1.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_5_L=4,_N=400,_1.5m,_SPP=0.5_sep1.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = 37.10 dB
+      </td>
+    </tr>
+  </table>
+  
+
+  <p><span class="section"><a name=Example6>Example 6</a></span></p>
+  <br />
+  <table style="width:100%">
+    <tr>
+      <th align="center">Mixture</th>
+      <td align="center">
+        <img src="images/Example_6_mix.png" width="500" alt=""/>
+        <br />
+        <audio controls style="width: 300px;"><source src="audio/Example_6_mix.wav"></audio>
+  
+      </td>
+      <td align="center">
+        <img src="images/Example_6_locations.png" width="500" alt=""/>
+      </td>
+    </tr>
+    
+
+      <tr>
+        <th align="center"></th>
+      
+        <th style="color:green;">Ground-truth near</th>
+      
+        <th style="color:red;">Ground-truth far</th>
+      
+      </td>
+    </tr>
+    
+
+      <tr>
+        <th align="center"></th>
+    
+
+        <td align="center">
+          <img src="images/Example_6_src0.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_6_src0.wav"></audio>
+      
+        <br />
+          Input SI-SDR = -80.00 dB
+
+        <td align="center">
+          <img src="images/Example_6_src1.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_6_src1.wav"></audio>
+      
+        <br />
+          Input SI-SDR = 80.00 dB  </tr>
+      <tr>
+        <th>Method</th>
+      
+        <th style="color:green;">Separated near</th>
+      
+        <th style="color:red;">Separated far</th>
+      
+      </td>
+    </tr>
+    
+      <tr>
+        <td align="center">L=4, N=400, 1.5m, SPP=1.0</td>
+      
+        <td align="center">
+          <img src="images/Example_6_L=4,_N=400,_1.5m,_SPP=1.0_sep0.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_6_L=4,_N=400,_1.5m,_SPP=1.0_sep0.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = -80.00 dB
+        <td align="center">
+          <img src="images/Example_6_L=4,_N=400,_1.5m,_SPP=1.0_sep1.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_6_L=4,_N=400,_1.5m,_SPP=1.0_sep1.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = 20.33 dB
+      <tr>
+        <td align="center">L=4, N=400, 1.5m, SPP=0.5</td>
+      
+        <td align="center">
+          <img src="images/Example_6_L=4,_N=400,_1.5m,_SPP=0.5_sep0.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_6_L=4,_N=400,_1.5m,_SPP=0.5_sep0.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = -80.00 dB
+        <td align="center">
+          <img src="images/Example_6_L=4,_N=400,_1.5m,_SPP=0.5_sep1.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_6_L=4,_N=400,_1.5m,_SPP=0.5_sep1.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = 22.70 dB
+      </td>
+    </tr>
+  </table>
+  
+
+  <p><span class="section"><a name=Example7>Example 7</a></span></p>
+  <br />
+  <table style="width:100%">
+    <tr>
+      <th align="center">Mixture</th>
+      <td align="center">
+        <img src="images/Example_7_mix.png" width="500" alt=""/>
+        <br />
+        <audio controls style="width: 300px;"><source src="audio/Example_7_mix.wav"></audio>
+  
+      </td>
+      <td align="center">
+        <img src="images/Example_7_locations.png" width="500" alt=""/>
+      </td>
+    </tr>
+    
+
+      <tr>
+        <th align="center"></th>
+      
+        <th style="color:green;">Ground-truth near</th>
+      
+        <th style="color:red;">Ground-truth far</th>
+      
+      </td>
+    </tr>
+    
+
+      <tr>
+        <th align="center"></th>
+    
+
+        <td align="center">
+          <img src="images/Example_7_src0.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_7_src0.wav"></audio>
+      
+        <br />
+          Input SI-SDR = 5.67 dB
+
+        <td align="center">
+          <img src="images/Example_7_src1.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_7_src1.wav"></audio>
+      
+        <br />
+          Input SI-SDR = -5.67 dB  </tr>
+      <tr>
+        <th>Method</th>
+      
+        <th style="color:green;">Separated near</th>
+      
+        <th style="color:red;">Separated far</th>
+      
+      </td>
+    </tr>
+    
+      <tr>
+        <td align="center">L=4, N=400, 1.5m, SPP=1.0</td>
+      
+        <td align="center">
+          <img src="images/Example_7_L=4,_N=400,_1.5m,_SPP=1.0_sep0.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_7_L=4,_N=400,_1.5m,_SPP=1.0_sep0.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = 11.96 dB
+        <td align="center">
+          <img src="images/Example_7_L=4,_N=400,_1.5m,_SPP=1.0_sep1.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_7_L=4,_N=400,_1.5m,_SPP=1.0_sep1.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = 5.37 dB
+      <tr>
+        <td align="center">L=4, N=400, 1.5m, SPP=0.5</td>
+      
+        <td align="center">
+          <img src="images/Example_7_L=4,_N=400,_1.5m,_SPP=0.5_sep0.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_7_L=4,_N=400,_1.5m,_SPP=0.5_sep0.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = 9.37 dB
+        <td align="center">
+          <img src="images/Example_7_L=4,_N=400,_1.5m,_SPP=0.5_sep1.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_7_L=4,_N=400,_1.5m,_SPP=0.5_sep1.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = 0.90 dB
+      </td>
+    </tr>
+  </table>
+  
+
+  <p><span class="section"><a name=Example8>Example 8</a></span></p>
+  <br />
+  <table style="width:100%">
+    <tr>
+      <th align="center">Mixture</th>
+      <td align="center">
+        <img src="images/Example_8_mix.png" width="500" alt=""/>
+        <br />
+        <audio controls style="width: 300px;"><source src="audio/Example_8_mix.wav"></audio>
+  
+      </td>
+      <td align="center">
+        <img src="images/Example_8_locations.png" width="500" alt=""/>
+      </td>
+    </tr>
+    
+
+      <tr>
+        <th align="center"></th>
+      
+        <th style="color:green;">Ground-truth near</th>
+      
+        <th style="color:red;">Ground-truth far</th>
+      
+      </td>
+    </tr>
+    
+
+      <tr>
+        <th align="center"></th>
+    
+
+        <td align="center">
+          <img src="images/Example_8_src0.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_8_src0.wav"></audio>
+      
+        <br />
+          Input SI-SDR = 7.37 dB
+
+        <td align="center">
+          <img src="images/Example_8_src1.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_8_src1.wav"></audio>
+      
+        <br />
+          Input SI-SDR = -7.55 dB  </tr>
+      <tr>
+        <th>Method</th>
+      
+        <th style="color:green;">Separated near</th>
+      
+        <th style="color:red;">Separated far</th>
+      
+      </td>
+    </tr>
+    
+      <tr>
+        <td align="center">L=4, N=400, 1.5m, SPP=1.0</td>
+      
+        <td align="center">
+          <img src="images/Example_8_L=4,_N=400,_1.5m,_SPP=1.0_sep0.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_8_L=4,_N=400,_1.5m,_SPP=1.0_sep0.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = 11.42 dB
+        <td align="center">
+          <img src="images/Example_8_L=4,_N=400,_1.5m,_SPP=1.0_sep1.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_8_L=4,_N=400,_1.5m,_SPP=1.0_sep1.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = 6.95 dB
+      <tr>
+        <td align="center">L=4, N=400, 1.5m, SPP=0.5</td>
+      
+        <td align="center">
+          <img src="images/Example_8_L=4,_N=400,_1.5m,_SPP=0.5_sep0.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_8_L=4,_N=400,_1.5m,_SPP=0.5_sep0.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = 11.46 dB
+        <td align="center">
+          <img src="images/Example_8_L=4,_N=400,_1.5m,_SPP=0.5_sep1.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_8_L=4,_N=400,_1.5m,_SPP=0.5_sep1.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = 6.25 dB
+      </td>
+    </tr>
+  </table>
+  
+
+  <p><span class="section"><a name=Example9>Example 9</a></span></p>
+  <br />
+  <table style="width:100%">
+    <tr>
+      <th align="center">Mixture</th>
+      <td align="center">
+        <img src="images/Example_9_mix.png" width="500" alt=""/>
+        <br />
+        <audio controls style="width: 300px;"><source src="audio/Example_9_mix.wav"></audio>
+  
+      </td>
+      <td align="center">
+        <img src="images/Example_9_locations.png" width="500" alt=""/>
+      </td>
+    </tr>
+    
+
+      <tr>
+        <th align="center"></th>
+      
+        <th style="color:green;">Ground-truth near</th>
+      
+        <th style="color:red;">Ground-truth far</th>
+      
+      </td>
+    </tr>
+    
+
+      <tr>
+        <th align="center"></th>
+    
+
+        <td align="center">
+          <img src="images/Example_9_src0.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_9_src0.wav"></audio>
+      
+        <br />
+          Input SI-SDR = 80.00 dB
+
+        <td align="center">
+          <img src="images/Example_9_src1.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_9_src1.wav"></audio>
+      
+        <br />
+          Input SI-SDR = -80.00 dB  </tr>
+      <tr>
+        <th>Method</th>
+      
+        <th style="color:green;">Separated near</th>
+      
+        <th style="color:red;">Separated far</th>
+      
+      </td>
+    </tr>
+    
+      <tr>
+        <td align="center">L=4, N=400, 1.5m, SPP=1.0</td>
+      
+        <td align="center">
+          <img src="images/Example_9_L=4,_N=400,_1.5m,_SPP=1.0_sep0.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_9_L=4,_N=400,_1.5m,_SPP=1.0_sep0.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = 8.71 dB
+        <td align="center">
+          <img src="images/Example_9_L=4,_N=400,_1.5m,_SPP=1.0_sep1.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_9_L=4,_N=400,_1.5m,_SPP=1.0_sep1.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = -80.00 dB
+      <tr>
+        <td align="center">L=4, N=400, 1.5m, SPP=0.5</td>
+      
+        <td align="center">
+          <img src="images/Example_9_L=4,_N=400,_1.5m,_SPP=0.5_sep0.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_9_L=4,_N=400,_1.5m,_SPP=0.5_sep0.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = 10.04 dB
+        <td align="center">
+          <img src="images/Example_9_L=4,_N=400,_1.5m,_SPP=0.5_sep1.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_9_L=4,_N=400,_1.5m,_SPP=0.5_sep1.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = -80.00 dB
+      </td>
+    </tr>
+  </table>
+  
+
+  <p><span class="section"><a name=Example10>Example 10</a></span></p>
+  <br />
+  <table style="width:100%">
+    <tr>
+      <th align="center">Mixture</th>
+      <td align="center">
+        <img src="images/Example_10_mix.png" width="500" alt=""/>
+        <br />
+        <audio controls style="width: 300px;"><source src="audio/Example_10_mix.wav"></audio>
+  
+      </td>
+      <td align="center">
+        <img src="images/Example_10_locations.png" width="500" alt=""/>
+      </td>
+    </tr>
+    
+
+      <tr>
+        <th align="center"></th>
+      
+        <th style="color:green;">Ground-truth near</th>
+      
+        <th style="color:red;">Ground-truth far</th>
+      
+      </td>
+    </tr>
+    
+
+      <tr>
+        <th align="center"></th>
+    
+
+        <td align="center">
+          <img src="images/Example_10_src0.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_10_src0.wav"></audio>
+      
+        <br />
+          Input SI-SDR = -80.00 dB
+
+        <td align="center">
+          <img src="images/Example_10_src1.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_10_src1.wav"></audio>
+      
+        <br />
+          Input SI-SDR = 80.00 dB  </tr>
+      <tr>
+        <th>Method</th>
+      
+        <th style="color:green;">Separated near</th>
+      
+        <th style="color:red;">Separated far</th>
+      
+      </td>
+    </tr>
+    
+      <tr>
+        <td align="center">L=4, N=400, 1.5m, SPP=1.0</td>
+      
+        <td align="center">
+          <img src="images/Example_10_L=4,_N=400,_1.5m,_SPP=1.0_sep0.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_10_L=4,_N=400,_1.5m,_SPP=1.0_sep0.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = -80.00 dB
+        <td align="center">
+          <img src="images/Example_10_L=4,_N=400,_1.5m,_SPP=1.0_sep1.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_10_L=4,_N=400,_1.5m,_SPP=1.0_sep1.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = 15.39 dB
+      <tr>
+        <td align="center">L=4, N=400, 1.5m, SPP=0.5</td>
+      
+        <td align="center">
+          <img src="images/Example_10_L=4,_N=400,_1.5m,_SPP=0.5_sep0.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_10_L=4,_N=400,_1.5m,_SPP=0.5_sep0.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = -80.00 dB
+        <td align="center">
+          <img src="images/Example_10_L=4,_N=400,_1.5m,_SPP=0.5_sep1.png" width="500" alt=""/>
+          <br />
+          <audio controls style="width: 300px;"><source src="audio/Example_10_L=4,_N=400,_1.5m,_SPP=0.5_sep1.wav"></audio>
+      
+          <br />
+            Separated SI-SDR = 26.03 dB
+      </td>
+    </tr>
+  </table>
+  
+  </div>
+  </body>
+  </html>

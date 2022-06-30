@@ -1,0 +1,99 @@
+/* CSS Document */
+
+html *
+{
+   margin-left: 25px !important;
+}
+
+body {
+        font: 14px "Google Sans";
+        color: #000;
+        background-color: #fff;
+        line-height: 1.5em;
+}
+
+.container {
+        width: 1000px;
+        min-height: 1000px;
+        max-height: 999999px; /* prevents font boosting */
+        margin: 0 auto; /* top and bottom, right and left */
+        /*      border: 1px solid #000; */
+        text-align: left; /* top, right, bottom, left */
+        color: #000;
+        background: #fff;
+        padding-top: 5px;
+        padding-left: 0px;
+        padding-right: 0px;
+        padding-bottom: 5px;
+}
+
+.venue {
+        font-size: 120%;
+        font-weight: bold;
+        display: block;
+        text-align: center;
+        margin-top: 8px;
+        margin-bottom: 8px;
+}
+
+.topnav {
+        font-size: 120%;
+        font-weight: bold;
+        text-align: center;
+}
+
+.title {
+        font-size: 190%;
+        font-weight: bold;
+        display: block;
+        text-align: center;
+        margin-top: 14px; /* h1 default */
+        margin-bottom: 14px;
+        padding-bottom: 5px;
+}
+
+table.authors td {
+        font-size: 16px;
+        padding-right: 10px;
+        padding-left: 10px;
+        padding-bottom: 5px;
+}
+
+table.affiliations td {
+        font-size: 16px;
+        padding-right: 5px;
+        padding-left: 5px;
+}
+
+.caption {
+        font-style: italic;
+        font-size: 100%;
+}
+
+.section{
+        font-size: 140%;
+        font-weight: bold;
+}
+
+.bibtex {
+        font-family: "Google Sans, Courier, monospace;
+        white-space: pre;
+}
+
+.date {
+        font-size: 80%;
+}
+table.data td {
+        padding-right: 10px;
+        padding-left: 10px;
+        padding-bottom: 5px;
+        vertical-align: top;
+}
+
+thead tr th:first-child,
+tbody tr td:first-child {
+  width: 200px;
+  min-width: 200px;
+  max-width: 200px;
+  word-break: break-all;
+}

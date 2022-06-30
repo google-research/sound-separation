@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>
+Distance-Based Sound Separation
+</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div class="container">
+  <p>&nbsp;</p>
+  <p><span class="title">Distance-Based Sound Separation</span></p>
+  <br />
+  <table border="0" align="center" class="authors">
+    <tr align="center">
+      <td>Katharine Patterson</td>
+      <td><a href="https://research.google/people/KevinWilson">Kevin Wilson</a></td>
+      <td><a href="https://research.google/people/ScottWisdom">Scott Wisdom</a></td>
+      <td><a href="https://research.google/people/106072">John R. Hershey</a></td>
+    </tr>
+  </table>
+  <table border="0" align="center" class="affiliations">
+    <tr>
+      <!--
+      <td align="center"><img src="images/logo_research.png" height="40" alt=""/></td>
+      -->
+      <td align="left"><a href="https://research.google.com/">Google Research</a></td>
+    </tr>
+  </table>
+  <br />
+  <div align="center">
+  <img  src="./images/distance_based_separation_figure1.png" alt="Distance-based sound separation block diagram" width="500">
+  </div>
+  <br />
+  <p><span class="section">Abstract</span></p>
+  <p>We propose the novel task of <em>distance-based sound separation,</em> where sounds are separated based only on their distance from a single microphone.  In the context of assisted listening devices, proximity provides a simple criterion for sound selection in noisy environments that would allow the user to focus on sounds relevant to a local conversation.  We demonstrate the feasibility of this approach by training a neural network to separate near sounds from far sounds in single channel synthetic reverberant mixtures, relative to a threshold distance defining the boundary between near and far.  With a single nearby speaker and four distant speakers, the model improves scale-invariant signal to noise ratio by 4.4 dB for near sounds and 6.8 dB for far sounds.
+  </p>
+  <p>&nbsp;</p>
+  <p class="section">Paper</p>
+  <table border="0">
+    <tbody>
+      <tr>
+        <td>&nbsp;</td>
+        <td><p>&quot;Distance-Based Sound Separation&quot;,<br />
+            Katharine Patterson, Kevin Wilson, Scott Wisdom, and John R. Hershey,<br />
+            Proc. Interspeech, September 2022, Incheon, Korea.</a></p>
+      </tr>
+    </tbody>
+  </table>
+  <br />
+  <p class="section">Real data audio demo</p>
+<p>This example was recorded with an iPhone in a room of size approximately 4m by 5m, with near speaker approximately 0.5m from the microphone and the far speaker approximately 2m from the microphone.  The example was processed by a model trained as described in the paper with training data source presence probability of 0.5.</p>
+<table>
+  <tr>
+    <th>Mixture</th>
+    <th>Near estimate</th>
+    <th>Far estimate</th>
+  </tr>
+  <tr>
+    <td> <audio controls style="width: 300px;"><source src="real_data/mix.wav"></audio> </td>
+    <td> <audio controls style="width: 300px;"><source src="real_data/near.wav"></audio> </td>
+    <td> <audio controls style="width: 300px;"><source src="real_data/far.wav"></audio> </td>
+  </tr>
+</table>
+  <br />
+      <p class="section">Synthetic mixtures audio demos</p>
+      <p> The examples below were generated using the procedure described in the paper. In all cases the example audio is processed by two trained models: one trained with source presence probability 1.0, and the other trained with source presence probability 0.5.</p>
+<p> <a href="distance_based_separation_demos_spp0.5/audio_demos.html">Examples with source presence probability of 0.5, with zero to five sources per example.</a> </p>
+<p> <a href="distance_based_separation_demos_spp1.0/audio_demos.html">Examples with source presence probability of 1.0, with five sources per example.</a> </p>
+  <p class="section">&nbsp;</p>
+  <p align="center" class="date">Last updated: June 2022</p>
+</div>
+</body>
+</html> 
