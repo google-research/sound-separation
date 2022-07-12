@@ -13,6 +13,8 @@
 # limitations under the License.
 """Functions for spatial filtering, a.k.a beamforming."""
 
+import dataclasses
+from typing import Optional, Tuple
 import tensorflow.compat.v1 as tf
 
 from . import shaper
@@ -20,7 +22,7 @@ from . import signal_transformer
 from . import signal_util
 
 
-def _complex_to_realimag(matrix):
+def _complex_to_realimag(matrix: tf.Tensor) -> tf.Tensor:
   matrix_real = tf.real(matrix)
   matrix_imag = tf.imag(matrix)
   return tf.concat([
@@ -29,7 +31,8 @@ def _complex_to_realimag(matrix):
   ], axis=-2)
 
 
-def _hermitian_matrix_solve(matrix, rhs, method='default'):
+def _hermitian_matrix_solve(matrix: tf.Tensor, rhs: tf.Tensor,
+                            method='default') -> tf.Tensor:
   """Matrix_solve using various methods."""
   if method == 'cholesky':
     if matrix.dtype == tf.float32:
@@ -49,8 +52,10 @@ def _hermitian_matrix_solve(matrix, rhs, method='default'):
     raise ValueError(f'Unknown matrix solve method {method}.')
 
 
-def _add_diagonal_matrix(ryy, diagload=1e-3, epsilon=1e-8,
-                         use_diagonal_of=None):
+def _add_diagonal_matrix(ryy: tf.Tensor, diagload: float = 1e-3,
+                         epsilon: float = 1e-8,
+                         use_diagonal_of: Optional[tf.Tensor] = None,
+                         ) -> tf.Tensor:
   """Regularize matrix usually before taking its inverse.
 
   Update ryy matrix with ryy += diagload * diag(matrix) + epsilon * I
@@ -81,8 +86,13 @@ def _add_diagonal_matrix(ryy, diagload=1e-3, epsilon=1e-8,
   return ryy + diagonal_matrix
 
 
-def _get_beamformer_from_covariances(y_cov, t_cov, diagload=1e-3, epsilon=1e-8,
-                                     refmic=0, beamformer_type='wiener'):
+def _get_beamformer_from_covariances(y_cov: tf.Tensor,
+                                     t_cov: tf.Tensor,
+                                     diagload: float = 1e-3,
+                                     epsilon: float = 1e-8,
+                                     refmic: int = 0,
+                                     beamformer_type: str = 'wiener'
+                                     ) -> tf.Tensor:
   """Calculates beamformers from full covariance estimates.
 
   Typically mixture signal covariance is estimated from the mixture signal and
@@ -176,8 +186,11 @@ def _get_beamformer_from_covariances(y_cov, t_cov, diagload=1e-3, epsilon=1e-8,
   return w
 
 
-def _estimate_time_invariant_covariances(y, t, use_complex_mask=False,
-                                         refmic=0):
+def _estimate_time_invariant_covariances(y: tf.Tensor,
+                                         t: tf.Tensor,
+                                         use_complex_mask: bool = False,
+                                         refmic: int = 0,
+                                         ) -> Tuple[tf.Tensor, tf.Tensor]:
   """Find time-invariant covariance matrices from masks.
 
   The inputs are the mixture signal and source estimates.
@@ -239,12 +252,14 @@ def _estimate_time_invariant_covariances(y, t, use_complex_mask=False,
 
 
 def time_invariant_multichannel_filtering(
-    y, t,
-    use_complex_mask=False,
-    beamformer_type='wiener',
-    refmic=0,
-    diagload=1e-3,
-    epsilon=1e-8):
+    y: tf.Tensor,
+    t: tf.Tensor,
+    use_complex_mask: bool = False,
+    beamformer_type: str = 'wiener',
+    refmic: int = 0,
+    diagload: float = 1e-3,
+    epsilon: float = 1e-8,
+    )-> Tuple[tf.Tensor, tf.Tensor]:
   """Computes a multi-channel Wiener filter from time-invariant covariances.
 
   Args:
@@ -260,7 +275,7 @@ def time_invariant_multichannel_filtering(
 
   Returns:
     bf_y: [batch, source, frame, bin], complex64, beamformed spectrogram.
-    w_H: [batch, bin, source, mic], complex64, beamformer coefficient conjugate.
+    w_H: [batch, bin, source, mic], complex64, beamformer coefficients.
   """
   tensor_shaper = shaper.Shaper()
   tensor_shaper.register_axes(y, ['batch', 'mic', 'frame', 'bin'])
@@ -294,48 +309,23 @@ def time_invariant_multichannel_filtering(
   return bf_y, w_h
 
 
-def compute_multichannel_filter(y, t,
-                                use_complex_mask=False,
-                                frame_context_length=1,
-                                frame_context_type='causal',
-                                beamformer_type='wiener',
-                                refmic=0,
-                                block_size_in_frames=-1,
-                                diagload=1e-3,
-                                epsilon=1e-8):
-  """Computes a multi-channel Wiener filter from spectrogram-like inputs.
+def _maybe_expand_context(y: tf.Tensor, frame_context_length: int,
+                          frame_context_type: str,
+                          refmic: int) -> tf.Tensor:
+  """Expands context into mics dimension of the input.
 
   Args:
-    y: [batch, mic, frame, bin], complex64/float32, mixture spectrogram.
-    t: [batch, source, frame, bin], complex64/float32, estimated spectrogram.
-    use_complex_mask: If True, use a complex mask.
-    frame_context_length: An integer value to specify the number of
-      contextual frames used in beamforming.
-    frame_context_type: 'causal' or 'centered'.
-    beamformer_type: A string describing beamformer type. 'wiener', 'mvdr'
-      or 'mpdr'.
-    refmic: index of the reference mic.
-    block_size_in_frames: an int32 value, block size in frames.
-    diagload: float32, diagonal loading value for the matrix inversion in
-      beamforming. Note that this value is likely dependent on the energy level
-      of the input mixture. The default value has been tuned based on the
-      assumption that the time-domain RMS normalization is performed, and the
-      covariance matrices are always divided by the number of frames.
-    epsilon: A float32 value, data-independent stabilizer for diagonal loading.
-
+    y: [batch, mic, frame, bin]
+    frame_context_length:
+    frame_context_type:
+    refmic: Reference microphone.
   Returns:
-    [batch, source, frame, bin], complex64/float32, beamformed y.
+    expanded_y: [batch, mic * frame_context_length, frame, bin]
+    refmic: Updated refmic.
   """
-
-  y = tf.convert_to_tensor(y, name='y')
-  t = tf.convert_to_tensor(t, name='t')
-  tensor_shaper = shaper.Shaper()
-  tensor_shaper.register_axes(y, ['batch', 'mic', 'frame', 'bin'])
-  tensor_shaper.register_axes(t, ['batch', 'source', 'frame', 'bin'])
-
-  batch = tensor_shaper.axis_sizes['batch']
-  n_frames = tensor_shaper.axis_sizes['frame']
   if frame_context_length > 1:
+    tensor_shaper = shaper.Shaper()
+    tensor_shaper.register_axes(y, ['batch', 'mic', 'frame', 'bin'])
     # If frame_context_length > 1, we pad mic axis of y with its contextual
     # frame values.
     # New mics axis is going to be mics * frame_context_length size and
@@ -361,6 +351,59 @@ def compute_multichannel_filter(y, t,
     #   np.ravel_multi_index([refmic, center_frame_index],
     #                        [mics, frame_context_length])
     refmic = refmic * frame_context_length + center_frame_index
+
+    return y, refmic
+  else:
+    return y, refmic
+
+
+def compute_multichannel_filter(y: tf.Tensor, t: tf.Tensor,
+                                use_complex_mask: bool = False,
+                                frame_context_length: int = 1,
+                                frame_context_type: str = 'causal',
+                                beamformer_type: str = 'wiener',
+                                refmic: int = 0,
+                                block_size_in_frames: int = -1,
+                                diagload: float = 1e-3,
+                                epsilon: float = 1e-8
+                                ) -> Tuple[tf.Tensor, tf.Tensor]:
+  """Computes a multi-channel Wiener filter from spectrogram-like inputs.
+
+  Args:
+    y: [batch, mic, frame, bin], complex64/float32, mixture spectrogram.
+    t: [batch, source, frame, bin], complex64/float32, estimated spectrogram.
+    use_complex_mask: If True, use a complex mask.
+    frame_context_length: An integer value to specify the number of
+      contextual frames used in beamforming.
+    frame_context_type: 'causal' or 'centered'.
+    beamformer_type: A string describing beamformer type. 'wiener', 'mvdr'
+      or 'mpdr'.
+    refmic: index of the reference mic.
+    block_size_in_frames: an int32 value, block size in frames.
+    diagload: float32, diagonal loading value for the matrix inversion in
+      beamforming. Note that this value is likely dependent on the energy level
+      of the input mixture. The default value has been tuned based on the
+      assumption that the time-domain RMS normalization is performed, and the
+      covariance matrices are always divided by the number of frames.
+    epsilon: A float32 value, data-independent stabilizer for diagonal loading.
+
+  Returns:
+    [batch, source, frame, bin], complex64/float32, beamformed y.
+    [batch, bin, source, mic], complex64/float32, beamformer weights.
+  """
+
+  y = tf.convert_to_tensor(y, name='y')
+  t = tf.convert_to_tensor(t, name='t')
+  tensor_shaper = shaper.Shaper()
+  tensor_shaper.register_axes(y, ['batch', 'mic', 'frame', 'bin'])
+  tensor_shaper.register_axes(t, ['batch', 'source', 'frame', 'bin'])
+
+  batch = tensor_shaper.axis_sizes['batch']
+  n_frames = tensor_shaper.axis_sizes['frame']
+  # Expand context into microphones axis and update reference microphone index.
+  y, refmic = _maybe_expand_context(y, frame_context_length, frame_context_type,
+                                    refmic)
+  # y now has shape [batch, mic*context, frame, bin]
 
   if block_size_in_frames < 0:
     n_frames_in_block = n_frames
@@ -398,12 +441,13 @@ def compute_multichannel_filter(y, t,
     t = extract_blocks(t)
     # t has shape [n_blocks*batch, source, n_frames_in_block, bin].
 
-  bf_y, _ = time_invariant_multichannel_filtering(
+  bf_y, beamformer_weights = time_invariant_multichannel_filtering(
       y, t, use_complex_mask=use_complex_mask,
       beamformer_type=beamformer_type, refmic=refmic, diagload=diagload,
       epsilon=epsilon)
   # bf_y has shape [n_blocks*batch, source, n_frames_in_block, bin].
   # or bf_y has shape [batch, source, frame, bin].
+  # beamformer_weights has shape [batch, bin, source, mic]
 
   if perform_blocking:
     block_shaper = shaper.Shaper()
@@ -435,21 +479,22 @@ def compute_multichannel_filter(y, t,
                                ['batch', 'source', 'bin', 'frame'],
                                ['batch', 'source', 'frame', 'bin'])
 
-  return bf_y
+  return bf_y, beamformer_weights
 
 
-def compute_multichannel_filter_from_signals(y, t,
-                                             refmic=0,
-                                             sample_rate=16000.,
-                                             ws=0.064,
-                                             hs=0.032,
-                                             frame_context_length=1,
-                                             frame_context_type='causal',
-                                             beamformer_type='wiener',
-                                             block_size_in_seconds=-1,
-                                             use_complex_mask=False,
-                                             diagload=1e-3,
-                                             epsilon=1e-8):
+def compute_multichannel_filter_from_signals(y: tf.Tensor, t: tf.Tensor,
+                                             refmic: int = 0,
+                                             sample_rate: float = 16000.,
+                                             ws: float = 0.064,
+                                             hs: float = 0.032,
+                                             frame_context_length: int = 1,
+                                             frame_context_type: str = 'causal',
+                                             beamformer_type: str = 'wiener',
+                                             block_size_in_seconds: int = -1,
+                                             use_complex_mask: bool = False,
+                                             diagload: float = 1e-3,
+                                             epsilon: float = 1e-8
+                                             ) -> tf.Tensor:
   """Computes a multichannel Wiener filter to estimate a target t from y.
 
   Args:
@@ -493,7 +538,7 @@ def compute_multichannel_filter_from_signals(y, t,
   block_size_in_frames = int(round(block_size_in_seconds / hs))
 
   # Perform beamforming.
-  beamformed_spectrograms = compute_multichannel_filter(
+  beamformed_spectrograms, _ = compute_multichannel_filter(
       y_spectrograms, t_spectrograms,
       frame_context_length=frame_context_length,
       frame_context_type=frame_context_type,
@@ -507,5 +552,158 @@ def compute_multichannel_filter_from_signals(y, t,
   # Reconstruct time-domain signals.
   beamformed_waveforms = transformer.inverse(
       beamformed_spectrograms)[..., :noisy_length]
+
+  return beamformed_waveforms
+
+
+@dataclasses.dataclass(frozen=True)
+class BeamformerParams(object):
+  """Dataclass for estimating and applying an LTI beamformer.
+
+  The parameters are related to how to transform a time-domain signal to STFT
+  domain and in what manner to estimate an LTI beamformer from that. A subset
+  of the parameters (namely the first 5 hyper-parameters) are required when
+  applying the estimated beamformer to another time-domain signal since we
+  need to know how to transform the time domain signal to the STFT domain and
+  how much frame context we would like to use.
+
+  Attributes:
+    sample_rate: Sample rate.
+    ws: Window size for STFT in seconds.
+    hs: Hop size for STFT in seconds.
+    frame_context_length: Length of context in frames.
+    frame_context_type: 'centered' or 'causal'.
+    refmic: Reference microphone.
+    beamformer_type: 'wiener', 'mvdr' or 'mpdr'.
+    use_complex_mask: If True, use a complex mask. If False, we use a real mask
+      which is a Wiener-like mask. If False, the target sources should
+      include all sources in the mixture, not only some of them, otherwise the
+      beamformer will be incorrect.
+    diagload: float32, diagonal loading value for the matrix inversion in
+      beamforming. Note that this value is likely dependent on the energy level
+      of the input mixture. The default value has been tuned based on the
+      assumption that the time-domain RMS normalization is performed, and the
+      covariance matrices are always divided by the number of frames.
+    epsilon: A float32 value, data-independent stabilizer for diagonal loading.
+  """
+  sample_rate: float = 16000.
+  ws: float = 0.064
+  hs: float = 0.032
+  frame_context_length: int = 1
+  frame_context_type: str = 'causal'
+  refmic: int = 0
+  beamformer_type: str = 'wiener'
+  use_complex_mask: bool = True
+  diagload: float = 1e-3
+  epsilon: float = 1e-8
+
+
+def compute_lti_beamformer_from_signals(
+    y: tf.Tensor,
+    t: tf.Tensor,
+    beamformer_params: BeamformerParams = BeamformerParams(),
+    ) -> Tuple[tf.Tensor, tf.Tensor]:
+  """Computes a beamformer to estimate target(s) t from multi-channel y.
+
+  Note that when beamformer_params.use_complex_mask=False, we assume that the
+  source dimension in the target t tensor contains sources that approximately
+  sum to the mixture waveform at the reference microphone, so that we can
+  calculate a Wiener-like mask using those target sources. If this is not true,
+  that is if t does not include all sources but only one of them or some of
+  them, we should set beamformer_parems.use_complex_mask=True.
+
+  Args:
+    y: [batch, mic, time], float32, mixture waveform.
+    t: [batch, source, time], float32, estimated waveform.
+    beamformer_params: Beamformer parameters needed to apply the beamformer
+      to time domain signals.
+
+  Returns:
+    [batch, bin, source, mic]: multichannel multiframe beamformer coefficients.
+      Note that the mic axis also includes contextual frames if
+      frame_context_length > 1 and real-imaginary parts if concat_real_imag is
+      True. If concat_real_imag is True, source dimension is 2*source including
+      real and imaginary for each source.
+    [batch, source, time], float32, beamformed waveform y.
+  """
+
+  noisy_length = signal_util.static_or_dynamic_dim_size(y, -1)
+
+  # Compute transforms.
+  transformer = signal_transformer.SignalTransformer(
+      sample_rate=beamformer_params.sample_rate,
+      window_time_seconds=beamformer_params.ws,
+      hop_time_seconds=beamformer_params.hs,
+      magnitude_offset=1e-8,
+      zeropad_beginning=True,
+  )
+  y_spectrograms = transformer.forward(y)
+  t_spectrograms = transformer.forward(t)
+
+  # Perform beamforming.
+  beamformed_spectrograms, beamformer_weights = compute_multichannel_filter(
+      y_spectrograms, t_spectrograms,
+      frame_context_length=beamformer_params.frame_context_length,
+      frame_context_type=beamformer_params.frame_context_type,
+      beamformer_type=beamformer_params.beamformer_type,
+      refmic=beamformer_params.refmic,
+      block_size_in_frames=-1,
+      use_complex_mask=beamformer_params.use_complex_mask,
+      diagload=beamformer_params.diagload,
+      epsilon=beamformer_params.epsilon)
+
+  # Reconstruct time-domain signals through inverse STFT.
+  beamformed_waveforms = transformer.inverse(
+      beamformed_spectrograms)[..., :noisy_length]
+
+  return beamformer_weights, beamformed_waveforms
+
+
+def apply_lti_beamformer_to_signal(
+    y: tf.Tensor,
+    beamformer_weights: tf.Tensor,
+    beamformer_params: BeamformerParams = BeamformerParams(),
+    ) -> tf.Tensor:
+
+  """Applies a beamformer to signal(s) in y.
+
+  Args:
+    y: [batch, mic, time], float32, multi-channel input waveform.
+    beamformer_weights: [batch, bin, source, mic_and_context],
+      float32/complex64, beamformer coefficients. Batch dimensions should
+      broadcast with the tensor y.
+    beamformer_params: Beamformer hyper parameters required to apply to a
+      new signal.
+
+  Returns:
+    [batch, source, time], float32, beamformed waveforms.
+  """
+  input_length = signal_util.static_or_dynamic_dim_size(y, -1)
+  transformer = signal_transformer.SignalTransformer(
+      sample_rate=beamformer_params.sample_rate,
+      window_time_seconds=beamformer_params.ws,
+      hop_time_seconds=beamformer_params.hs,
+      magnitude_offset=1e-8,
+      zeropad_beginning=True,
+  )
+  y_stft = transformer.forward(y)
+
+  y_stft, _ = _maybe_expand_context(y_stft,
+                                    beamformer_params.frame_context_length,
+                                    beamformer_params.frame_context_type,
+                                    beamformer_params.refmic)
+  tensor_shaper = shaper.Shaper()
+  tensor_shaper.register_axes(y_stft, ['batch', 'mic_context', 'frame', 'bin'])
+  y_stft = tensor_shaper.change(y_stft,
+                                ['batch', 'mic_context', 'frame', 'bin'],
+                                ['batch', 'bin', 'mic_context', 'frame'])
+  beamformed_stft = tf.matmul(beamformer_weights, y_stft)
+  beamformed_stft = tensor_shaper.change(beamformed_stft,
+                                         ['batch', 'bin', 'source', 'frame'],
+                                         ['batch', 'source', 'frame', 'bin'])
+
+  # Reconstruct time-domain signals through inverse STFT.
+  beamformed_waveforms = transformer.inverse(
+      beamformed_stft)[..., :input_length]
 
   return beamformed_waveforms
