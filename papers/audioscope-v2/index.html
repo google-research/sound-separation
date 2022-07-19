@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>
+  AudioScopeV2: Audio-Visual Attention Architectures for Calibrated Open-Domain On-Screen Sound Separation
+</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div class="container">
+  <p>&nbsp;</p>
+  <p><span class="title">AudioScopeV2: Audio-Visual Attention Architectures <br></br> for Calibrated Open-Domain On-Screen Sound Separation</span></p>
+  <br />
+  <table border="0" align="center" class="authors">
+    <tr align="center">
+      <td><a href="https://www.etzinis.com">Efthymios Tzinis</a><sup>1,2,*</sup></td>
+      <td><a href="https://research.google/people/ScottWisdom">Scott Wisdom</a><sup>1</sup></td>
+      <td>Tal Remez<sup>1</sup></td>
+      <td><a href="https://research.google/people/106072">John R. Hershey</a><sup>1</sup></td>
+    </tr>
+  </table>
+  <table border="0" align="center" class="affiliations">
+    <tr>
+      <!--
+      <td align="center"><img src="images/logo_research.png" height="40" alt=""/></td>
+      -->
+      <td align="left"><sup>1</sup><a href="https://research.google.com/">Google Research</a></td>
+    </tr>
+  </table>
+  <table border="0" align="center" class="affiliations">
+    <tr>
+      <td align="left"><sup>2</sup><a href="https://cs.illinois.edu">University of Illinois at Urbana-Champaign</a></td>
+    </tr>
+  </table>
+  <table border="0" align="center" class="affiliations">
+    <tr>
+      <td align="left"><sup>*</sup>Work done during an internship at Google.</td> 
+    </tr>
+  </table>
+  <br />
+  <div align="center">
+  <img  src="./images/fig1.png" alt="General-audio-visual-sound-separation-and-calibration" width="500">
+  <img  src="./images/training.png" alt="AudioScopeV2-training" width="350">
+  </div>
+  <br />
+  <p><span class="section">Abstract</span></p>
+  <p> We introduce AudioScopeV2, a state-of-the-art universal audio-visual on-screen sound separation system which is capable of learning to separate sounds and associate them with on-screen objects by looking at in-the-wild videos. We identify several limitations of previous work on audio-visual on-screen sound separation, including the coarse resolution of spatio-temporal attention, poor convergence of the audio separation model, limited variety in training and evaluation data, and failure to account for the trade off between preservation of on-screen sounds and suppression of off-screen sounds. We provide solutions to all of these issues. Our proposed cross-modal and self-attention network architectures capture audio-visual dependencies at a finer resolution over time, and we also propose efficient separable variants that are capable of scaling to longer videos without sacrificing much performance. We also find that pre-training the separation model only on audio greatly improves results.  For training and evaluation, we collected new human annotations of on-screen sounds from a large database of in-the-wild videos (YFCC100M). This new dataset is more diverse and challenging. Finally, we propose a calibration procedure that allows exact tuning of on-screen reconstruction versus off-screen suppression, which greatly simplifies comparing performance between models with different operating points. Overall, our experimental results show marked improvements in on-screen separation performance under much more general conditions than previous methods with minimal additional computational complexity.
+  </p>
+  <p>&nbsp;</p>
+  <p class="section">Paper</p>
+  <table border="0">
+    <tbody>
+      <tr>
+        <td>&nbsp;</td>
+        <td><p>&quot;AudioScopeV2: Audio-Visual Attention Architectures for Calibrated Open-Domain On-Screen Sound Separation&quot;,<br />
+            Efthymios Tzinis, Scott Wisdom, Tal Remez, and John R. Hershey,<br />
+            Proc. ECCV, October 2022, Tel-Aviv, Israel.</a></p>
+        <!-- TODO(user) Add the new arXiv link here. -->
+            <!-- <p>[<a href="http://arxiv.org/abs/2106.09669">PDF</a>]</p></td> -->
+      </tr>
+    </tbody>
+  </table>
+  <p class="section">&nbsp;</p>
+  <p class="section">Dataset Recipe</p>
+  <table width="600" height="40" border="0">
+    <td><a href="https://github.com/google-research/sound-separation/tree/master/datasets/audioscope-v2">Unfiltered dataset recipes on GitHub</a></td>
+  </table>
+  <p class="section">&nbsp;</p>
+<p class="section">&nbsp;</p>
+  <p align="center" class="date">Last updated: July 2022</p>
+</div>
+</body>
+</html>
