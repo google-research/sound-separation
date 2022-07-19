@@ -8,7 +8,9 @@ Open-source datasets and deep learning models for separating sounds.
 
 * [Audio from YFCC100M videos for mixture-invariant training (MixIT)](https://github.com/google-research/sound-separation/blob/master/datasets/yfcc100m/README.md).
 
-* [YFCC100M with annotations for audio-visual on-screen sound separation](https://github.com/google-research/sound-separation/blob/master/datasets/audioscope/README.md).
+* [Audio-visual YFCC100M with annotations for on-screen sound separation with AudioScope](https://github.com/google-research/sound-separation/blob/master/datasets/audioscope/README.md).
+
+* [Audio-visual YFCC100M with annotations for on-screen sound separation with AudioScopeV2](https://github.com/google-research/sound-separation/blob/master/datasets/audioscope-v2/README.md).
 
 * [Synthetic AMI for speech separation in meeting room scenarios](https://github.com/google-research/sound-separation/blob/master/datasets/synthetic_ami/README.md).
 

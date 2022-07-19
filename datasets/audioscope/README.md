@@ -1,6 +1,6 @@
 # README for AudioScope YFCC100m clip lists.
 This is a recipe for data based on YFCC100m [1] used in
-our ICLR 2021 paper [2] on unsupervised sound separation for mixture invariant training.
+our ICLR 2021 paper [2] on audio-visual on-screen sound separation.
 
 Specifically, we provide CSVs that describe the exact videos and timestamps used
 for labeled and unlabeled train, validation, and test clips, as well as specification of pairs of clips used to create mixture of mixtures (MoM) validation and test sets.
@@ -16,7 +16,7 @@ The same train/validation/test splits are used as in <a href="https://github.com
 |Validation | Off-screen only | 836         | filtered_validate_offscreen_unanimous_clips.csv|
 |Test       | None            | 3293        | filtered_test_clips.csv                        |
 |Test       | On-screen only  | 295         | filtered_test_onscreen_unanimous_clips.csv     |
-|Test       | Off-screen only | 370         | filtered_test_onscreen_unanimous_clips.csv     |
+|Test       | Off-screen only | 370         | filtered_test_offscreen_unanimous_clips.csv     |
 
 \* The paper [2] gives the incorrect count of 3681.
 
@@ -64,7 +64,7 @@ These lists are released under a <a href="https://creativecommons.org/licenses/b
 
 ## References
 
-[1] Bart Thomee, David Shamma, Gerald Friedland, Benjamin Elizalde, Karl Ni, Dough Poland, Damian Borth, Li-Jia Li, "YFCC100M: The New Data in Multimedia Research", Communications of the ACM, 59(2), pp. 64-73, 2016.
+<a href="https://dl.acm.org/doi/pdf/10.1145/2812802">[1] Bart Thomee, David Shamma, Gerald Friedland, Benjamin Elizalde, Karl Ni, Dough Poland, Damian Borth, Li-Jia Li, "YFCC100M: The New Data in Multimedia Research", Communications of the ACM, 59(2), pp. 64-73, 2016.</a>
 
 <a href="https://openreview.net/forum?id=MDsQkFP1Aw">[2] Efthymios Tzinis, Scott Wisdom, Aren Jansen, Shawn Hershey, Tal Remez, Daniel P. W. Ellis, John R. Hershey, "Into the Wild with AudioScope: Unsupervised Audio-Visual Separation of On-Screen Sounds", International Conference on Learning Representations (ICLR), 2021.</a>
 
