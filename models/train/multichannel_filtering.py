@@ -17,9 +17,14 @@ import dataclasses
 from typing import Optional, Tuple
 import tensorflow.compat.v1 as tf
 
+from . import filtering_projections
 from . import shaper
 from . import signal_transformer
 from . import signal_util
+
+
+def _smart_shape(t):
+  return [d or tf.shape(t)[i] for i, d in enumerate(t.shape.as_list())]
 
 
 def _complex_to_realimag(matrix: tf.Tensor) -> tf.Tensor:
@@ -707,3 +712,118 @@ def apply_lti_beamformer_to_signal(
       beamformed_stft)[..., :input_length]
 
   return beamformed_waveforms
+
+
+def find_equivalent_time_domain_beamformer(
+    beamformer_stft: tf.Tensor,
+    beamformer_params: BeamformerParams = BeamformerParams(),
+    filter_len: Optional[int] = None,
+    filter_support_start: Optional[int] = None,
+    random_seed: int = 0,
+    ) -> Tuple[tf.Tensor, int]:
+  """Finds an equivalent time domain beamformer to an STFT domain one.
+
+  To get the exact same filter, use the same random_seed each time.
+
+  Args:
+    beamformer_stft: An STFT domain beamformer with shape
+      [batch, bin, source, mic_and_context] and dtype tf.complex64.
+    beamformer_params: Beamformer parameters.
+    filter_len: Filter length in samples. If None, it is calculated
+      automatically.
+    filter_support_start: Filter support start index. If None, it is calculated
+      automatically.
+    random_seed: Random seed to use for generating WGN input.
+  Returns:
+    beamformer_time_domain: A beamformer [batch, source, mic, filter_len] of
+      dtype tf.float32.
+    filter_support_start: The starting sample index of the time domain
+      filter. A value of 0 implies a causal filter, a value of -5 means the
+      filter is non-causal where its values start from index -5.
+  """
+  # bf weights dimensions are [batch, bin, source, mic_and_context]
+  bf_shape = _smart_shape(beamformer_stft)
+  batch_size = bf_shape[0]
+  num_sources = bf_shape[2]
+  mics = bf_shape[-1] // beamformer_params.frame_context_length
+  new_shape = bf_shape[:-1] + [mics, beamformer_params.frame_context_length]
+  # new_shape is [batch, bin, source, mic, context]
+  beamformer_weights_expanded = tf.reshape(beamformer_stft, new_shape)
+  frame_shift_samples = int(round(
+      beamformer_params.hs * beamformer_params.sample_rate))
+  frame_length_samples = int(round(
+      beamformer_params.ws * beamformer_params.sample_rate))
+  # Time-domain filter should have a length that increases with frame context
+  # length with a minimum length of two frame lengths long.
+  if filter_len is None:
+    filter_len = ((beamformer_params.frame_context_length - 1) *
+                  frame_shift_samples + 2 * frame_length_samples)
+  # An STFT domain filter will have a lookahead which is equal to the
+  # frame length.
+  if filter_support_start is None:
+    if beamformer_params.frame_context_type == 'causal':
+      filter_support_start = -frame_length_samples
+    elif beamformer_params.frame_context_type == 'centered':
+      filter_support_start = (
+          -frame_length_samples - (
+              ((beamformer_params.frame_context_length - 1) // 2) *
+              frame_shift_samples))
+
+  time_domain_filters = []
+  tf.set_random_seed(random_seed)
+  for i in range(mics):
+    # We use a single mic beamformer and have the context axis behave as
+    # mics_and_context axis for beamforming a single mic input.
+    bf_weights_for_mic_i = beamformer_weights_expanded[:, :, :, i, :]
+    # The strategy is to filter a random signal with STFT domain filter and then
+    # find an equivalent LTI time-domain filter that would yield a close result.
+    # Note: We can use a more carefully designed input signal here, but using a
+    # WGN random signal works OK.
+    input_signal_length = filter_len * frame_shift_samples
+    # We have a single mic input signal which is WGN.
+    x = tf.random.normal([batch_size, 1, input_signal_length])
+    y = apply_lti_beamformer_to_signal(x, bf_weights_for_mic_i,
+                                       beamformer_params=beamformer_params)
+    # The output y has shape [batch, source, time].
+    for source in range(num_sources):
+      _, time_domain_filter = filtering_projections.filter_in_time_domain(
+          x, y[:, source:source+1, :],
+          filter_support_start=filter_support_start, filter_len=filter_len,
+          solver='default')
+      time_domain_filters.append(time_domain_filter)
+
+  beamformer_time_domain = tf.concat(time_domain_filters, axis=-2)
+  # beamformer_time_domain has shape [batch, mics*sources, filter_len].
+  beamformer_time_domain = tf.reshape(
+      beamformer_time_domain, [batch_size, mics, num_sources, filter_len])
+  beamformer_time_domain = tf.transpose(
+      beamformer_time_domain, (0, 2, 1, 3))  # [batch, source, mic, filter_len]
+  return beamformer_time_domain, filter_support_start
+
+
+def apply_time_domain_beamformer(input_signal: tf.Tensor,
+                                 beamformer_time_domain: tf.Tensor,
+                                 filter_support_start: int = 0
+                                 ) -> tf.Tensor:
+  """Applies a time domain beamformer to signal.
+
+  Args:
+    input_signal: Input signal with shape (batch, mic, signal_length).
+    beamformer_time_domain: Beamformer with shape
+      (batch, source, mic, filter_length).
+    filter_support_start: The starting sample index of the time domain
+      filter. A value of 0 implies a causal filter, a value of -5 means the
+      filter is non-causal where its values start from index -5.
+  Returns:
+    output_signal: Output beamformed signal with shape
+      (batch, source, signal_length).
+  """
+  num_sources = _smart_shape(beamformer_time_domain)[1]
+  bf_outputs = []
+  for source in range(num_sources):
+    filtered_output = filtering_projections.perform_filtering(
+        input_signal, beamformer_time_domain[:, source],
+        filter_support_start=filter_support_start)
+    bf_output = tf.reduce_sum(filtered_output, axis=-2, keepdims=True)
+    bf_outputs.append(bf_output)
+  return tf.concat(bf_outputs, axis=-2)

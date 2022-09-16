@@ -13,7 +13,7 @@
 # limitations under the License.
 """Library functions for making synthetic AMI dataset."""
 import os
-from typing import Any, Mapping, Tuple, Union
+from typing import Any, Mapping, Tuple, Union, Optional
 
 import librosa
 import numpy as np
@@ -209,12 +209,14 @@ def filter_with_best_filter(headset_audio: np.ndarray,
 def row_to_example_with_filtering(
     row: Mapping[str, Any],
     ami_directory: str,
+    mic_name: Optional[str] = 'Array1-01',
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
   """Create data for an example from a row of the mixing CSV.
 
   Args:
     row: row of CSV as dict.
     ami_directory: path of downloaded AMI dataset.
+    mic_name: The name of the microphone, e.g., Array1-01, Array1-02 ...
 
   Returns:
     receiver_audio, (samples,) mixture.
@@ -234,9 +236,9 @@ def row_to_example_with_filtering(
   shift_fg = row['shift_fg']
 
   # Read the distant mic mixture audio.
-  wav_mix_bg = wav_bg.split('.Headset')[0] + '.Array1-01.wav'
+  wav_mix_bg = wav_bg.split('.Headset')[0] + f'.{mic_name}.wav'
   mix_bg = read_wav(wav_mix_bg, seg_start_bg, seg_end_bg - seg_start_bg)
-  wav_mix_fg = wav_fg.split('.Headset')[0] + '.Array1-01.wav'
+  wav_mix_fg = wav_fg.split('.Headset')[0] + f'.{mic_name}.wav'
   mix_fg = read_wav(wav_mix_fg, seg_start_fg, seg_end_fg - seg_start_fg)
 
   # Read the headset audio.
