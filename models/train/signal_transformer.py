@@ -22,16 +22,25 @@ inverse_stft:
  - (batch, channel, frame, bin) spectrogram => (batch, channel, time) waveform
 """
 
+import immutabledict
 import numpy as np
 import tensorflow.compat.v1 as tf
 
 from . import signal_util
 
 
-def sqrt_hann_tensor(window_length, dtype):
-  """Square-root Hann window as a Tensor. Must match sqrt_hann_array."""
+def sqrt_hann_window(window_length, dtype):
+  """Square-root Hann window as a Tensor."""
   return tf.sqrt(tf.signal.hann_window(window_length, dtype=dtype,
                                        periodic=True))
+
+
+_WINDOW_FN = immutabledict.immutabledict({
+    'sqrt_hann': sqrt_hann_window,
+    'hann': tf.signal.hann_window,
+    'hamming': tf.signal.hamming_window,
+    'kaiser': tf.signal.kaiser_window,
+})
 
 
 class SignalTransformer(object):
@@ -47,7 +56,8 @@ class SignalTransformer(object):
                hop_time_seconds=0.01,
                magnitude_offset=1e-8,
                zeropad_beginning=False,
-               num_basis=-1):
+               num_basis=-1,
+               window_fn_name='sqrt_hann'):
     assert magnitude_offset >= 0, 'magnitude_offset must be nonnegative.'
 
     self.sample_rate = sample_rate
@@ -64,6 +74,7 @@ class SignalTransformer(object):
       assert num_basis >= self.samples_per_window
       self.fft_len = num_basis
     self.fft_bins = int(self.fft_len / 2 + 1)
+    self.forward_window_fn = _WINDOW_FN[window_fn_name]
 
   def pad_beginning(self, waveform):
     pad_len = int(self.samples_per_window - self.hop_time_samples)
@@ -89,7 +100,7 @@ class SignalTransformer(object):
         np.int32(self.samples_per_window),
         np.int32(self.hop_time_samples),
         self.fft_len,
-        window_fn=sqrt_hann_tensor,
+        window_fn=self.forward_window_fn,
         pad_end=True,
         name='complex_spectrogram')
 
@@ -101,7 +112,7 @@ class SignalTransformer(object):
         self.hop_time_samples,
         self.fft_len,
         window_fn=tf.signal.inverse_stft_window_fn(
-            self.hop_time_samples, forward_window_fn=sqrt_hann_tensor))
+            self.hop_time_samples, forward_window_fn=self.forward_window_fn))
     if self.zeropad_beginning:
       waveform = self.clip_beginning(waveform)
     return waveform

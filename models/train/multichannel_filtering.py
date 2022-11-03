@@ -264,6 +264,7 @@ def time_invariant_multichannel_filtering(
     refmic: int = 0,
     diagload: float = 1e-3,
     epsilon: float = 1e-8,
+    apply_postfilter: bool = False,
     )-> Tuple[tf.Tensor, tf.Tensor]:
   """Computes a multi-channel Wiener filter from time-invariant covariances.
 
@@ -277,6 +278,8 @@ def time_invariant_multichannel_filtering(
     diagload: A float32 value, diagonal loading for the matrix inversion in
       beamforming.
     epsilon: A float32 value, data-independent stabilizer for diagonal loading.
+    apply_postfilter: Apply a single-frame post filter to multiply beamformed
+      signal to get closer to the target.
 
   Returns:
     bf_y: [batch, source, frame, bin], complex64, beamformed spectrogram.
@@ -311,6 +314,13 @@ def time_invariant_multichannel_filtering(
     bf_y = tensor_shaper.change(w_h_y,
                                 ['batch', 'bin', 'source', 'frame'],
                                 ['batch', 'source', 'frame', 'bin'])
+    if apply_postfilter:
+      post_filter = filtering_projections.calculate_scalar_filter(bf_y, t)
+      bf_y *= post_filter
+      post_filter = tensor_shaper.change(post_filter,
+                                         ['batch', 'source', 1, 'bin'],
+                                         ['batch', 'bin', 'source', 1])
+      w_h *= post_filter
   return bf_y, w_h
 
 
@@ -370,7 +380,8 @@ def compute_multichannel_filter(y: tf.Tensor, t: tf.Tensor,
                                 refmic: int = 0,
                                 block_size_in_frames: int = -1,
                                 diagload: float = 1e-3,
-                                epsilon: float = 1e-8
+                                epsilon: float = 1e-8,
+                                apply_postfilter: bool = False,
                                 ) -> Tuple[tf.Tensor, tf.Tensor]:
   """Computes a multi-channel Wiener filter from spectrogram-like inputs.
 
@@ -391,6 +402,8 @@ def compute_multichannel_filter(y: tf.Tensor, t: tf.Tensor,
       assumption that the time-domain RMS normalization is performed, and the
       covariance matrices are always divided by the number of frames.
     epsilon: A float32 value, data-independent stabilizer for diagonal loading.
+    apply_postfilter: Apply a single-frame post-filter after calculating
+      beamforming coefficients.
 
   Returns:
     [batch, source, frame, bin], complex64/float32, beamformed y.
@@ -449,7 +462,7 @@ def compute_multichannel_filter(y: tf.Tensor, t: tf.Tensor,
   bf_y, beamformer_weights = time_invariant_multichannel_filtering(
       y, t, use_complex_mask=use_complex_mask,
       beamformer_type=beamformer_type, refmic=refmic, diagload=diagload,
-      epsilon=epsilon)
+      epsilon=epsilon, apply_postfilter=apply_postfilter)
   # bf_y has shape [n_blocks*batch, source, n_frames_in_block, bin].
   # or bf_y has shape [batch, source, frame, bin].
   # beamformer_weights has shape [batch, bin, source, mic]
@@ -498,7 +511,10 @@ def compute_multichannel_filter_from_signals(y: tf.Tensor, t: tf.Tensor,
                                              block_size_in_seconds: int = -1,
                                              use_complex_mask: bool = False,
                                              diagload: float = 1e-3,
-                                             epsilon: float = 1e-8
+                                             epsilon: float = 1e-8,
+                                             n_fft: int = -1,
+                                             window_fn_name: str = 'sqrt_hann',
+                                             apply_postfilter: bool = False,
                                              ) -> tf.Tensor:
   """Computes a multichannel Wiener filter to estimate a target t from y.
 
@@ -522,6 +538,11 @@ def compute_multichannel_filter_from_signals(y: tf.Tensor, t: tf.Tensor,
       assumption that the time-domain RMS normalization is performed, and the
       covariance matrices are always divided by the number of frames.
     epsilon: A float32 value, data-independent stabilizer for diagonal loading.
+    n_fft: If > 0, specifies the FFT size to use for STFT
+      calculation. Otherwise, fft size is calculated automatically.
+    window_fn_name: STFT analysis window function name.
+    apply_postfilter: If True, apply a single-frame post-filter after
+      beamforming.
 
   Returns:
     [batch, source, time], float32, beamformed waveform y.
@@ -536,6 +557,8 @@ def compute_multichannel_filter_from_signals(y: tf.Tensor, t: tf.Tensor,
       hop_time_seconds=hs,
       magnitude_offset=1e-8,
       zeropad_beginning=True,
+      num_basis=n_fft,
+      window_fn_name=window_fn_name,
   )
   y_spectrograms = transformer.forward(y)
   t_spectrograms = transformer.forward(t)
@@ -552,7 +575,8 @@ def compute_multichannel_filter_from_signals(y: tf.Tensor, t: tf.Tensor,
       block_size_in_frames=block_size_in_frames,
       use_complex_mask=use_complex_mask,
       diagload=diagload,
-      epsilon=epsilon)
+      epsilon=epsilon,
+      apply_postfilter=apply_postfilter)
 
   # Reconstruct time-domain signals.
   beamformed_waveforms = transformer.inverse(
@@ -567,7 +591,7 @@ class BeamformerParams(object):
 
   The parameters are related to how to transform a time-domain signal to STFT
   domain and in what manner to estimate an LTI beamformer from that. A subset
-  of the parameters (namely the first 5 hyper-parameters) are required when
+  of the parameters (namely the first 7 hyper-parameters) are required when
   applying the estimated beamformer to another time-domain signal since we
   need to know how to transform the time domain signal to the STFT domain and
   how much frame context we would like to use.
@@ -576,6 +600,10 @@ class BeamformerParams(object):
     sample_rate: Sample rate.
     ws: Window size for STFT in seconds.
     hs: Hop size for STFT in seconds.
+    n_fft: If > 0, specifies the fft size for STFT calculation. Otherwise,
+      it is calculated by SignalTransformer automatically as the enclosing
+      power of 2 of the window size (or frame length) in samples.
+    window_fn_name: The name of the analysis window function to use in STFT.
     frame_context_length: Length of context in frames.
     frame_context_type: 'centered' or 'causal'.
     refmic: Reference microphone.
@@ -584,6 +612,8 @@ class BeamformerParams(object):
       which is a Wiener-like mask. If False, the target sources should
       include all sources in the mixture, not only some of them, otherwise the
       beamformer will be incorrect.
+    apply_postfilter: If True, apply a single-frame post-filter to beamformed
+      signals.
     diagload: float32, diagonal loading value for the matrix inversion in
       beamforming. Note that this value is likely dependent on the energy level
       of the input mixture. The default value has been tuned based on the
@@ -594,11 +624,14 @@ class BeamformerParams(object):
   sample_rate: float = 16000.
   ws: float = 0.064
   hs: float = 0.032
+  n_fft: int = -1
+  window_fn_name: str = 'sqrt_hann'
   frame_context_length: int = 1
   frame_context_type: str = 'causal'
   refmic: int = 0
   beamformer_type: str = 'wiener'
   use_complex_mask: bool = True
+  apply_postfilter: bool = False
   diagload: float = 1e-3
   epsilon: float = 1e-8
 
@@ -641,6 +674,8 @@ def compute_lti_beamformer_from_signals(
       hop_time_seconds=beamformer_params.hs,
       magnitude_offset=1e-8,
       zeropad_beginning=True,
+      num_basis=beamformer_params.n_fft,
+      window_fn_name=beamformer_params.window_fn_name,
   )
   y_spectrograms = transformer.forward(y)
   t_spectrograms = transformer.forward(t)
@@ -655,7 +690,8 @@ def compute_lti_beamformer_from_signals(
       block_size_in_frames=-1,
       use_complex_mask=beamformer_params.use_complex_mask,
       diagload=beamformer_params.diagload,
-      epsilon=beamformer_params.epsilon)
+      epsilon=beamformer_params.epsilon,
+      apply_postfilter=beamformer_params.apply_postfilter)
 
   # Reconstruct time-domain signals through inverse STFT.
   beamformed_waveforms = transformer.inverse(
@@ -690,6 +726,8 @@ def apply_lti_beamformer_to_signal(
       hop_time_seconds=beamformer_params.hs,
       magnitude_offset=1e-8,
       zeropad_beginning=True,
+      num_basis=beamformer_params.n_fft,
+      window_fn_name=beamformer_params.window_fn_name,
   )
   y_stft = transformer.forward(y)
 
