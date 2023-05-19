@@ -1,0 +1,399 @@
+<html>
+  <head>
+    <title>Unsupervised Multi-Channel Separation and Adaptation (Online Supplement)</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      audio {
+        /* width: 250px; */
+        width: 20vw;
+        min-width: 100px;
+        max-width: 250px;
+      }
+      img {
+        width: 100%;
+        /* min-height: 300px; */
+        min-width: 300px;
+        max-width: 800px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      td {
+        text-align: center;
+        vertical-align: middle;
+      }
+      .container {
+        overflow-x: auto;
+      }
+      .vertdivider{
+        border-right: 2px solid;
+      }
+      /* td img {
+        width: 100%;
+      }
+      table {
+        max-width: 80%;
+      }
+      h1 {
+        font-size: 35px;
+      }
+      h2 {
+        font-size: 25px;
+        font-weight: normal;
+      }
+      p {
+        font-size: 16px;
+      }
+      hr {
+        text-align: center;
+        width: 80%;
+        margin: 30px;
+      } */
+      /* Solid border */
+      hr.solid {
+        border-top: 2px solid #bbb;
+      }  
+  </style>
+  </head>
+  <body>
+    <div class="container pt-5 mt-5 shadow p-5 mb-5 bg-white rounded">
+      <div class="text-center">
+  <h1 style="text-align:center; font-size: 40px;">Unsupervised Multi-Channel Separation and Adaptation</h1>
+  <!-- <h2 style="text-align:center; font-size: 30px;">Online Supplement</h2> -->
+        <p class="lead fw-bold">
+          |<a
+            href="http://arxiv.org/abs/2305.11151"
+            class="btn border-white bg-white fw-bold"
+            >paper</a
+          >|
+        <p class="fst-italic mb-0">
+          Cong Han<sup>1*</sup>, Kevin Wilson<sup>2</sup>, Scott Wisdom<sup>2</sup>, John R. Hershey<sup>2</sup>
+        </p>
+        <p>
+          <sup>1</sup>Columbia University
+          <sup>2</sup>Google Research
+          <br/>
+          <sup>*</sup>Work performed during internship at Google.
+        </p>
+
+      </div>
+      <p>
+        <h1>Overview</h1>
+        <p>
+          A key challenge in machine learning is to generalize from training data to a test domain of interest.  This work generalizes the recently-proposed mixture invariant  training (MixIT) algorithm to perform unsupervised learning in the multi-channel setting.  We use MixIT to train a model on far-field microphone array recordings of  overlapping  reverberant  and  noisy speech from the AMI Corpus. The models are trained on both supervised and unsupervised training data, and are tested on real AMI recordings containing overlapping speech. To objectively evaluate our models, we also use a synthetic multi-channel AMI test set. Holding  network  architectures  constant,  we  find that a fine-tuned semi-supervised model yields the largest improvement to SI-SNR and to human listening ratings across synthetic and real datasets, outperforming supervised models trained on well-matched synthetic data.  Our results demonstrate that unsupervised learning through MixIT enables model adaptation on both single- and multi-channel real-world speech recordings.
+          <img src="figs/mcmixit_hero.png" style="width: 150%;">
+        </p> 
+    </div>
+
+
+    
+
+<div class="container pt-5 mt-5 shadow p-5 mb-5 bg-white rounded">
+  <div class="container pt-3">
+
+  <a name="audio-demos"><h1>Audio Demos</h1></a>
+<p>
+  We evaluated our models on both synthetic and real mixtures from the AMI Corpus, training single- and multi-channel models on various combinations of datasets with supervised permutation invariant training (PIT) and unsupervised MixIT.
+</p>
+
+<h2>Results on synthetic AMI</h2>
+
+<table align="center" style="width:100%">
+  <tr>
+    <td class="vertdivider"></td>
+    <td colspan="2" class="vertdivider">Example 1</td>
+    <td colspan="2" class="vertdivider">Example 2</td>
+    <td colspan="2">Example 3</td>
+  </tr>
+  <!-- '#4f2a58', '#733661', '#954466', '#b45668', '#cf6d68', '#e48767', '#f2a568', '#fac46e'-->
+  <tr bgcolor="#0000ff">
+    <td bgcolor="#0000ff" class="vertdivider"><font color="#ffffff">Noisy Mixture</font></td>
+    <td colspan="2" class="vertdivider"><audio controls style="width: 175px;"> <source src="files/0fb0e0ad-7936-495d-ac0b-56daacb18b08.wav" type="audio/wav"> </audio></td>
+    <td colspan="2" class="vertdivider"><audio controls style="width: 175px;"> <source src="files/8318e578-8a7a-4ea8-801c-886b8984231e.wav" type="audio/wav"> </audio></td>
+    <td colspan="2"><audio controls style="width: 175px;"> <source src="files/85acc5e1-f67a-485d-b771-941299f14a55.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr>
+    <td colspan="7"><font color="#000000">1 Microphone</font></td>
+  </tr>
+  <tr bgcolor="#733661">
+    <td bgcolor="#733661" class="vertdivider"><font color="#ffffff">Sup. Synth AMI</font></td>
+    <td><audio controls style="width: 175px;"> <source src="files/293e52ac-a063-4992-863c-629dfb4bc678.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/c0b07d47-60d1-4bb1-94f2-815a82ea3a30.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/d3f2d461-1363-4e13-a188-6ed340442c48.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/a3ab52a8-c37a-4e35-b442-d8f721eed490.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/867571d6-10d3-4c4d-aff9-6c03fef0e924.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/b650d6c5-8cff-4d4e-97fc-c432ca04319f.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr bgcolor="#954466">
+    <td bgcolor="#954466" class="vertdivider"><font color="#ffffff">Unsup. AMI</font></td>
+    <td><audio controls style="width: 175px;"> <source src="files/9ebd4c5a-2ddf-4fae-a8d6-0306414c8422.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/bacb9a83-681b-4700-b2cb-6a60384eeca2.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/0f04714f-76af-4140-918c-3e60acefe0a0.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/fcaaa42c-cdcc-4a5a-886f-b41a971b6c07.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/8abaf57b-6e1e-4589-9d43-6c8d548e6d60.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/1c7ac423-0243-4b24-86c8-6c866aa9eff3.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr bgcolor="#b45668">
+    <td bgcolor="#b45668" class="vertdivider"><font color="#ffffff">YFCC100M<br/>Warm Start</font></td>
+    <td><audio controls style="width: 175px;"> <source src="files/e4e3567c-c84b-4e5e-b166-b8c98c4f9f81.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/dfd1a544-0245-4284-88ec-f9f471eb8228.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/a340ef87-3b15-48c1-97d5-27810413aa16.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/7a16cdf2-78b8-4662-a16b-4a4eb84ccedd.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/5c966737-b8fe-461b-827e-3484c6e4388f.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/5ad51d09-d6ca-4210-9094-e128c23d42d8.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr bgcolor="#cf6d68">
+    <td bgcolor="#cf6d68" class="vertdivider"><font color="#ffffff">Sup. Synth AMI,<br/>Unsup. AMI</font></td>
+    <td><audio controls style="width: 175px;"> <source src="files/24845bb7-9143-4778-827e-18785e7b29ba.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/1ec5c002-0c24-4f46-89da-ef85ecd4202b.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/55722bb2-24c9-4564-be8b-d6676b0dcff8.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/9960dff3-8aeb-424b-b5b9-1a94d5463249.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/de2a36de-2a6d-4078-b337-fa4b50660e6d.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/d2031236-75ca-4ce6-8878-9f1d9feebed2.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr bgcolor="#f2a568">
+    <td bgcolor="#f2a568" class="vertdivider"><font color="#ffffff">Sup. Synth AMI,<br/>Unsup. AMI,<br/>YFCC100M<br/>Warm Start</font></td>
+    <td><audio controls style="width: 175px;"> <source src="files/92c11835-013a-40a5-9203-ae09486567f6.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/630f87f5-cbf9-48b8-b4e9-6220c174912b.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/640f1ab2-f5fc-4d0b-b85a-dccb9bbbad7f.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/3b043150-2969-4f35-b775-1b0e37f08988.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/92685c40-9fa0-46f0-bbcc-2af7c6ed2388.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/57cc91f8-9668-4023-bd97-6b8d3dff9373.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr>
+    <td colspan="7"><font color="#000000">4 Microphones</font></td>
+  </tr>
+  <tr bgcolor="#733661">
+    <td bgcolor="#733661" class="vertdivider"><font color="#ffffff">Sup. Synth AMI</font></td>
+    <td><audio controls style="width: 175px;"> <source src="files/c750c2d0-ae10-4695-992d-42e14b008b5a.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/105fb0e4-089d-4a3a-a933-c00fdec5e822.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/fa88a74c-e88b-4221-aac0-440008ac852f.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/780bb628-8826-4fb9-9c1d-e6dbdb0e4205.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/1a81fd4c-7f2c-4d6e-8a8c-c867d9126dd5.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/4447d5c1-3181-409f-9f23-9192e797b0bf.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr bgcolor="#954466">
+    <td bgcolor="#954466" class="vertdivider"><font color="#ffffff">Unsup. AMI</font></td>
+    <td><audio controls style="width: 175px;"> <source src="files/ff5ee380-766e-4115-8a76-afba9fafc5a0.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/9d06ab3b-f70e-42c0-ac55-71ff98272d70.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/e81da7da-7474-4543-b324-27196c477f81.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/056e6320-0675-4a7a-a4ee-83f3bd9af4f2.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/0b8ebd3f-7275-4277-b765-8d029dfaf1d4.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/a7b56374-cb52-45b9-9b6a-cdc0c6c52d5a.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr bgcolor="#cf6d68">
+    <td bgcolor="#cf6d68" class="vertdivider"><font color="#ffffff">Sup. Synth AMI,<br/>Unsup. AMI</font></td>
+    <td><audio controls style="width: 175px;"> <source src="files/ce896bcc-1901-4b01-9d82-218d7b2c44e3.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/0ef4037e-d11a-4224-9417-12a1f2879f2c.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/eb5a516c-c311-4116-a7d6-ab7906f1e85e.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/fcf97c54-0b63-4c24-95e0-767cc068351b.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/8bc5d178-81f0-4c0e-86a0-d4da1e56f947.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/17f6793b-84f7-40ff-a975-d41de7ab849c.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr bgcolor="#f2a568">
+    <td bgcolor="#f2a568" class="vertdivider"><font color="#ffffff">Sup. Synth AMI,<br/>Unsup. AMI,<br/>YFCC100M<br/>Warm Start</font></td>
+    <td><audio controls style="width: 175px;"> <source src="files/cc106b16-c9d2-4731-b3ff-2bb09a74b620.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/ace182b1-694f-4b49-8735-2e64cd375eba.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/b33defaf-5108-420e-b6cd-fc565c1d6863.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/54ae08d4-5a2b-40f1-a62d-1f70b8b3affb.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/6cbb1df6-895d-4f95-a1ef-dea66dcdabf8.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/c7600941-7322-43fd-9942-13a562762749.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr>
+    <td colspan="7"><font color="#000000">Reference Audio</font></td>
+  </tr>
+  <tr bgcolor="#fac46e">
+    <td bgcolor="#fac46e" class="vertdivider"><font color="#ffffff">Headset Filtered<br/>to Distant Mic</font></td>
+    <td><audio controls style="width: 175px;"> <source src="files/86fdc77d-208e-4d51-943c-ecfcc612f3fb.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/32aad1ea-0fee-4bd6-8c0c-ec151e0d4338.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/b4043656-d91e-43a3-a793-ba7ac857164b.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/1184c752-b1e0-4852-a40e-d23b9c70727d.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/3965e4b1-191a-4a08-84c5-7beccf879df5.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/2f1c63e5-345a-43ec-a300-9e32611d77f5.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr bgcolor="#fac46e">
+    <td bgcolor="#fac46e" class="vertdivider"><font color="#ffffff">Headset</font></td>
+    <td><audio controls style="width: 175px;"> <source src="files/cd74e241-aea9-4fa4-9e48-255b46778f04.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/34252c11-b6d8-4d0f-a6a5-59084b4a0ce2.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/0fe3650a-f66d-4418-b82c-dce3a0f8edea.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/ba57d830-368e-4947-9fdc-37f7c0d066dd.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/ad88e072-ef8e-4a13-af72-bb3f769d7c93.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/547f94ec-2fd9-4f65-baf2-c26bc6f3003d.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr>
+    <td class="vertdivider"></td>
+    <td>Source 1</td>
+    <td class="vertdivider">Source 2</td>
+    <td >Source 1</td>
+    <td class="vertdivider">Source 2</td>
+    <td>Source 1</td>
+    <td>Source 2</td>
+  </tr>
+  <tr>
+    <td colspan="1"></td>
+    <td colspan="3"><hr class="solid"></td>
+    <!-- <td colspan="2"></td> -->
+  </tr>
+</table>
+
+<h2>Results on real AMI</h2>
+
+<table align="center" style="width:100%">
+  <tr>
+    <td class="vertdivider"></td>
+    <td colspan="2" class="vertdivider">Example 1</td>
+    <td colspan="2" class="vertdivider">Example 2</td>
+    <td colspan="2">Example 3</td>
+  </tr>
+  <!-- '#4f2a58', '#733661', '#954466', '#b45668', '#cf6d68', '#e48767', '#f2a568', '#fac46e'-->
+  <tr bgcolor="#0000ff">
+    <td bgcolor="#0000ff" class="vertdivider"><font color="#ffffff">Noisy Mixture</font></td>
+    <td colspan="2" class="vertdivider"><audio controls style="width: 175px;"> <source src="files/4dd3b8fa-391a-4bc8-bffb-02c67836a132.wav" type="audio/wav"> </audio></td>
+    <td colspan="2" class="vertdivider"><audio controls style="width: 175px;"> <source src="files/c2861e64-7e82-4436-b972-3c48abaaa0ff.wav" type="audio/wav"> </audio></td>
+    <td colspan="2"><audio controls style="width: 175px;"> <source src="files/566a0470-e1e2-4fc5-9c04-e3c6f225ae9a.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr>
+    <td colspan="7"><font color="#000000">1 Microphone</font></td>
+  </tr>
+  <tr bgcolor="#733661">
+    <td bgcolor="#733661" class="vertdivider"><font color="#ffffff">Sup. Synth AMI</font></td>
+    <td><audio controls style="width: 175px;"> <source src="files/518c1d14-d3bf-4c7b-b7d5-9156a035d004.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/92391602-04ef-4996-b344-86e862784145.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/7a86bb84-e606-4218-b64b-54c83514056b.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/b574b3f6-f95f-4414-9675-a2eb901e9d28.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/f06177d1-e891-4a80-a3ec-0b6db089aac8.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/4e8bce0c-3737-4ebc-8989-4459a48dd64b.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr bgcolor="#954466">
+    <td bgcolor="#954466" class="vertdivider"><font color="#ffffff">Unsup. AMI</font></td>
+    <td><audio controls style="width: 175px;"> <source src="files/1ce99f05-9a35-4180-b955-71f0da0dea66.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/9a2c1769-c8c7-4dc2-80a7-6bba8516d525.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/1863c070-2fcd-4886-9308-dbb90db5d0cb.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/cee045a1-ec50-4dfc-9fcd-95618d405c5a.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/da897d5c-914a-4541-9cec-84bd70f373ef.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/ccc9bd9a-ccf0-46f2-9f93-79e896a919a8.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr bgcolor="#b45668">
+    <td bgcolor="#b45668" class="vertdivider"><font color="#ffffff">YFCC100M<br/>Warm Start</font></td>
+    <td><audio controls style="width: 175px;"> <source src="files/9059b00e-da72-4efb-ac31-69cb42272e7f.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/0e09922e-d3cf-42dd-8ac8-eafca56b564b.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/6c2e03a5-915e-4cda-9465-85aa717245fb.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/3ee34fec-6e93-4173-ad16-473b81dd0f6b.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/430c79af-8a03-4e69-be55-1a8a442534dd.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/104e8c62-2232-43f0-9f13-3681a7a0fa89.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr bgcolor="#cf6d68">
+    <td bgcolor="#cf6d68" class="vertdivider"><font color="#ffffff">Sup. Synth AMI,<br/>Unsup. AMI</font></td>
+    <td><audio controls style="width: 175px;"> <source src="files/9b68ecaa-1605-4e68-8846-9bfd9d01b54f.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/f5538845-196f-4b6f-9eb1-1e534686b5d1.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/f7ad2cbb-d621-4743-98b9-fc68fd59905e.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/e2d062b8-0924-46f0-8cc7-131e75d13fb3.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/cdadba95-1cc8-40f7-aa2d-e62591ffaea5.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/f935b25c-e0ea-4e3c-bd5f-cad82357a08b.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr bgcolor="#f2a568">
+    <td bgcolor="#f2a568" class="vertdivider"><font color="#ffffff">Sup. Synth AMI,<br/>Unsup. AMI,<br/>YFCC100M<br/>Warm Start</font></td>
+    <td><audio controls style="width: 175px;"> <source src="files/46fb7d6d-1ecb-4dc9-8462-03ef2add0140.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/b45d1d2a-b7d4-4855-a347-ad93e9caa16f.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/0606c8f0-480f-4ab1-93c3-c474c5ba9041.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/0acaca36-683b-479e-839f-496349feadff.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/a928f5e4-ef9b-43f4-a824-958d32a6398e.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/6472d250-1d32-42af-9faa-d1ed8f0897f0.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr>
+    <td colspan="7"><font color="#000000">4 Microphones</font></td>
+  </tr>
+  <tr bgcolor="#733661">
+    <td bgcolor="#733661" class="vertdivider"><font color="#ffffff">Sup. Synth AMI</font></td>
+    <td><audio controls style="width: 175px;"> <source src="files/b685130f-ce7e-4b6f-9e2a-bfb1c90a6397.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/1a5abe40-dc59-4e50-8cae-95ea7707e520.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/719b7124-5c87-419a-8168-94f1f3f3be76.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/b964dd73-1831-470e-b86c-c0d4c66767ec.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/6a396d58-ea14-4bcc-b83d-d265e5ba1bee.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/40eb34c3-d26d-4759-8773-69b26c3c3cb6.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr bgcolor="#954466">
+    <td bgcolor="#954466" class="vertdivider"><font color="#ffffff">Unsup. AMI</font></td>
+    <td><audio controls style="width: 175px;"> <source src="files/570b9eac-8f8d-4459-9b5c-239c39f2760e.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/d3b4314b-7d80-41ae-8679-a2850bd8e813.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/a3f856cf-898d-49a9-bacf-561230cd2d4b.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/3882b870-918d-43cc-a5a9-86435a6f2781.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/d622d749-4d13-47d9-a8d5-eafb6aca654c.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/fc19a93c-1496-4dd9-80a6-7f4f901da636.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr bgcolor="#cf6d68">
+    <td bgcolor="#cf6d68" class="vertdivider"><font color="#ffffff">Sup. Synth AMI,<br/>Unsup. AMI</font></td>
+    <td><audio controls style="width: 175px;"> <source src="files/eba07481-7a16-46b5-bcb4-1a8d93559fe5.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/7bf8e131-ae64-47f3-90e4-6a41b84cc4b9.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/136e5dfe-4ca8-4536-b023-c0c73a08fc5f.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/2c16d613-f523-419e-9278-795bd5d2e583.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/7678f552-84ee-4843-a392-1cdd4a5f796d.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/ff6762dd-0a41-4064-95fa-fe078bdb03a1.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr bgcolor="#f2a568">
+    <td bgcolor="#f2a568" class="vertdivider"><font color="#ffffff">Sup. Synth AMI,<br/>Unsup. AMI,<br/>YFCC100M<br/>Warm Start</font></td>
+    <td><audio controls style="width: 175px;"> <source src="files/6ba78bb9-814f-4bb6-b6ea-9b32a8e2fb81.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/44870ad2-de56-40e1-b74d-18cf67232421.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/b240e55a-0ef0-4dd6-ac7e-df112bd549cb.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/3e804162-2238-471a-be59-1a0f091fab04.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/30cd21b7-8c0a-48c6-b9a3-45be1235b591.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/310bb3a6-84c4-4ca1-8e79-42c43e68b646.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr>
+    <td colspan="7"><font color="#000000">Reference Audio</font></td>
+  </tr>
+  <tr bgcolor="#fac46e">
+    <td bgcolor="#fac46e" class="vertdivider"><font color="#ffffff">Headset Filtered<br/>to Distant Mic</font></td>
+    <td><audio controls style="width: 175px;"> <source src="files/aae1b97a-a25d-4345-b6db-47eeb327f67f.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/982575d9-a76a-418c-aa98-d5fdb402f630.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/82ec6c47-3758-497a-95b3-e2f0c14e9183.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/de7ad100-c8ef-490a-874d-b54fa4415be7.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/7d8a1c90-2626-4559-ba9c-1bdcb16e7c3e.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/cd807cea-58fa-4374-81ee-11c3780e2c3d.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr bgcolor="#fac46e">
+    <td bgcolor="#fac46e" class="vertdivider"><font color="#ffffff">Headset</font></td>
+    <td><audio controls style="width: 175px;"> <source src="files/8dc38c70-c902-4b40-9a4d-6d327de67148.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/42b3832a-d6eb-4287-802f-e70595e68a3f.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/d354d79f-1042-431a-aa79-68b5311de63c.wav" type="audio/wav"> </audio></td>
+    <td class="vertdivider"><audio controls style="width: 175px;"> <source src="files/3dc67459-ca60-4375-a51c-60cfeb7cc57b.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/f41e9817-75e6-442d-bedf-9bd9e9f404ad.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="files/729606e6-bc44-4f97-ba5f-c7df6cdf28cc.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr>
+    <td class="vertdivider"></td>
+    <td>Source 1</td>
+    <td class="vertdivider">Source 2</td>
+    <td >Source 1</td>
+    <td class="vertdivider">Source 2</td>
+    <td>Source 1</td>
+    <td>Source 2</td>
+  </tr>
+  <tr>
+    <td colspan="1"></td>
+    <td colspan="3"><hr class="solid"></td>
+    <!-- <td colspan="2"></td> -->
+  </tr>
+</table>
+
+</div>
+</div>
+
+
+<script>
+  let players = Array.prototype.slice.call(document.querySelectorAll('audio'));
+  players.forEach(player => {
+      player.addEventListener('play', event => {
+          players.forEach(p => {
+              if (player != p) {p.pause();}
+          });
+      });
+  });
+</script>
+</body>
+</html>
