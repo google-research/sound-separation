@@ -1,0 +1,380 @@
+<html>
+  <head>
+    <title>TokenSplit: Using Discrete Speech Representations for Direct, Refined, and Transcript-Conditioned Speech Separation and Recognition (Online Supplement)</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      audio {
+        /* width: 250px; */
+        width: 20vw;
+        min-width: 100px;
+        max-width: 250px;
+      }
+      img {
+        width: 100%;
+        /* min-height: 300px; */
+        min-width: 300px;
+        max-width: 800px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      td {
+        text-align: center;
+        vertical-align: middle;
+      }
+      .container {
+        overflow-x: auto;
+      }
+      /* td img {
+        width: 100%;
+      }
+      table {
+        max-width: 80%;
+      }
+      h1 {
+        font-size: 35px;
+      }
+      h2 {
+        font-size: 25px;
+        font-weight: normal;
+      }
+      p {
+        font-size: 16px;
+      }
+      hr {
+        text-align: center;
+        width: 80%;
+        margin: 30px;
+      } */
+      /* Solid border */
+      hr.solid {
+        border-top: 2px solid #bbb;
+      }  
+  </style>
+  </head>
+  <body>
+    <div class="container pt-5 mt-5 shadow p-5 mb-5 bg-white rounded">
+      <div class="text-center">
+  <h1 style="text-align:center; font-size: 40px;">TokenSplit: Using Discrete Speech Representations for Direct, Refined, and Transcript-Conditioned Speech Separation and Recognition</h1>
+  <!-- <h2 style="text-align:center; font-size: 30px;">Online Supplement</h2> -->
+        <p class="lead fw-bold">
+          |<a
+            href="https://www.isca-speech.org/archive/pdfs/interspeech_2023/erdogan23_interspeech.pdf"
+            class="btn border-white bg-white fw-bold"
+            >Paper</a
+          >|
+          <br>
+          |<a
+            href="supplementary.pdf"
+            class="btn border-white bg-white fw-bold"
+            >Supplementary material</a
+          >|
+        </p>
+        <p class="fst-italic mb-0">
+          Hakan Erdogan, Scott Wisdom, Xuankai Chang<sup>1*</sup>, Zalán Borsos, Marco Tagliasacchi, Neil Zeghidour, John R. Hershey
+        </p>
+        <br>
+        <p>
+          Google Research, <sup>1</sup>Carnegie Mellon University
+          <br>
+          <sup>*</sup>Work done during an internship at Google.
+        </p>
+
+      </div>
+      <p>
+        <h1>Overview</h1>
+        <p>
+          We present TokenSplit, a speech separation model that acts on discrete token sequences. The model is trained on multiple tasks simultaneously: separate and transcribe each speech source, and generate speech from text. The model operates on transcripts and audio token sequences and achieves multiple tasks through masking of inputs. The model is a sequence-to-sequence encoder-decoder model that uses the Transformer architecture. We also present a "refinement" version of the model that predicts enhanced audio tokens from the audio tokens of speech separated by a conventional separation model. Using both objective metrics and subjective MUSHRA listening tests, we show that our model achieves excellent performance in terms of separation, both with or without transcript conditioning. We also measure the automatic speech recognition (ASR) performance and provide audio samples of speech synthesis to demonstrate the additional utility of our model.
+          <img src="figs/tokensplit_hero.png">
+        </p> 
+    </div>
+
+
+    
+
+<div class="container pt-5 mt-5 shadow p-5 mb-5 bg-white rounded">
+  <div class="container pt-3">
+
+  <a name="listening-study-example"><h1>MUSHRA Listener Study on Libri2Mix</h1></a>
+<p>
+  We evaluated our models using the multiple stimulus hidden reference and anchor (MUSHRA) protocol.
+</p>
+<p>
+  128 examples from the Libri2Mix test set were used, and there are 256 total examples rated since there are two sources per mixture. Each example was evaluated by 5 raters through an online interface and were required to wear headphones. We ran one listening test with variable-length audio (88 raters), and another listening test with the first 3 seconds of the same variable-length clips (97 raters).
+  As MUSHRA anchors, we used the input mixture, the input mixture with a 15 dB boost in SNR for the target source to simulate interference reduction, and mu-law encoding with 52 levels to simulate distortion of the source. We compare the conventional TDCN++ masking-based separation model against TokenSplit and TokenSplitRefine.
+</p>
+
+<h2>Results on Libri2Mix 3s</h2>
+<img src="figs/mushra_3s.png" style="width: 100%;">
+
+<table align="center">
+  <tr>
+    <td></td>
+    <td colspan="2">Example 1</td>
+    <td colspan="2">Example 2</td>
+    <td colspan="2">Example 3</td>
+  </tr>
+  <!-- '#4f2a58', '#733661', '#954466', '#b45668', '#cf6d68', '#e48767', '#f2a568', '#fac46e'-->
+  <tr bgcolor="#0000ff">
+    <td bgcolor="#0000ff"><font color="#ffffff">Noisy Mixture</font></td>
+    <td colspan="2"><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source1_8455-210777-0005_2830-3980-0074/anchor_noisy.wav" type="audio/wav"> </audio></td>
+    <td colspan="2"><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source1_6829-68769-0008_2961-961-0014/anchor_noisy.wav" type="audio/wav"> </audio></td>
+    <td colspan="2"><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source1_7021-85628-0010_5683-32865-0007/anchor_noisy.wav" type="audio/wav"> </audio></td>
+  <tr bgcolor="#4f2a58">
+    <td bgcolor="#4f2a58"><font color="#ffffff">TDCN++</font></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source1_8455-210777-0005_2830-3980-0074/denoised_tdcn_pp.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source2_8455-210777-0005_2830-3980-0074/denoised_tdcn_pp.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source1_6829-68769-0008_2961-961-0014/denoised_tdcn_pp.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source2_6829-68769-0008_2961-961-0014/denoised_tdcn_pp.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source1_7021-85628-0010_5683-32865-0007/denoised_tdcn_pp.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source2_7021-85628-0010_5683-32865-0007/denoised_tdcn_pp.wav" type="audio/wav"> </audio></td>
+    <!-- <td><audio controls style="width: 175px;"> <source src="listener/retrieval/musdb18-train-full_0698_key-match-vox-and-tempo-from-acc.wav" type="audio/wav"> </audio></td> -->
+  </tr>
+  <tr bgcolor="#733661">
+    <td bgcolor="#733661"><font color="#ffffff">TokenSplit</font></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source1_8455-210777-0005_2830-3980-0074/denoised_3s_v3_00_coarse.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source2_8455-210777-0005_2830-3980-0074/denoised_3s_v3_00_coarse.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source1_6829-68769-0008_2961-961-0014/denoised_3s_v3_00_coarse.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source2_6829-68769-0008_2961-961-0014/denoised_3s_v3_00_coarse.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source1_7021-85628-0010_5683-32865-0007/denoised_3s_v3_00_coarse.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source2_7021-85628-0010_5683-32865-0007/denoised_3s_v3_00_coarse.wav" type="audio/wav"> </audio></td>
+    <!-- <td><audio controls style="width: 175px;"> <source src="listener/base/0698.mix.wav" type="audio/wav"> </audio></td> -->
+  </tr>
+  <tr bgcolor="#cf6d68">
+    <td bgcolor="#cf6d68"><font color="#ffffff">TokenSplit<br/> (Target Transcript)</font></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source1_8455-210777-0005_2830-3980-0074/denoised_3s_v3_targettranscript_coarse.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source2_8455-210777-0005_2830-3980-0074/denoised_3s_v3_targettranscript_coarse.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source1_6829-68769-0008_2961-961-0014/denoised_3s_v3_targettranscript_coarse.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source2_6829-68769-0008_2961-961-0014/denoised_3s_v3_targettranscript_coarse.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source1_7021-85628-0010_5683-32865-0007/denoised_3s_v3_targettranscript_coarse.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source2_7021-85628-0010_5683-32865-0007/denoised_3s_v3_targettranscript_coarse.wav" type="audio/wav"> </audio></td>
+    <!-- <td><audio controls style="width: 175px;"> <source src="listener/base/0698.mix.wav" type="audio/wav"> </audio></td> -->
+  </tr>
+  <tr bgcolor="#e48767">
+    <!-- <td bgcolor="#e48767"><font color="#ffffff"><span style="font-weight:bold">TokenSplitRefine</span></font></td> -->
+    <td bgcolor="#e48767"><font color="#ffffff">TokenSplitRefine</span></font></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source1_8455-210777-0005_2830-3980-0074/denoised_3s_refine_00_coarse.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source2_8455-210777-0005_2830-3980-0074/denoised_3s_refine_00_coarse.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source1_6829-68769-0008_2961-961-0014/denoised_3s_refine_00_coarse.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source2_6829-68769-0008_2961-961-0014/denoised_3s_refine_00_coarse.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source1_7021-85628-0010_5683-32865-0007/denoised_3s_refine_00_coarse.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source2_7021-85628-0010_5683-32865-0007/denoised_3s_refine_00_coarse.wav" type="audio/wav"> </audio></td>
+    <!-- <td><audio controls style="width: 175px;"> <source src="listener/xl/0698.mix.wav" type="audio/wav"> </audio></td> -->
+  </tr>
+  <tr bgcolor="#f2a568">
+    <td bgcolor="#f2a568"><font color="#ffffff">TokenSplitRefine<br/>(Target Transcript)</span></font></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source1_8455-210777-0005_2830-3980-0074/denoised_3s_refine_11_coarse.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source2_8455-210777-0005_2830-3980-0074/denoised_3s_refine_11_coarse.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source1_6829-68769-0008_2961-961-0014/denoised_3s_refine_11_coarse.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source2_6829-68769-0008_2961-961-0014/denoised_3s_refine_11_coarse.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source1_7021-85628-0010_5683-32865-0007/denoised_3s_refine_11_coarse.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source2_7021-85628-0010_5683-32865-0007/denoised_3s_refine_11_coarse.wav" type="audio/wav"> </audio></td>
+    <!-- <td><audio controls style="width: 175px;"> <source src="listener/xl/0698.mix.wav" type="audio/wav"> </audio></td> -->
+  </tr>
+  <tr bgcolor="#fac46e">
+    <td bgcolor="#fac46e"><font color="#222222">Ground-Truth Reference</font></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source1_8455-210777-0005_2830-3980-0074/ref.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source2_8455-210777-0005_2830-3980-0074/ref.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source1_6829-68769-0008_2961-961-0014/ref.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source2_6829-68769-0008_2961-961-0014/ref.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source1_7021-85628-0010_5683-32865-0007/ref.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_3s/source2_7021-85628-0010_5683-32865-0007/ref.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>Source 1</td>
+    <td>Source 2</td>
+    <td>Source 1</td>
+    <td>Source 2</td>
+    <td>Source 1</td>
+    <td>Source 2</td>
+  </tr>
+  <tr>
+    <td colspan="1"></td>
+    <td colspan="3"><hr class="solid"></td>
+    <!-- <td colspan="2"></td> -->
+  </tr>
+</table>
+
+<h2>Results on Libri2Mix variable-length</h2>
+<img src="figs/mushra_varlen.png" style="width: 100%;">
+
+<table align="center">
+  <tr>
+    <td></td>
+    <td colspan="2">Example 1</td>
+    <td colspan="2">Example 2</td>
+    <td colspan="2">Example 3</td>
+  </tr>
+  <!-- '#4f2a58', '#733661', '#954466', '#b45668', '#cf6d68', '#e48767', '#f2a568', '#fac46e'-->
+  <tr bgcolor="#0000ff">
+    <td bgcolor="#0000ff"><font color="#ffffff">Noisy Mixture</font></td>
+    <td colspan="2"><audio controls style="width: 175px;"> <source src="audio/libri2mix_varlen/source1_8455-210777-0005_2830-3980-0074/anchor_noisy.wav" type="audio/wav"> </audio></td>
+    <td colspan="2"><audio controls style="width: 175px;"> <source src="audio/libri2mix_varlen/source1_6829-68769-0008_2961-961-0014/anchor_noisy.wav" type="audio/wav"> </audio></td>
+    <td colspan="2"><audio controls style="width: 175px;"> <source src="audio/libri2mix_varlen/source1_7021-85628-0010_5683-32865-0007/anchor_noisy.wav" type="audio/wav"> </audio></td>
+  <tr bgcolor="#4f2a58">
+    <td bgcolor="#4f2a58"><font color="#ffffff">TDCN++</font></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_varlen/source1_8455-210777-0005_2830-3980-0074/denoised_tdcn_pp.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_varlen/source2_8455-210777-0005_2830-3980-0074/denoised_tdcn_pp.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_varlen/source1_6829-68769-0008_2961-961-0014/denoised_tdcn_pp.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_varlen/source2_6829-68769-0008_2961-961-0014/denoised_tdcn_pp.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_varlen/source1_7021-85628-0010_5683-32865-0007/denoised_tdcn_pp.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_varlen/source2_7021-85628-0010_5683-32865-0007/denoised_tdcn_pp.wav" type="audio/wav"> </audio></td>
+    <!-- <td><audio controls style="width: 175px;"> <source src="listener/retrieval/musdb18-train-full_0698_key-match-vox-and-tempo-from-acc.wav" type="audio/wav"> </audio></td> -->
+  </tr>
+  <tr bgcolor="#733661">
+    <td bgcolor="#733661"><font color="#ffffff">TokenSplit</font></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_varlen/source1_8455-210777-0005_2830-3980-0074/denoised_audiolm_v3_coarse.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_varlen/source2_8455-210777-0005_2830-3980-0074/denoised_audiolm_v3_coarse.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_varlen/source1_6829-68769-0008_2961-961-0014/denoised_audiolm_v3_coarse.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_varlen/source2_6829-68769-0008_2961-961-0014/denoised_audiolm_v3_coarse.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_varlen/source1_7021-85628-0010_5683-32865-0007/denoised_audiolm_v3_coarse.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_varlen/source2_7021-85628-0010_5683-32865-0007/denoised_audiolm_v3_coarse.wav" type="audio/wav"> </audio></td>
+    <!-- <td><audio controls style="width: 175px;"> <source src="listener/base/0698.mix.wav" type="audio/wav"> </audio></td> -->
+  </tr>
+  <tr bgcolor="#e48767">
+    <!-- <td bgcolor="#e48767"><font color="#ffffff"><span style="font-weight:bold">TokenSplitRefine</span></font></td> -->
+    <td bgcolor="#e48767"><font color="#ffffff">TokenSplitRefine</span></font></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_varlen/source1_8455-210777-0005_2830-3980-0074/denoised_audiolm_refine_coarse.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_varlen/source2_8455-210777-0005_2830-3980-0074/denoised_audiolm_refine_coarse.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_varlen/source1_6829-68769-0008_2961-961-0014/denoised_audiolm_refine_coarse.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_varlen/source2_6829-68769-0008_2961-961-0014/denoised_audiolm_refine_coarse.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_varlen/source1_7021-85628-0010_5683-32865-0007/denoised_audiolm_refine_coarse.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_varlen/source2_7021-85628-0010_5683-32865-0007/denoised_audiolm_refine_coarse.wav" type="audio/wav"> </audio></td>
+    <!-- <td><audio controls style="width: 175px;"> <source src="listener/xl/0698.mix.wav" type="audio/wav"> </audio></td> -->
+  </tr>
+  <tr bgcolor="#fac46e">
+    <td bgcolor="#fac46e"><font color="#222222">Ground-Truth Reference</font></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_varlen/source1_8455-210777-0005_2830-3980-0074/ref.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_varlen/source2_8455-210777-0005_2830-3980-0074/ref.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_varlen/source1_6829-68769-0008_2961-961-0014/ref.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_varlen/source2_6829-68769-0008_2961-961-0014/ref.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_varlen/source1_7021-85628-0010_5683-32865-0007/ref.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/libri2mix_varlen/source2_7021-85628-0010_5683-32865-0007/ref.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>Source 1</td>
+    <td>Source 2</td>
+    <td>Source 1</td>
+    <td>Source 2</td>
+    <td>Source 1</td>
+    <td>Source 2</td>
+  </tr>
+  <tr>
+    <td colspan="1"></td>
+    <td colspan="3"><hr class="solid"></td>
+    <!-- <td colspan="2"></td> -->
+  </tr>
+</table>
+
+</div>
+</div>
+
+<div class="container pt-5 mt-5 shadow p-5 mb-5 bg-white rounded">
+  <div class="container pt-3">
+
+  <a name="listening-study-example"><h1>Text-to-Speech Demos</h1></a>
+<p>
+  TokenSplit can be used as a text-to-speech model if all inputs except a source transcript are masked out. Note that this is a different order than the two-stage <a href="https://arxiv.org/abs/2302.03540">SPEAR-TTS model</a>, which predicts semantic tokens from text, then acoustic tokens from these semantic tokens. Like SPEAR-TTS, since only the transcript is provided, TokenSplit chooses a random speaker identity. Note that the transcripts are predicted by an ASR model from the original speech, and thus have some minor errors.
+</p>
+
+<table align="center">
+  <tr>
+    <td></td>
+    <td><b>Transcript</b></td>
+    <td><b>Original speech</b></td>
+    <td><b>Generated speech</b></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>"There's a ring for shift a friendly and here is a bracelet in this"</td>
+    <td><audio controls style="width: 175px;"> <source src="audio/tts/example1_orig.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/tts/example1_gen.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>"The atmosphere is evidently charged and serves"</td>
+    <td><audio controls style="width: 175px;"> <source src="audio/tts/example2_orig.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/tts/example2_gen.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>"Alexander pased up and down the hallway, but named them"</td>
+    <td><audio controls style="width: 175px;"> <source src="audio/tts/example3_orig.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 175px;"> <source src="audio/tts/example3_gen.wav" type="audio/wav"> </audio></td>
+  </tr>
+</table>
+
+<p>
+  Through informal listening, we found that another variant of TokenSplit performs better than the version described in our paper for TTS. This variant changes the output order of TokenSplit. Instead of predicting acoustic tokens + semantic tokens + transcripts, the model predicts transcripts + semantic tokens + acoustic tokens. This means the model first samples transcripts, then acoustic tokens conditioned on the transcripts, which encourages the acoustic tokens to better match the transcript. Here are some examples of this variant of the model, where we feed two transcripts at the input, and decode both sources' acoustic tokens. "Gen. speech" refers to speech generated by the original order of output tokens of TokenSplit, and "Variant gen. speech" refers to speech generated by the variant's order of output tokens.
+</p>
+
+<table align="center">
+  <tr>
+    <td></td>
+    <td><b>Transcript 1</b></td>
+    <td><b>Transcript 2</b></td>
+    <td><b>Orig. speech 1</b></td>
+    <td><b>Orig. speech 2</b></td>
+    <td><b>Gen. speech 1</b></td>
+    <td><b>Gen. speech 2</b></td>
+    <td><b>Variant gen. speech 1</b></td>
+    <td><b>Variant gen. speech 2</b></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>"This transit spring and lighting up are beauty."</td>
+    <td>"The weather if we may use the term."</td>
+    <td><audio controls style="width: 150px;"> <source src="audio/tts_variant1/example1_orig1.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 150px;"> <source src="audio/tts_variant1/example1_orig2.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 150px;"> <source src="audio/tts_variant3/example1_gen1.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 150px;"> <source src="audio/tts_variant3/example1_gen2.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 150px;"> <source src="audio/tts_variant1/example1_gen1.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 150px;"> <source src="audio/tts_variant1/example1_gen2.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>"We look for that reward, which I have not seen."</td>
+    <td>"It's exciting to see everything growing so fast and to get there."</td>
+    <td><audio controls style="width: 150px;"> <source src="audio/tts_variant1/example2_orig1.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 150px;"> <source src="audio/tts_variant1/example2_orig2.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 150px;"> <source src="audio/tts_variant3/example2_gen1.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 150px;"> <source src="audio/tts_variant3/example2_gen2.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 150px;"> <source src="audio/tts_variant1/example2_gen1.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 150px;"> <source src="audio/tts_variant1/example2_gen2.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>"Familiarity is a filling capable of degree."</td>
+    <td>"I am not complaining that the rate is slow but that the sea."</td>
+    <td><audio controls style="width: 150px;"> <source src="audio/tts_variant1/example3_orig1.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 150px;"> <source src="audio/tts_variant1/example3_orig2.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 150px;"> <source src="audio/tts_variant3/example3_gen1.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 150px;"> <source src="audio/tts_variant3/example3_gen2.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 150px;"> <source src="audio/tts_variant1/example3_gen1.wav" type="audio/wav"> </audio></td>
+    <td><audio controls style="width: 150px;"> <source src="audio/tts_variant1/example3_gen2.wav" type="audio/wav"> </audio></td>
+  </tr>
+</table>
+
+</div>
+</div>
+
+
+<script>
+  let players = Array.prototype.slice.call(document.querySelectorAll('audio'));
+  players.forEach(player => {
+      player.addEventListener('play', event => {
+          players.forEach(p => {
+              if (player != p) {p.pause();}
+          });
+      });
+  });
+</script>
+</body>
+</html>

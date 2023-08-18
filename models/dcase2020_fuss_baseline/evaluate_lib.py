@@ -177,7 +177,7 @@ def evaluate(checkpoint_path, metagraph_path, data_list_path, output_path):
         # Scalar metric.
         row_dict[metric_name] = metric_value
     new_row = pd.Series(row_dict)
-    df = df.append(new_row, ignore_index=True)
+    df = pd.concat([df, new_row], ignore_index=True)
 
     # Store metrics per source count and report results so far.
     under_seps.append(metrics_dict['under_separation'])
