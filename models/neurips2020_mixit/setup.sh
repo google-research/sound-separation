@@ -15,8 +15,8 @@
 
 # Define ROOT_DIR variable which will hold all downloaded/generated model data.
 # Uncomment next line and change to the directory for storing model data.
-# ROOT_DIR=/model_data
-# FUSS_ROOT_DIR=
+SCRIPT_PATH=$(dirname $(realpath -s $0))
+ROOT_DIR="$SCRIPT_PATH/data"
 
 if [ x"${ROOT_DIR}" == x ]; then
   echo "Please define ROOT_DIR variable inside `dirname $0`/setup.sh."
