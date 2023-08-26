@@ -20,7 +20,7 @@ import sys
 
 import tensorflow.compat.v1 as tf
 
-import model
+from models.neurips2020_mixit import model
 cur_path = os.path.dirname(os.path.realpath(__file__))
 parent_path = os.path.dirname(os.path.dirname(os.path.dirname(cur_path)))
 sys.path.append(os.path.join(parent_path))
