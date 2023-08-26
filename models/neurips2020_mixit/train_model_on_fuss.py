@@ -40,22 +40,29 @@ def main():
       required=True)
   args = parser.parse_args()
 
+  train_list = os.path.join(args.data_dir, 'train_example_list.txt')
+  validation_list = os.path.join(args.data_dir, 'validation_example_list.txt')
+  model_dir = args.model_dir
+
+  train_model_on_fuss(train_list, validation_list, model_dir)
+
+
+def train_model_on_fuss(
+  train_list,
+  validation_list,
+  model_dir,
+  train_steps=20000000,
+):
   hparams = model.get_model_hparams()
   hparams.sr = 16000.0
-
   roomsim_params = {
       'num_sources': len(hparams.signal_names),
       'num_receivers': 1,
       'num_samples': int(hparams.sr * 10.0),
   }
   tf.logging.info('Params: %s', roomsim_params.values())
-
   feature_spec = data_io.get_roomsim_spec(**roomsim_params)
   inference_spec = data_io.get_inference_spec()
-
-  train_list = os.path.join(args.data_dir, 'train_example_list.txt')
-  validation_list = os.path.join(args.data_dir, 'validation_example_list.txt')
-
   params = {
       'feature_spec': feature_spec,
       'inference_spec': inference_spec,
@@ -64,11 +71,11 @@ def main():
                     'num_samples': int(hparams.sr * 10.0)},
       'input_data_train': train_list,
       'input_data_eval': validation_list,
-      'model_dir': args.model_dir,
+      'model_dir': model_dir,
       # Effective batch size of 3, since batches split in half to create MoMs.
       'train_batch_size': 2 * 3,
       'eval_batch_size': 2 * 3,
-      'train_steps': 20000000,
+      'train_steps': train_steps,
       'eval_suffix': 'validation',
       'eval_examples': 800,
       'save_checkpoints_secs': 600,
