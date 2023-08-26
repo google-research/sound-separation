@@ -17,6 +17,7 @@
 # Uncomment next line and change to the directory for storing model data.
 SCRIPT_PATH=$(dirname $(realpath -s $0))
 ROOT_DIR="$SCRIPT_PATH/data"
+FUSS_ROOT_DIR="$SCRIPT_PATH/../../datasets/fuss"
 
 if [ x"${ROOT_DIR}" == x ]; then
   echo "Please define ROOT_DIR variable inside `dirname $0`/setup.sh."
