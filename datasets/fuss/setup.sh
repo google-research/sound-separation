@@ -14,8 +14,8 @@
 # limitations under the License.
 
 # Define the ROOT_DIR variable which will hold all downloaded/generated data.
-# Uncomment next line.
-# ROOT_DIR=/data
+SCRIPT_PATH=$(dirname $(realpath -s $0))
+ROOT_DIR="$SCRIPT_PATH/data"
 
 if [ x${ROOT_DIR} == x ]; then
   echo "Please define ROOT_DIR variable inside `dirname $0`/setup.sh."
