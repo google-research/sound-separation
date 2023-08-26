@@ -18,12 +18,12 @@
 # ROOT_DIR=/model_data
 # FUSS_ROOT_DIR=
 
-if [ x${ROOT_DIR} == x ]; then
+if [ x"${ROOT_DIR}" == x ]; then
   echo "Please define ROOT_DIR variable inside `dirname $0`/setup.sh."
   exit 1
 fi
 
-if [ x${FUSS_ROOT_DIR} == x ]; then
+if [ x"${FUSS_ROOT_DIR}" == x ]; then
   echo "Please define FUSS_ROOT_DIR variable inside `dirname $0`/setup.sh."
   exit 1
 fi

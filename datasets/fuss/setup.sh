@@ -17,7 +17,7 @@
 SCRIPT_PATH=$(dirname $(realpath -s $0))
 ROOT_DIR="$SCRIPT_PATH/data"
 
-if [ x${ROOT_DIR} == x ]; then
+if [ x"${ROOT_DIR}" == x ]; then
   echo "Please define ROOT_DIR variable inside `dirname $0`/setup.sh."
   exit 1
 fi
