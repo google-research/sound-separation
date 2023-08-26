@@ -1,0 +1,5 @@
+attrs
+tensorflow<2.9
+immutabledict
+pytest
+pytest-cov
