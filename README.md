@@ -27,7 +27,7 @@ Open-source datasets and deep learning models for separating sounds.
 ### Install Requirements
 
 ```bash
-python3.10 -m venv venv
+python3.8 -m venv venv
 ```
 
 ```bash
