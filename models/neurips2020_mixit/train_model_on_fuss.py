@@ -33,10 +33,12 @@ def main():
   parser = argparse.ArgumentParser(
       description='Train the MixIT separation model on FUSS.')
   parser.add_argument(
-      '-dd', '--data_dir', help='Data directory.',
+      '-dd', '--data_dir',
+      help='Data directory.',
       required=True)
   parser.add_argument(
-      '-md', '--model_dir', help='Directory for checkpoints and summaries.',
+      '-md', '--model_dir',
+      help='Directory for checkpoints and summaries.',
       required=True)
   args = parser.parse_args()
 
