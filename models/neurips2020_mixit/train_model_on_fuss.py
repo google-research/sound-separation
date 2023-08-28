@@ -40,13 +40,23 @@ def main():
       '-md', '--model_dir',
       help='Directory for checkpoints and summaries.',
       required=True)
+  parser.add_argument(
+      '-ts', '--train_steps',
+      help='Steps to train the model for.',
+      required=True)
   args = parser.parse_args()
 
   train_list = os.path.join(args.data_dir, 'train_example_list.txt')
   validation_list = os.path.join(args.data_dir, 'validation_example_list.txt')
   model_dir = args.model_dir
+  train_steps = int(args.train_steps)
 
-  train_model_on_fuss(train_list, validation_list, model_dir)
+  train_model_on_fuss(
+      train_list=train_list,
+      validation_list=validation_list,
+      model_dir=model_dir,
+      train_steps=train_steps,
+  )
 
 
 def train_model_on_fuss(
