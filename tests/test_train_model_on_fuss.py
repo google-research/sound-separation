@@ -6,15 +6,18 @@ def test_train_model_on_fuss():
     # Configuration
     line_limit = 4
     train_steps = 4
+    # dataset = 'fuss/fuss_dev/ssdata'
+    # dataset = 'AnuraSet_Dev/anuraset_dev/ssdata'
+    dataset = 'congo_soundscapes_dev/10_random_examples'
 
     # Arrange
     train_example_file_path = (
         ROOT_PATH /
-        'datasets/fuss/data/fuss_dev/ssdata/train_example_list.txt'
+        ('audio/%s/train_example_list.txt' % dataset)
     )
     test_train_example_file_path = (
         ROOT_PATH /
-        'datasets/fuss/data/fuss_dev/ssdata/test_train_example_list.txt'
+        ('audio/%s/test_train_example_list.txt' % dataset)
     )
     _copy_first_lines(
         input_file_path=train_example_file_path,
@@ -24,11 +27,11 @@ def test_train_model_on_fuss():
 
     validation_example_file_path = (
         ROOT_PATH /
-        'datasets/fuss/data/fuss_dev/ssdata/validation_example_list.txt'
+        ('audio/%s/validation_example_list.txt' % dataset)
     )
     test_evaluation_example_file_path = (
         ROOT_PATH /
-        'datasets/fuss/data/fuss_dev/ssdata/test_validation_example_list.txt'
+        ('audio/%s/test_validation_example_list.txt' % dataset)
     )
     _copy_first_lines(
         input_file_path=validation_example_file_path,
@@ -38,11 +41,11 @@ def test_train_model_on_fuss():
 
     test_validation_list_file_path_string = str(
         ROOT_PATH /
-        'datasets/fuss/data/fuss_dev/ssdata/test_validation_example_list.txt'
+        ('audio/%s/test_validation_example_list.txt' % dataset)
     )
     test_train_list_file_path_string = str(
         ROOT_PATH /
-        'datasets/fuss/data/fuss_dev/ssdata/test_train_example_list.txt'
+        ('audio/%s/test_train_example_list.txt' % dataset)
     )
     model_dir = str(
         ROOT_PATH / 'models/neurips2020_mixit/model_dir'
@@ -58,9 +61,9 @@ def test_train_model_on_fuss():
 
 
 def _copy_first_lines(
-        input_file_path,
-        output_file_path,
-        line_limit,
+    input_file_path,
+    output_file_path,
+    line_limit,
 ):
     with open(input_file_path, 'r') as input_file:
         with open(output_file_path, 'w') as output_file:
