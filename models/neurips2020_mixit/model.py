@@ -386,7 +386,15 @@ def model_fn(features, labels, mode, params):
                                   tf.zeros_like(source_waveforms)], axis=1)
 
   # MixIT loss.
-  loss, _ = mixit.apply(log_mse_loss, mixture_waveforms, separated_waveforms)
+  print(f'mixture_waveforms.shape: {mixture_waveforms.shape}')
+  print(f'mixture_waveforms: {mixture_waveforms}')
+  print(f'separated_waveforms.shape: {separated_waveforms.shape}')
+  print(f'separated_waveforms: {separated_waveforms}')
+  loss, _ = mixit.apply(
+      loss_fn=log_mse_loss,
+      reference=mixture_waveforms,
+      estimate=separated_waveforms,
+  )
   loss = tf.identity(tf.reduce_mean(loss), name='loss_mixit')
   tf.losses.add_loss(loss)
 
