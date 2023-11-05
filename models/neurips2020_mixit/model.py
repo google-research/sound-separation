@@ -410,8 +410,12 @@ def model_fn(features, labels, mode, params):
   unique_signal_types = list(set(hparams.signal_types))
   loss_fns = {signal_type: log_mse_loss for signal_type in unique_signal_types}
   _, separated_waveforms = groupwise.apply(
-      loss_fns, hparams.signal_types, source_waveforms, separated_waveforms,
-      unique_signal_types)
+      loss_fns,
+      hparams.signal_types,
+      source_waveforms,
+      separated_waveforms,
+      unique_signal_types,
+  )
   if mode == tf_estimator.ModeKeys.EVAL:
     # Also align sources separated from single mixtures.
     _, separated_waveforms_1mix = groupwise.apply(
