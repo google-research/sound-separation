@@ -70,7 +70,8 @@ def train_model_on_fuss(
     train_steps=20000000,
 ):
     hparams = model.get_model_hparams()
-    hparams.sr = 16000.0
+    hparams.sr = 16_000.0
+    # hparams.sr = 11_025.0
     roomsim_params = {
         'num_sources': len(hparams.signal_names),
         'num_receivers': 1,

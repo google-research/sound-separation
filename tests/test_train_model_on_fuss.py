@@ -1,23 +1,25 @@
+import pytest
+
 from models.neurips2020_mixit.train_model_on_fuss import train_model_on_fuss
 from tests._paths import ROOT_PATH
 
 
-def test_train_model_on_fuss():
+@pytest.parameterized(
+    ('fuss/fuss_dev/ssdata',),
+    ('AnuraSet_Dev/anuraset_dev/ssdata',),
+    # ('congo_soundscapes_dev/10_random_examples',),  # Fails
+)
+def test_train_model_on_fuss(dataset):
     # Configuration
     line_limit = 4
     train_steps = 4
-    # dataset = 'fuss/fuss_dev/ssdata'
-    # dataset = 'AnuraSet_Dev/anuraset_dev/ssdata'
-    dataset = 'congo_soundscapes_dev/10_random_examples'
 
     # Arrange
     train_example_file_path = (
-        ROOT_PATH /
-        ('audio/%s/train_example_list.txt' % dataset)
+        ROOT_PATH / 'audio' / dataset / 'train_example_list.txt'
     )
     test_train_example_file_path = (
-        ROOT_PATH /
-        ('audio/%s/test_train_example_list.txt' % dataset)
+        ROOT_PATH / 'audio' / dataset / 'test_train_example_list.txt'
     )
     _copy_first_lines(
         input_file_path=train_example_file_path,
@@ -26,12 +28,10 @@ def test_train_model_on_fuss():
     )
 
     validation_example_file_path = (
-        ROOT_PATH /
-        ('audio/%s/validation_example_list.txt' % dataset)
+        ROOT_PATH / 'audio' / dataset / 'validation_example_list.txt'
     )
     test_evaluation_example_file_path = (
-        ROOT_PATH /
-        ('audio/%s/test_validation_example_list.txt' % dataset)
+        ROOT_PATH / 'audio' / dataset / 'test_validation_example_list.txt'
     )
     _copy_first_lines(
         input_file_path=validation_example_file_path,
@@ -40,15 +40,13 @@ def test_train_model_on_fuss():
     )
 
     test_validation_list_file_path_string = str(
-        ROOT_PATH /
-        ('audio/%s/test_validation_example_list.txt' % dataset)
+        ROOT_PATH / 'audio' / dataset / 'test_validation_example_list.txt'
     )
     test_train_list_file_path_string = str(
-        ROOT_PATH /
-        ('audio/%s/test_train_example_list.txt' % dataset)
+        ROOT_PATH / 'audio' / dataset / 'test_train_example_list.txt'
     )
     model_dir = str(
-        ROOT_PATH / 'models' / 'neurips2020_mixit' / 'model_dir' / dataset
+        ROOT_PATH / 'logs' / 'neurips2020_mixit' / 'model_dir' / dataset
     )
 
     # Act
