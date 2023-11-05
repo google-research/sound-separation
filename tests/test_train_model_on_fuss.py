@@ -48,7 +48,7 @@ def test_train_model_on_fuss():
         ('audio/%s/test_train_example_list.txt' % dataset)
     )
     model_dir = str(
-        ROOT_PATH / 'models/neurips2020_mixit/model_dir'
+        ROOT_PATH / 'models' / 'neurips2020_mixit' / 'model_dir' / dataset
     )
 
     # Act
