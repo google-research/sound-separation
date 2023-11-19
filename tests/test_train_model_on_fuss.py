@@ -23,7 +23,7 @@ def test_train_model_on_fuss(dataset_name, dataset_path):
     train_steps = 4
 
     # Arrange
-    root_data_audio_path: Path = ROOT_PATH / '3-datasets' / 'audio'
+    root_data_audio_path: Path = ROOT_PATH / '02-datasets' / 'audio'
     train_example_file_path = (
             root_data_audio_path / dataset_path / 'train_example_list.txt'
     )
