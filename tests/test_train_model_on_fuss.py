@@ -56,7 +56,7 @@ def test_train_model_on_fuss(dataset_name, dataset_path):
     )
     datetime_slug = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     datetime_slug += '-test'
-    root_models_path: Path = ROOT_PATH / '5-models' / 'models'
+    root_models_path: Path = ROOT_PATH / '06-models' / 'models'
     model_dir = str(
         root_models_path / 'neurips2020_mixit' / dataset_name / datetime_slug
     )
