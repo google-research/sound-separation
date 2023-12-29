@@ -31,13 +31,13 @@ python3.8 -m venv venv
 ```
 
 ```bash
-venv/bin/pip install --upgrade pip setuptools wheel
+venv/bin/python -m pip install --upgrade pip setuptools wheel
 ```
 
 ```bash
-venv/bin/pip install -r requirements.in
+venv/bin/python -m pip install -r requirements.in
 ```
 
 ```bash
-venv/bin/pip freeze > requirements.txt
+venv/bin/python -m pip freeze > requirements.txt
 ```
