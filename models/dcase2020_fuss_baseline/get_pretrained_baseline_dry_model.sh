@@ -29,7 +29,7 @@ source ${SCRIPT_PATH}/setup.sh
 mkdir -p ${DOWNLOAD_DIR}
 mkdir -p ${MODEL_DIR}
 if [ ! -s ${DOWNLOAD_DIR}/FUSS_baseline_dry_model.tar.gz ]; then
-  curl --output ${DOWNLOAD_DIR}/FUSS_baseline_dry_model.tar.gz ${BASELINE_DRY_MODEL_URL}
+  curl -A "Mozilla/5.0 (Linux; Android 10; SM-G996U Build/QP1A.190711.020; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Mobile Safari/537.36" --output ${DOWNLOAD_DIR}/FUSS_baseline_dry_model.tar.gz ${BASELINE_DRY_MODEL_URL}
 else
   echo "${DOWNLOAD_DIR}/FUSS_baseline_dry_model.tar.gz exists, skipping download."
 fi

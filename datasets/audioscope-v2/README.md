@@ -20,7 +20,7 @@ The same train/validation/test splits are used as in <a href="https://github.com
 |Test       | On-screen only  |      43     | unfiltered_test_onscreen_unanimous_clips.csv     |
 |Test       | Off-screen only |     762     | unfiltered_test_offscreen_unanimous_clips.csv     |
 
-Addionally, we provide lists of the pairs of clips used to create MoMs for validation and test, where the MoM video uses video frames from the first clip, and a soundtrack that is the sum of the audio from both clips.
+Additionally, we provide lists of the pairs of clips used to create MoMs for validation and test, where the MoM video uses video frames from the first clip, and a soundtrack that is the sum of the audio from both clips.
 
 | Split     | Label                   | Count       | CSV name                                                                    |
 |-----------|-------------------------|------------:|-----------------------------------------------------------------------------|
