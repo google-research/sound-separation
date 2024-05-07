@@ -39,7 +39,7 @@ def main():
   args = parser.parse_args()
 
   hparams = model.get_model_hparams()
-  hparams.sr = 16000.0
+  hparams.sr = 48000.0
   hparams.signal_names = ['DESED_background', 'DESED_foreground',
                           'FUSS_mixture']
   hparams.signal_types = hparams.signal_names
@@ -47,7 +47,7 @@ def main():
   roomsim_params = {
       'num_sources': len(hparams.signal_names),
       'num_receivers': 1,
-      'num_samples': int(hparams.sr * 10.0),
+      'num_samples': int(hparams.sr * 3.0),
   }
   tf.logging.info('Params: %s', roomsim_params.values())
 
@@ -64,7 +64,7 @@ def main():
       'inference_spec': inference_spec,
       'hparams': hparams,
       'io_params': {'parallel_readers': 512,
-                    'num_samples': int(hparams.sr * 10.0),
+                    'num_samples': int(hparams.sr * 3.0),
                     'combine_by_class': True,
                     'fixed_classes': ['BG_DSD', 'FG_DSD', 'FUSS_mixture']},
       'input_data_train': train_list,

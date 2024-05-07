@@ -155,7 +155,7 @@ class HParams(object):
   ref_zero_signal_types = attr.attrib(
       type=typing.Optional[typing.List[typing.Text]], default=None)
   # Sample rate of the input audio in hertz.
-  sr = attr.attrib(type=float, default=16000.0)
+  sr = attr.attrib(type=float, default=48000.0)
   # Initial learning rate used by the optimizer.
   lr = attr.attrib(type=float, default=1e-4)
   # Decay lr by lr_decay_rate every lr_step_steps.

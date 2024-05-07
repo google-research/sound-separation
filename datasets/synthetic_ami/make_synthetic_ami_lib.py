@@ -20,7 +20,7 @@ import numpy as np
 from scipy.io import wavfile
 import tensorflow as tf
 
-SAMPLE_RATE = 16000
+SAMPLE_RATE = 48000
 MAX_ABS_INT16 = 32768
 MAX_INT16 = 32767
 MIN_INT16 = -32768
@@ -106,7 +106,7 @@ def _pad_to_length(a: tf.Tensor, length: Union[int, tf.Tensor]) -> tf.Tensor:
 
 
 def calculate_multitap_filter(input_signal: tf.Tensor, target_signal: tf.Tensor,
-                              filter_len: int = 10,
+                              filter_len: int = 3,
                               diagload: float = 0.1) -> tf.Tensor:
   """Calculates the multitap filter that takes input_signal closest to target.
 

@@ -26,8 +26,8 @@ from utils import make_example_list_from_folder
 
 def check_folder(root_dir, ss_regex=re.compile(r'example.*_sources'),
                  check_length=True, fix_length=True,
-                 check_mix=True, fix_mix=True, sample_rate=16000,
-                 duration=10.0):
+                 check_mix=True, fix_mix=True, sample_rate=48000,
+                 duration=3.0):
   """Check consistency of mixtures in folder.
 
   Args:
@@ -49,7 +49,7 @@ def check_folder(root_dir, ss_regex=re.compile(r'example.*_sources'),
 
 
 def check_list(example_list, root_dir, check_length=True, fix_length=True,
-               check_mix=True, fix_mix=True, sample_rate=16000, duration=10.0):
+               check_mix=True, fix_mix=True, sample_rate=48000, duration=3.0):
   num_examples = len(example_list)
   print('Starting to check {} examples.'.format(num_examples))
   length_problem = 0

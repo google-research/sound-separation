@@ -25,7 +25,7 @@ python3 process_wav_stitching \
 --model_dir /tmp/mixable_sss_8mic_model/ \
 --input /tmp/libricss_ov40.wav \
 --output /tmp/libricss_ov40_sss_8mic_bf2_10s_processed.wav \
---block_size_in_seconds 10 --permutation_invariant True --window_type vorbis \
+--block_size_in_seconds 3 --permutation_invariant True --window_type vorbis \
 --input_channels 8 \
 --output_tensor "model_iter_1/beamformed_waveforms:0" \
 --write_outputs_separately True
@@ -236,10 +236,10 @@ def main():
       '-wt', '--window_type', default='rectangular', type=str,
       help='Window type: rectangular, vorbis or kaiser-bessel-derived.')
   parser.add_argument(
-      '-bs', '--block_size_in_seconds', default=10.0, type=float,
+      '-bs', '--block_size_in_seconds', default=3.0, type=float,
       help='Block size used for stitching processing.')
   parser.add_argument(
-      '-sr', '--sample_rate', default=16000, help='Sample rate.', type=int)
+      '-sr', '--sample_rate', default=48000, help='Sample rate.', type=int)
   parser.add_argument(
       '-pi', '--permutation_invariant', default=False, type=strtobool,
       help='If True, perform permutation invariant stitching.')

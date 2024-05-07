@@ -46,7 +46,7 @@ import tensorflow.compat.v1 as tf
 def create_summaries(scalars=None,
                      audio=None,
                      images=None,
-                     sample_rate=16000,
+                     sample_rate=48000,
                      max_audio_outputs=3,
                      max_image_outputs=3):
   """Create training summaries for the given dictionaries of values.

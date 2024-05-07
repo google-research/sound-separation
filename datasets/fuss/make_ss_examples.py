@@ -50,13 +50,13 @@ class Mixer(object):
     np.random.seed(random_seed)
 
     # global settings
-    self.sample_rate = 16000
+    self.sample_rate = 48000
 
     self.num_examples = {'train': num_train, 'eval': num_eval,
                          'validation': num_validation}
 
     self.ref_db = -55
-    self.duration = 10.0
+    self.duration = 3.0
     self.snr_spec = ('uniform', -5, 25)
 
     self.min_fg_events = 0

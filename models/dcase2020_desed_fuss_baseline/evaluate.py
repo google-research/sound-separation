@@ -75,7 +75,7 @@ def main():
                                            base_path=None)
   with model.graph.as_default():
     dataset = data_io.wavs_to_dataset(file_list, batch_size=1,
-                                      num_samples=16_000 * 10,
+                                      num_samples=48_000 * 3,
                                       repeat=False,
                                       combine_by_class=True,
                                       fixed_classes=['BG_DSD', 'FG_DSD',

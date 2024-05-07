@@ -75,7 +75,7 @@ def train_model_on_fuss(
     roomsim_params = {
         'num_sources': len(hparams.signal_names),
         'num_receivers': 1,
-        'num_samples': int(hparams.sr * 10.0),
+        'num_samples': int(hparams.sr * 3.0),
     }
     tf.logging.info(
         'Params: %s', roomsim_params.values(),
@@ -88,7 +88,7 @@ def train_model_on_fuss(
         'hparams': hparams,
         'io_params': {
             'parallel_readers': 512,
-            'num_samples': int(hparams.sr * 10.0),
+            'num_samples': int(hparams.sr * 3.0),
         },
         'input_data_train': train_list,
         'input_data_eval': validation_list,
