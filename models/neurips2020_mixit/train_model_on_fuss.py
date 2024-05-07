@@ -34,6 +34,11 @@ def main():
         description='Train the MixIT separation model on FUSS.',
     )
     parser.add_argument(
+        '-bsh', '--batch_size_half',
+        help='Half the effective batch size. Will be doubled internally.',
+        required=True,
+    )
+    parser.add_argument(
         '-dd', '--data_dir',
         help='Data directory.',
         required=True,
@@ -50,12 +55,14 @@ def main():
     )
     args = parser.parse_args()
 
+    batch_size_half = int(args.batch_size_half)
     train_list = os.path.join(args.data_dir, 'train_example_list.txt')
     validation_list = os.path.join(args.data_dir, 'validation_example_list.txt')
     model_dir = args.model_dir
     train_steps = int(args.train_steps)
 
     train_model_on_fuss(
+      batch_size_half=batch_size_half,
       train_list=train_list,
       validation_list=validation_list,
       model_dir=model_dir,
@@ -64,14 +71,19 @@ def main():
 
 
 def train_model_on_fuss(
+    batch_size_half,
     train_list,
     validation_list,
     model_dir,
     train_steps=20000000,
 ):
     hparams = model.get_model_hparams()
-    hparams.sr = 16_000.0
-    # hparams.sr = 11_025.0
+    if not hparams.sr == 48000.0:
+        tf.logging.error(
+            'Sampling rate is not 48kHz.',
+        )
+        exit(1)
+
     roomsim_params = {
         'num_sources': len(hparams.signal_names),
         'num_receivers': 1,
@@ -93,9 +105,9 @@ def train_model_on_fuss(
         'input_data_train': train_list,
         'input_data_eval': validation_list,
         'model_dir': model_dir,
-        # Effective batch size of 3, since batches split in half to create MoMs.
-        'train_batch_size': 2 * 3,
-        'eval_batch_size': 2 * 3,
+        # Effective batch size of 1, since batches split in half to create MoMs.
+        'train_batch_size': 2 * batch_size_half,
+        'eval_batch_size': 2 * batch_size_half,
         'train_steps': train_steps,
         'eval_suffix': 'validation',
         'eval_examples': 800,
