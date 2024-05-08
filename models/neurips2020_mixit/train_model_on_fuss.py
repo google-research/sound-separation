@@ -55,6 +55,9 @@ def main():
     )
     args = parser.parse_args()
 
+    args.data_dir = os.path.abspath(args.data_dir)
+    args.model_dir = os.path.abspath(args.model_dir)
+
     batch_size_half = int(args.batch_size_half)
     train_list = os.path.join(args.data_dir, 'train_example_list.txt')
     validation_list = os.path.join(args.data_dir, 'validation_example_list.txt')
