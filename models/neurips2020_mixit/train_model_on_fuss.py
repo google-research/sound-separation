@@ -99,7 +99,7 @@ def train_model_on_fuss(
         'inference_spec': inference_spec,
         'hparams': hparams,
         'io_params': {
-            'parallel_readers': 512,
+            'parallel_readers': tf.data.experimental.AUTOTUNE,
             'num_samples': int(hparams.sr * 3.0),
         },
         'input_data_train': train_list,

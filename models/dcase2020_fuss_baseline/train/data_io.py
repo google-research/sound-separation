@@ -119,7 +119,7 @@ def unique_classes_from_lines(lines):
 def wavs_to_dataset(file_list,
                     batch_size,
                     num_samples,
-                    parallel_readers=1,
+                    parallel_readers=tf.data.experimental.AUTOTUNE,
                     randomize_order=False,
                     combine_by_class=False,
                     fixed_classes=None,

@@ -55,7 +55,7 @@ def main():
       'feature_spec': feature_spec,
       'inference_spec': inference_spec,
       'hparams': hparams,
-      'io_params': {'parallel_readers': 512,
+      'io_params': {'parallel_readers': tf.data.experimental.AUTOTUNE,
                     'num_samples': int(hparams.sr * 3.0)},
       'input_data_train': train_list,
       'input_data_eval': validation_list,

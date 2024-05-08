@@ -63,7 +63,7 @@ def main():
       'feature_spec': feature_spec,
       'inference_spec': inference_spec,
       'hparams': hparams,
-      'io_params': {'parallel_readers': 512,
+      'io_params': {'parallel_readers': tf.data.experimental.AUTOTUNE,
                     'num_samples': int(hparams.sr * 3.0),
                     'combine_by_class': True,
                     'fixed_classes': ['BG_DSD', 'FG_DSD', 'FUSS_mixture']},
