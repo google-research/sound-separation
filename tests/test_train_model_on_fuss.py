@@ -12,7 +12,7 @@ from tests._paths import ROOT_PATH
     [
         ('fuss', 'fuss/fuss_dev/ssdata'),
         ('anuraset', 'AnuraSet_Dev/anuraset_dev/ssdata'),
-        ('rfcx', 'rfcx_dev/'),
+        ('rfcx', 'xprize.rfcx_dev/'),
         # Fails:
         # ('congo_soundscapes_dev', 'congo_soundscapes_dev/10_random_examples'),
     ],
