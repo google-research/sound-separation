@@ -13,7 +13,6 @@
 # limitations under the License.
 """Train helper for source separation using tf.estimator."""
 
-
 from . import inference_graph
 from tensorflow.compat.v1 import estimator as tf_estimator
 

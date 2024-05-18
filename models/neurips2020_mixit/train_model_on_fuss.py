@@ -13,7 +13,6 @@
 # limitations under the License.
 """Train a MixIT separation model on FUSS using tf.estimator."""
 
-
 import argparse
 import os
 import sys
@@ -21,6 +20,7 @@ import sys
 import tensorflow.compat.v1 as tf
 
 from models.neurips2020_mixit import model
+
 cur_path = os.path.dirname(os.path.realpath(__file__))
 parent_path = os.path.dirname(os.path.dirname(os.path.dirname(cur_path)))
 sys.path.append(os.path.join(parent_path))
@@ -65,20 +65,20 @@ def main():
     train_steps = int(args.train_steps)
 
     train_model_on_fuss(
-      batch_size_half=batch_size_half,
-      train_list=train_list,
-      validation_list=validation_list,
-      model_dir=model_dir,
-      train_steps=train_steps,
+        batch_size_half=batch_size_half,
+        train_list=train_list,
+        validation_list=validation_list,
+        model_dir=model_dir,
+        train_steps=train_steps,
     )
 
 
 def train_model_on_fuss(
-    batch_size_half,
-    train_list,
-    validation_list,
-    model_dir,
-    train_steps=20000000,
+        batch_size_half,
+        train_list,
+        validation_list,
+        model_dir,
+        train_steps=20000000,
 ):
     hparams = model.get_model_hparams()
     if not hparams.sr == 48000.0:

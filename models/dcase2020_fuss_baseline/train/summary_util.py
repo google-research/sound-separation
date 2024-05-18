@@ -49,36 +49,36 @@ def create_summaries(scalars=None,
                      sample_rate=48000,
                      max_audio_outputs=3,
                      max_image_outputs=3):
-  """Create training summaries for the given dictionaries of values.
+    """Create training summaries for the given dictionaries of values.
 
-  Args:
-    scalars: Dict name -> scalar in form expected by tf.summary.scalar.
-    audio: Dict name -> audio, in form expected by tf.summary.audio.
-    images: Dict name -> image in form expected by tf.summary.image.
-    sample_rate: Audio sample rate.
-    max_audio_outputs: Maximum outputs for audio summaries.
-    max_image_outputs: Maximum outputs for image summaries.
-  """
-  scalars = scalars or {}
-  audio = audio or {}
-  images = images or {}
+    Args:
+      scalars: Dict name -> scalar in form expected by tf.summary.scalar.
+      audio: Dict name -> audio, in form expected by tf.summary.audio.
+      images: Dict name -> image in form expected by tf.summary.image.
+      sample_rate: Audio sample rate.
+      max_audio_outputs: Maximum outputs for audio summaries.
+      max_image_outputs: Maximum outputs for image summaries.
+    """
+    scalars = scalars or {}
+    audio = audio or {}
+    images = images or {}
 
-  for name, tensor in scalars.items():
-    tf.summary.scalar(name, tensor)
+    for name, tensor in scalars.items():
+        tf.summary.scalar(name, tensor)
 
-  for name, tensor in audio.items():
-    tf.summary.audio(
-        name=name,
-        tensor=tensor,
-        sample_rate=sample_rate,
-        max_outputs=max_audio_outputs)
+    for name, tensor in audio.items():
+        tf.summary.audio(
+            name=name,
+            tensor=tensor,
+            sample_rate=sample_rate,
+            max_outputs=max_audio_outputs)
 
-  for name, tensor in images.items():
-    tf.summary.image(
-        name=name,
-        tensor=tensor,
-        max_outputs=max_image_outputs)
+    for name, tensor in images.items():
+        tf.summary.image(
+            name=name,
+            tensor=tensor,
+            max_outputs=max_image_outputs)
 
 
 def metrics_fn(**scalars):
-  return {name: tf.metrics.mean(s) for name, s in scalars.items()}
+    return {name: tf.metrics.mean(s) for name, s in scalars.items()}
