@@ -1,4 +1,5 @@
 # README for the DCASE2020 DESED+FUSS baseline model.
+
 This model is the source separation component of the combined sound event
 detection and separation baseline for
 <a href="http://dcase.community/challenge2020/task-sound-event-detection-and-separation-in-domestic-environments">
@@ -29,10 +30,12 @@ validation set, this model achieves an average of 18.6 dB SI-SNR improvement for
 the separated DESED foreground mixture, which is used as input to the SED model.
 
 ## Install TensorFlow
+
 Follow the instructions
 <a href="https://www.tensorflow.org/install">here</a>.
 
 ## Evaluate a model
+
 You can download and evaluate the pretrained baseline model using the following:
 
 ```
@@ -44,6 +47,7 @@ To evaluate a model you have trained yourself, e.g. with
 for an example of calling ```evaluate.py```.
 
 ## Train a model
+
 A pretrained baseline model is provided, but you can also train a model yourself using the following:
 
 ```
@@ -71,6 +75,7 @@ following format:
 ```
 
 ## References
+
 [1] Scott Wisdom, Hakan Erdogan, Daniel P. W. Ellis, Romain Serizel, Nicolas Turpault, Eduardo Fonseca, Justin Salamon, Prem Seetharaman, John R. Hershey,
 "What's All the FUSS About Free Universal Sound Separation Data?", 2020, in preparation.
 
