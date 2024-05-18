@@ -383,7 +383,7 @@ def compute_summaries(signal_names,
                       separated_waveforms,
                       source_waveforms,
                       mixture_waveforms,
-                      learning_rate=None,
+                      learning_rate,
                       additional_summary_tensors=None):
   """Compute TF summaries for a denoising model.
 

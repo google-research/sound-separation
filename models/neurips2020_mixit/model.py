@@ -502,7 +502,11 @@ def model_fn(features, labels, mode, params):
                     for name, value in weights_msrc.items()})
 
   summary_dict['scalars'] = scalars
-  summary_util.create_summaries(sample_rate=hparams.sr, **summary_dict)
+  summary_util.create_summaries(
+      learning_rate=learning_rate,
+      sample_rate=hparams.sr,
+      **summary_dict,
+  )
   metrics = {name: tf.metrics.mean(s, weights=weights.get(name, None))
              for name, s in scalars.items()}
 

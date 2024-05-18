@@ -383,7 +383,7 @@ def compute_summaries(signal_names,
                       separated_waveforms,
                       source_waveforms,
                       mixture_waveforms,
-                      learning_rate=None,
+                      learning_rate,
                       additional_summary_tensors=None):
   """Compute TF summaries for a denoising model.
 
@@ -398,7 +398,7 @@ def compute_summaries(signal_names,
         [batch, numsources, samples].
     mixture_waveforms: The mixture input signals, of shape
         [batch, numreceivers, samples].
-    learning_rate: Learning rate, or None.
+    learning_rate: Learning rate.
     additional_summary_tensors: A dictionary of additional tensors to compute
          statistical summaries for.
 

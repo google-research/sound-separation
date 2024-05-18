@@ -46,6 +46,7 @@ import tensorflow.compat.v1 as tf
 def create_summaries(scalars=None,
                      audio=None,
                      images=None,
+                     learning_rate=None,
                      sample_rate=48000,
                      max_audio_outputs=3,
                      max_image_outputs=3):
@@ -78,6 +79,8 @@ def create_summaries(scalars=None,
         name=name,
         tensor=tensor,
         max_outputs=max_image_outputs)
+
+  tf.summary.scalar('learning_rate', learning_rate)
 
 
 def metrics_fn(**scalars):

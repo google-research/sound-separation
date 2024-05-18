@@ -315,6 +315,7 @@ def model_fn(features, labels, mode, params):
   separated_spectrograms = transformer.forward(separated_waveforms)
 
   summary_dict = summaries.compute_summaries(
+      learning_rate=learning_rate,
       signal_names=hparams.signal_names,
       separated_spectrograms=separated_spectrograms,
       source_spectrograms=source_spectrograms,
