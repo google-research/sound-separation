@@ -151,7 +151,7 @@ def conv_encoder(input_waveforms, samples_per_window, samples_per_hop,
         input_frames = input_frames[..., :expected_num_frames, :]
 
         encoder_coeffs = tf.keras.layers.Dense(
-            num_coeffs, activation='relu', use_bias=False).apply(input_frames)
+            num_coeffs, activation='relu', use_bias=False)(input_frames)
 
     return encoder_coeffs
 
@@ -188,7 +188,7 @@ def conv_decoder(input_coeffs, samples_per_window, samples_per_hop):
         # Multiply the decoder basis of shape (num_coeffs, samples_per_window) with
         # each frame.
         reconstructed_frames = tf.keras.layers.Dense(
-            samples_per_window, activation=None, use_bias=False).apply(input_coeffs)
+            samples_per_window, activation=None, use_bias=False)(input_coeffs)
         # reconstructed_frames is shape
         # (batch_size, depth, num_frames, samples_per_window).
 
