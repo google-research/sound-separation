@@ -295,9 +295,10 @@ def model_fn(features, labels, mode, params):
 
   # Build the optimizer.
   loss = tf.losses.get_total_loss()
-  learning_rate = tf.keras.optimizers.schedules.CosineDecayRestarts(
-      initial_learning_rate=hparams.lr,
+  learning_rate = tf.train.cosine_decay_restarts(
       first_decay_steps=hparams.lr_decay_steps,
+      learning_rate=hparams.lr,
+      global_step=tf.train.get_or_create_global_step(),
       t_mul=1 + 0.001,
       m_mul=1 - 0.001,
       alpha=0.01,
