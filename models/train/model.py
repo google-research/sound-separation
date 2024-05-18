@@ -159,7 +159,7 @@ class HParams(object):
   # Initial learning rate used by the optimizer.
   lr = attr.attrib(type=float, default=1e-4)
   # Decay lr by lr_decay_rate every lr_step_steps.
-  lr_decay_steps = attr.attrib(type=int, default=2000000)
+  lr_decay_steps = attr.attrib(type=int, default=1000)
   # Decay lr by lr_decay_rate every lr_step_steps.
   lr_decay_rate = attr.attrib(type=float, default=0.5)
   # Gradient maximum norm for gradient clipping
