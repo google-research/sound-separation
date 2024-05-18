@@ -40,7 +40,7 @@ def _complex_to_realimag(matrix: tf.Tensor) -> tf.Tensor:
 def _smart_dim(tensor: tf.Tensor, i: int):
     """Static or dynamic size for dimension `i`."""
     static_shape = tensor.shape
-    dynamic_shape = tf.shape(tensor)
+    dynamic_shape = tf.shape(input=tensor)
     return (static_shape[i].value if hasattr(static_shape[i], 'value')
             else static_shape[i]) or dynamic_shape[i]
 
@@ -94,7 +94,7 @@ def _matrix_solve(matrix: tf.Tensor, rhs: tf.Tensor, method: str = 'default',
 def _pad_beginning(waveform: tf.Tensor, pad_len: int) -> tf.Tensor:
     """Pad with zeros at the beginning of last axis with pad_len amount."""
     pad_spec = [(0, 0)] * (len(waveform.shape) - 1) + [(pad_len, 0)]
-    return tf.pad(waveform, pad_spec)
+    return tf.pad(tensor=waveform, paddings=pad_spec)
 
 
 def _clip_beginning(waveform: tf.Tensor, clip_len: int) -> tf.Tensor:
@@ -135,8 +135,8 @@ def _pad_to_length(a: tf.Tensor, length: Union[int, tf.Tensor]) -> tf.Tensor:
     """Zero pad last dimension of a at the end to achieve length."""
     padding = length - _smart_dim(a, -1)
     padding = tf.expand_dims(tf.expand_dims(padding, 0), 0)  # shape [1, 1]
-    padding = tf.pad(padding, [[tf.rank(a) - 1, 0], [1, 0]])  # shape [rank, 2]
-    return tf.pad(a, padding)
+    padding = tf.pad(tensor=padding, paddings=[[tf.rank(a) - 1, 0], [1, 0]])  # shape [rank, 2]
+    return tf.pad(tensor=a, paddings=padding)
 
 
 def _get_delta_filter(filt_shape, filter_support_start, filt_dtype):
@@ -192,9 +192,9 @@ def calculate_scalar_filter(input_stft: tf.Tensor, target_stft: tf.Tensor,
     # Note: We assume frames axis is axis=-2.
     input_stft = input_stft[..., frame_skip:-frame_skip, :]
     target_stft = target_stft[..., frame_skip:-frame_skip, :]
-    r_autocorr = tf.reduce_sum(tf.math.conj(input_stft) * input_stft, axis=-2,
+    r_autocorr = tf.reduce_sum(input_tensor=tf.math.conj(input_stft) * input_stft, axis=-2,
                                keepdims=True)
-    r_crosscorr = tf.reduce_sum(tf.math.conj(input_stft) * target_stft, axis=-2,
+    r_crosscorr = tf.reduce_sum(input_tensor=tf.math.conj(input_stft) * target_stft, axis=-2,
                                 keepdims=True)
     return r_crosscorr / (r_autocorr + 1e-8)
 
@@ -217,7 +217,7 @@ def perform_filtering(input_signal: tf.Tensor, filt: tf.Tensor,
     filter_len = _smart_dim(filt, -1)
     out_len = signal_len + filter_len - 1
     out_range = -filter_support_start + tf.range(signal_len)
-    out_range = tf.where(out_range < 0, out_len + out_range, out_range)
+    out_range = tf.compat.v1.where(out_range < 0, out_len + out_range, out_range)
     filtered_signal = convolve(input_signal, filt)
     return tf.gather(filtered_signal, out_range, axis=-1)
 
@@ -239,7 +239,7 @@ def _scatter_update_last_axis(tensor: tf.Tensor,
       Updated tensor with the same shape as input (..., full_size).
     """
     num_updates = _smart_dim(updates, -1)
-    tensor_shape = tf.shape(tensor)
+    tensor_shape = tf.shape(input=tensor)
     # First, we reshape tensor to have a shape of [batch, last_dim].
     tensor_reshaped = tf.reshape(tensor, [-1, tensor_shape[-1]])
     batch_size = _smart_dim(tensor_reshaped, 0)
@@ -281,7 +281,7 @@ def _solve_with_fixed_indices(matrix: tf.Tensor, rhs: tf.Tensor,
     assert solver == 'lstsq' or solver == 'ls_cholesky'
     fixed_len = len(fixed_indices)
     assert fixed_len == len(fixed_values)
-    matrix_shape = tf.shape(matrix)
+    matrix_shape = tf.shape(input=matrix)
     solution_len = matrix_shape[-1]
     unfixed_indices = [i for i in range(solution_len) if i not in
                        list(fixed_indices)]
@@ -291,7 +291,7 @@ def _solve_with_fixed_indices(matrix: tf.Tensor, rhs: tf.Tensor,
     fixed_value_part_shape = tf.concat((matrix_shape[:-2], [fixed_len, 1]),
                                        axis=0)
     unfixed_part_shape = tf.concat((matrix_shape[:-1],
-                                    [tf.shape(unfixed_indices)[0]]), axis=0)
+                                    [tf.shape(input=unfixed_indices)[0]]), axis=0)
     fixed_indices_b = tf.broadcast_to(fixed_indices, fixed_part_shape)
     fixed_values = tf.cast(fixed_values, matrix.dtype)
     fixed_values_b = tf.broadcast_to(tf.reshape(fixed_values, [-1, 1]),
@@ -348,8 +348,8 @@ def calculate_multitap_filter(input_signal: tf.Tensor, target_signal: tf.Tensor,
     Returns:
       filt: The FIR filter (..., filter_len) that takes input to target.
     """
-    target_signal = tf.convert_to_tensor(target_signal)
-    input_signal = tf.convert_to_tensor(input_signal)
+    target_signal = tf.convert_to_tensor(value=target_signal)
+    input_signal = tf.convert_to_tensor(value=input_signal)
     if target_signal.dtype.is_floating and input_signal.dtype.is_floating:
         forward_fft = tf.signal.rfft
         inverse_fft = tf.signal.irfft
@@ -376,7 +376,7 @@ def calculate_multitap_filter(input_signal: tf.Tensor, target_signal: tf.Tensor,
     ref_conj_ref = tf.math.conj(ref_fft) * ref_fft
     ref_corr = inverse_fft(ref_conj_ref)
     row_range = tf.range(0, -filter_len, -1)
-    row_range = tf.where(row_range < 0, fft_len + row_range, row_range)
+    row_range = tf.compat.v1.where(row_range < 0, fft_len + row_range, row_range)
     row = tf.gather(ref_corr, row_range, axis=-1)
     column = ref_corr[..., :filter_len]
     vec_for_diagload = tf.cast(diagload * tf.one_hot(0, filter_len), row.dtype)
@@ -388,7 +388,7 @@ def calculate_multitap_filter(input_signal: tf.Tensor, target_signal: tf.Tensor,
     # Cross correlation.
     cross_corr = inverse_fft(cross_fft)
     rhs_range = tf.range(filter_support_start, filter_support_start + filter_len)
-    rhs_range = tf.where(rhs_range < 0, fft_len + rhs_range, rhs_range)
+    rhs_range = tf.compat.v1.where(rhs_range < 0, fft_len + rhs_range, rhs_range)
     rhs = tf.gather(cross_corr, rhs_range, axis=-1)
 
     if use_dense_solver or fixed_indices is not None:
@@ -404,12 +404,12 @@ def calculate_multitap_filter(input_signal: tf.Tensor, target_signal: tf.Tensor,
         # This does not work on TPU, so set use_dense_solver=True on TPU.
         return toeplitz_matrix.solvevec(rhs)
     if fix_nans:
-        delta_filter = _get_delta_filter(tf.shape(filt), filter_support_start,
+        delta_filter = _get_delta_filter(tf.shape(input=filt), filter_support_start,
                                          filt.dtype)
-        filt_norm = tf.math.sqrt(tf.reduce_sum(tf.math.abs(filt) ** 2,
+        filt_norm = tf.math.sqrt(tf.reduce_sum(input_tensor=tf.math.abs(filt) ** 2,
                                                axis=-1, keepdims=True))
         problematic = tf.math.is_nan(filt_norm)
-        filt = tf.where(tf.broadcast_to(problematic, tf.shape(filt)),
+        filt = tf.compat.v1.where(tf.broadcast_to(problematic, tf.shape(input=filt)),
                         delta_filter, filt)
     return filt
 
@@ -432,7 +432,7 @@ def nap_project_multitap_filter(filt: tf.Tensor, alpha: float = 0.7,
         filt_fft = forward_fft(_pad_to_length(filt, filter_fft_len))
         filt_fft_mag = tf.math.abs(filt_fft)
         if allow_scaling:
-            mean_mag = tf.reduce_mean(filt_fft_mag)
+            mean_mag = tf.reduce_mean(input_tensor=filt_fft_mag)
         else:
             mean_mag = 1.0
         norm_alpha_min = mean_mag * alpha
@@ -738,9 +738,9 @@ def filter_with_best_filter(input_signal: tf.Tensor,
     """
     if (min_norm_ratio_for_multi_tap > 0. and
             (method == 'time_domain' or method == 'multi_frame_stft')):
-        norm_ratio = (tf.linalg.norm(input_signal, ord='euclidean', axis=-1) /
-                      tf.linalg.norm(target_signal, ord='euclidean', axis=-1))
-        safe_to_continue = tf.math.reduce_all(tf.logical_and(
+        norm_ratio = (tf.linalg.norm(tensor=input_signal, ord='euclidean', axis=-1) /
+                      tf.linalg.norm(tensor=target_signal, ord='euclidean', axis=-1))
+        safe_to_continue = tf.math.reduce_all(input_tensor=tf.logical_and(
             norm_ratio > min_norm_ratio_for_multi_tap,
             norm_ratio < 1.0 / min_norm_ratio_for_multi_tap))
         fn_original = functools.partial(filter_with_best_filter,
@@ -765,9 +765,9 @@ def filter_with_best_filter(input_signal: tf.Tensor,
                                         solver=solver,
                                         min_norm_ratio_for_multi_tap=0.,
                                         fix_nans=fix_nans)
-        return tf.cond(safe_to_continue,
-                       lambda: fn_original(input_signal, target_signal),
-                       lambda: fn_modified(input_signal, target_signal))
+        return tf.cond(pred=safe_to_continue,
+                       true_fn=lambda: fn_original(input_signal, target_signal),
+                       false_fn=lambda: fn_modified(input_signal, target_signal))
 
     if method == 'time_domain':
         filt_signal, _ = filter_in_time_domain(
