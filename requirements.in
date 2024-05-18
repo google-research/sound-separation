@@ -1,5 +1,5 @@
 attrs
-tensorflow-gpu<2.9
+tensorflow<2.15
 immutabledict
 pytest
 pytest-cov
