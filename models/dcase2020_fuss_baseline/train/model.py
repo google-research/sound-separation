@@ -295,11 +295,14 @@ def model_fn(features, labels, mode, params):
 
   # Build the optimizer.
   loss = tf.losses.get_total_loss()
-  learning_rate = tf.train.exponential_decay(
-      hparams.lr,
-      tf.train.get_or_create_global_step(),
-      decay_steps=hparams.lr_decay_steps,
-      decay_rate=hparams.lr_decay_rate)
+  learning_rate = tf.keras.optimizers.schedules.CosineDecayRestarts(
+      initial_learning_rate=hparams.lr,
+      first_decay_steps=hparams.lr_decay_steps,
+      t_mul=1 + 0.001,
+      m_mul=1 - 0.001,
+      alpha=0.01,
+      name='CosineDecayRestarts'
+  )
   optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
   if params.get('use_tpu', False):
     optimizer = tf.tpu.CrossShardOptimizer(optimizer)
