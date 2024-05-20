@@ -405,8 +405,8 @@ def model_fn(features, labels, mode, params):
         first_decay_steps=hparams.lr_decay_steps,
         learning_rate=hparams.lr,
         global_step=tf.train.get_or_create_global_step(),
-        t_mul=1 + 0.001,
-        m_mul=1 - 0.001,
+        t_mul=2.0,
+        m_mul=1.0,
         alpha=0.01,
         name='CosineDecayRestarts'
     )
