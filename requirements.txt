@@ -11,7 +11,7 @@ gast==0.5.4
 google-auth==2.29.0
 google-auth-oauthlib==1.0.0
 google-pasta==0.2.0
-grpcio==1.63.0
+grpcio==1.64.0
 h5py==3.11.0
 idna==3.7
 immutabledict==4.2.0
@@ -32,7 +32,7 @@ pyasn1==0.6.0
 pyasn1_modules==0.4.0
 pytest==8.2.1
 pytest-cov==5.0.0
-requests==2.31.0
+requests==2.32.0
 requests-oauthlib==2.0.0
 rsa==4.9
 setuptools==69.5.1
