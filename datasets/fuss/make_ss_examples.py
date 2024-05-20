@@ -50,7 +50,7 @@ class Mixer(object):
     np.random.seed(random_seed)
 
     # global settings
-    self.sample_rate = 48000
+    self.sample_rate = 32000
 
     self.num_examples = {'train': num_train, 'eval': num_eval,
                          'validation': num_validation}

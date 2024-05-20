@@ -107,7 +107,7 @@ def make_example_list_from_folder(
 def check_and_correct_example(example, root_dir,
                               check_length, fix_length,
                               check_mix, fix_mix,
-                              sample_rate=48000, duration=3.0,
+                              sample_rate=32000, duration=3.0,
                               chat=False):
   """Checks and possibly corrects a scaper produced example."""
   # Earlier versions of scaper had a tendency to make mistakes every

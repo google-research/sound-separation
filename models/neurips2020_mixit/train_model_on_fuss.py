@@ -81,9 +81,9 @@ def train_model_on_fuss(
         train_steps=20000000,
 ):
     hparams = model.get_model_hparams()
-    if not hparams.sr == 48000.0:
+    if not hparams.sr == 32000.0:
         tf.logging.error(
-            'Sampling rate is not 48kHz.',
+            'Sampling rate is not 32 kHz.',
         )
         exit(1)
 
