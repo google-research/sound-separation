@@ -35,7 +35,7 @@ def main():
     args = parser.parse_args()
 
     hparams = model.get_model_hparams()
-    hparams.sr = 32000.0
+    hparams.sr = 48000.0
     hparams.num_sources_for_summaries = [1, 2, 3, 4]
 
     roomsim_params = {

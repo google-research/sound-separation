@@ -238,7 +238,7 @@ def main():
         '-bs', '--block_size_in_seconds', default=3.0, type=float,
         help='Block size used for stitching processing.')
     parser.add_argument(
-        '-sr', '--sample_rate', default=32000, help='Sample rate.', type=int)
+        '-sr', '--sample_rate', default=48000, help='Sample rate.', type=int)
     parser.add_argument(
         '-pi', '--permutation_invariant', default=False, type=strtobool,
         help='If True, perform permutation invariant stitching.')

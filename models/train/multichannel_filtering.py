@@ -502,7 +502,7 @@ def compute_multichannel_filter(y: tf.Tensor, t: tf.Tensor,
 
 def compute_multichannel_filter_from_signals(y: tf.Tensor, t: tf.Tensor,
                                              refmic: int = 0,
-                                             sample_rate: float = 32000.,
+                                             sample_rate: float = 48000.,
                                              ws: float = 0.064,
                                              hs: float = 0.032,
                                              frame_context_length: int = 1,
@@ -621,7 +621,7 @@ class BeamformerParams(object):
         covariance matrices are always divided by the number of frames.
       epsilon: A float32 value, data-independent stabilizer for diagonal loading.
     """
-    sample_rate: float = 32000.
+    sample_rate: float = 48000.
     ws: float = 0.064
     hs: float = 0.032
     n_fft: int = -1

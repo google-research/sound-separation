@@ -20,7 +20,7 @@ import numpy as np
 from scipy.io import wavfile
 import tensorflow as tf
 
-SAMPLE_RATE = 32000
+SAMPLE_RATE = 48000
 MAX_ABS_INT16 = 32768
 MAX_INT16 = 32767
 MIN_INT16 = -32768
