@@ -1,5 +1,5 @@
 attrs
-tensorflow<2.15
+tensorflow<2.16
 immutabledict
 pytest
 pytest-cov
