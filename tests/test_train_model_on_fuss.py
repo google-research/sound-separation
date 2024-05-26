@@ -15,7 +15,7 @@ from tests._paths import ROOT_PATH
         # ('rfcx', 'xprize.rfcx_dev/'),
         # Fails:
         # ('congo_soundscapes_dev', 'congo_soundscapes_dev/10_random_examples'),
-        ('xprize', Path('/media/bengt/XPRIZE-1TB/08-mixes')),
+        ('xprize', Path('/media/bengt/XPRIZE-500GB-32k/08-mixes')),
     ],
 )
 def test_train_model_on_fuss(dataset_name, dataset_path):
