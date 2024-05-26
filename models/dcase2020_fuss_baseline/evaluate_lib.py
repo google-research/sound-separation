@@ -112,7 +112,7 @@ def evaluate(checkpoint_path, metagraph_path, data_list_path, output_path):
     file_list = data_io.read_lines_from_file(data_list_path, skip_fields=1)
     with model.graph.as_default():
         dataset = data_io.wavs_to_dataset(file_list, batch_size=1,
-                                          num_samples=48_000 * 3,
+                                          num_samples=32000 * 3,
                                           repeat=False)
         # Strip batch and mic dimensions.
         dataset['receiver_audio'] = dataset['receiver_audio'][0, 0]

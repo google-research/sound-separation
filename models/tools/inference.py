@@ -67,7 +67,7 @@ def read_wav_file(input_wav_file, input_channels=None, scale_input=False):
     return input_wav, sample_rate
 
 
-def write_wav_file(output_wav_file, output_wav_tensor, sample_rate=48000,
+def write_wav_file(output_wav_file, output_wav_tensor, sample_rate=32000,
                    output_channels=0, write_outputs_separately=False,
                    num_channels=2, channel_name='source'):
     """Writes a wav file or multiple wav files in tensorflow.
@@ -155,7 +155,7 @@ def sqrt_hann_window(length, dtype):
 class OracleBinaryMasking(object):
     """Oracle binary masking with STFT, implemented in tensorflow."""
 
-    def __init__(self, ws=0.032, hs=0.008, sr=48000.0):
+    def __init__(self, ws=0.032, hs=0.008, sr=32000.0):
         self.stft_win = int(np.round(ws * sr))
         self.stft_hop = int(np.round(hs * sr))
         self.fft_length = int(2 ** np.ceil(np.log2(self.stft_win)))
