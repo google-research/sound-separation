@@ -24,7 +24,7 @@ scalars = {
     ...
 }
 audio = {
-    'waveform': tf.ones([2, 32000, 1]),  # Two mono waveforms.
+    'waveform': tf.ones([2, 48000, 1]),  # Two mono waveforms.
     ...
 }
 images = {
@@ -47,7 +47,7 @@ def create_summaries(scalars=None,
                      audio=None,
                      images=None,
                      learning_rate=None,
-                     sample_rate=32000,
+                     sample_rate=48000,
                      max_audio_outputs=3,
                      max_image_outputs=3):
     """Create training summaries for the given dictionaries of values.

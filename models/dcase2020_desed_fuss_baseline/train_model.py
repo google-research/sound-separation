@@ -40,7 +40,7 @@ def main():
     args = parser.parse_args()
 
     hparams = model.get_model_hparams()
-    hparams.sr = 32000.0
+    hparams.sr = 48000.0
     hparams.signal_names = ['DESED_background', 'DESED_foreground',
                             'FUSS_mixture']
     hparams.signal_types = hparams.signal_names

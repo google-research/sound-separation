@@ -53,7 +53,7 @@ def sqrt_hann_window(length, dtype):
 class OracleBinaryMasking(object):
     """Oracle binary masking with STFT, implemented in tensorflow."""
 
-    def __init__(self, ws=0.032, hs=0.008, sr=32000.0):
+    def __init__(self, ws=0.032, hs=0.008, sr=48000.0):
         self.stft_win = int(np.round(ws * sr))
         self.stft_hop = int(np.round(hs * sr))
         self.fft_length = int(2 ** np.ceil(np.log2(self.stft_win)))
