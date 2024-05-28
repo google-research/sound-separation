@@ -520,7 +520,7 @@ def add_summaries_and_return_metrics(waveforms_to_summaries,
         # 1 active signal.
         weights_for_1src = tf.logical_and(
             source_is_nonzero,  # Shape (batch, source) indicator of active srcs.
-            _weights_for_num_sources(source_waveforms, 1,
+            _weights_for_num_sources(source_waveforms, num_sources=1,
                                      consider_as_zero=source_is_zero))
         # Compute scalars only for examples with 1 active signal.
         scalars_1src, weights_1src = summaries.scalar_snr_metrics_weighted(
@@ -539,7 +539,7 @@ def add_summaries_and_return_metrics(waveforms_to_summaries,
         weights_for_min2srcs = tf.logical_and(
             source_is_nonzero,  # Shape (batch, source) indicator of active srcs.
             tf.logical_not(_weights_for_num_sources(
-                source_waveforms, 1, consider_as_zero=source_is_zero)))
+                source_waveforms, num_sources=1, consider_as_zero=source_is_zero)))
         # Compute scalars only for examples with 2+ active signals.
         scalars_min2srcs, weights_min2srcs = summaries.scalar_snr_metrics_weighted(
             new_signal_names,
