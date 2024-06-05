@@ -31,7 +31,7 @@ python3.10 -m venv venv
 ```
 
 ```bash
-venv/bin/python -m pip install --upgrade pip setuptools wheel
+venv/bin/python -m pip install --upgrade pip wheel
 ```
 
 ```bash
