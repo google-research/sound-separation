@@ -19,25 +19,25 @@ import evaluate_lib
 
 
 def main():
-  parser = argparse.ArgumentParser(
-      description='Evaluate a source separation model.')
-  parser.add_argument(
-      '-cp', '--checkpoint_path', help='Path for model checkpoint files.',
-      required=True)
-  parser.add_argument(
-      '-mp', '--metagraph_path', help='Path for inference metagraph.',
-      required=True)
-  parser.add_argument(
-      '-dp', '--data_list_path', help='Path for list of files.',
-      required=True)
-  parser.add_argument(
-      '-op', '--output_path', help='Path of resulting csv file.',
-      required=True)
-  args = parser.parse_args()
+    parser = argparse.ArgumentParser(
+        description='Evaluate a source separation model.')
+    parser.add_argument(
+        '-cp', '--checkpoint_path', help='Path for model checkpoint files.',
+        required=True)
+    parser.add_argument(
+        '-mp', '--metagraph_path', help='Path for inference metagraph.',
+        required=True)
+    parser.add_argument(
+        '-dp', '--data_list_path', help='Path for list of files.',
+        required=True)
+    parser.add_argument(
+        '-op', '--output_path', help='Path of resulting csv file.',
+        required=True)
+    args = parser.parse_args()
 
-  evaluate_lib.evaluate(args.checkpoint_path, args.metagraph_path,
-                        args.data_list_path, args.output_path)
+    evaluate_lib.evaluate(args.checkpoint_path, args.metagraph_path,
+                          args.data_list_path, args.output_path)
 
 
 if __name__ == '__main__':
-  main()
+    main()

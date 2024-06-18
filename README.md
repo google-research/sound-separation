@@ -21,3 +21,23 @@ Open-source datasets and deep learning models for separating sounds.
 * [Universal unsupervised separation models using mixture invariant training (MixIT)](https://github.com/google-research/sound-separation/tree/master/models/neurips2020_mixit/README.md).
 
 * [Unsupervised separation models for birds using mixture invariant training (MixIT)](https://github.com/google-research/sound-separation/tree/master/models/bird_mixit/README.md).
+
+## Setup
+
+### Install Requirements
+
+```bash
+python3.10 -m venv venv
+```
+
+```bash
+venv/bin/python -m pip install --upgrade pip wheel
+```
+
+```bash
+venv/bin/python -m pip install -r requirements.in
+```
+
+```bash
+venv/bin/python -m pip freeze > requirements.txt
+```

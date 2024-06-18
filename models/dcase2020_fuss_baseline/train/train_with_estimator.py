@@ -13,61 +13,60 @@
 # limitations under the License.
 """Train helper for source separation using tf.estimator."""
 
-
 from . import inference_graph
 from tensorflow.compat.v1 import estimator as tf_estimator
 
 
 def execute(model_fn, input_fn, **params):
-  """Execute train or eval and/or inference graph writing.
+    """Execute train or eval and/or inference graph writing.
 
-  Args:
-    model_fn: An estimator compatible function taking parameters
-              (features, labels, mode, params) that returns a EstimatorSpec.
-    input_fn: An estimator compatible function taking 'params' that returns a
-              dataset
-    **params: Dict of additional params to pass to both model_fn and input_fn.
-  """
+    Args:
+      model_fn: An estimator compatible function taking parameters
+                (features, labels, mode, params) that returns a EstimatorSpec.
+      input_fn: An estimator compatible function taking 'params' that returns a
+                dataset
+      **params: Dict of additional params to pass to both model_fn and input_fn.
+    """
 
-  if params['write_inference_graph']:
-    inference_graph.write(model_fn, input_fn, params, params['model_dir'])
+    if params['write_inference_graph']:
+        inference_graph.write(model_fn, input_fn, params, params['model_dir'])
 
-  def estimator_model_fn(features, labels, mode, params):
-    spec = model_fn(features, labels, mode, params)
-    return spec
+    def estimator_model_fn(features, labels, mode, params):
+        spec = model_fn(features, labels, mode, params)
+        return spec
 
-  def train_input_fn():
-    train_params = params.copy()
-    train_params['input_data'] = params['input_data_train']
-    train_params['batch_size'] = params['train_batch_size']
-    if params['randomize_training']:
-      train_params['randomize_order'] = True
-    return input_fn(train_params)
+    def train_input_fn():
+        train_params = params.copy()
+        train_params['input_data'] = params['input_data_train']
+        train_params['batch_size'] = params['train_batch_size']
+        if params['randomize_training']:
+            train_params['randomize_order'] = True
+        return input_fn(train_params)
 
-  def eval_input_fn():
-    eval_params = params.copy()
-    eval_params['input_data'] = params['input_data_eval']
-    eval_params['batch_size'] = params['eval_batch_size']
-    return input_fn(eval_params)
+    def eval_input_fn():
+        eval_params = params.copy()
+        eval_params['input_data'] = params['input_data_eval']
+        eval_params['batch_size'] = params['eval_batch_size']
+        return input_fn(eval_params)
 
-  train_spec = tf_estimator.TrainSpec(input_fn=train_input_fn,
-                                      max_steps=params['train_steps'])
+    train_spec = tf_estimator.TrainSpec(input_fn=train_input_fn,
+                                        max_steps=params['train_steps'])
 
-  eval_steps = int(round(params['eval_examples'] / params['eval_batch_size']))
+    eval_steps = int(round(params['eval_examples'] / params['eval_batch_size']))
 
-  eval_spec = tf_estimator.EvalSpec(
-      name=params['eval_suffix'], input_fn=eval_input_fn, steps=eval_steps,
-      throttle_secs=params.get('eval_throttle_secs', 600))
+    eval_spec = tf_estimator.EvalSpec(
+        name=params['eval_suffix'], input_fn=eval_input_fn, steps=eval_steps,
+        throttle_secs=params.get('eval_throttle_secs', 600))
 
-  run_config = tf_estimator.RunConfig(
-      model_dir=params['model_dir'],
-      save_summary_steps=params['save_summary_steps'],
-      save_checkpoints_secs=params['save_checkpoints_secs'],
-      keep_checkpoint_every_n_hours=params['keep_checkpoint_every_n_hours'])
+    run_config = tf_estimator.RunConfig(
+        model_dir=params['model_dir'],
+        save_summary_steps=params['save_summary_steps'],
+        save_checkpoints_secs=params['save_checkpoints_secs'],
+        keep_checkpoint_every_n_hours=params['keep_checkpoint_every_n_hours'])
 
-  estimator = tf_estimator.Estimator(
-      model_fn=estimator_model_fn,
-      params=params,
-      config=run_config)
+    estimator = tf_estimator.Estimator(
+        model_fn=estimator_model_fn,
+        params=params,
+        config=run_config)
 
-  tf_estimator.train_and_evaluate(estimator, train_spec, eval_spec)
+    tf_estimator.train_and_evaluate(estimator, train_spec, eval_spec)

@@ -16,9 +16,9 @@ This model checkpoint is licensed under <a href="https://www.apache.org/licenses
 
 
 ## Install TensorFlow
+
 Follow the instructions
 <a href="https://www.tensorflow.org/install">here</a>.
-
 
 ## Run the model on a wav file.
 
@@ -32,6 +32,7 @@ python3 ../tools/process_wav.py \
 --input <input name>.wav \
 --output <output_name>.wav
 ```
+
 which will result in 4 wav files `<output_name>_source0.wav`, ... , `<output_name>_source3.wav`.
 
 The 8-output model can be run using the following:
@@ -44,6 +45,7 @@ python3 ../tools/process_wav.py \
 --input <input name>.wav \
 --output <output_name>.wav
 ```
+
 which will result in 8 wav files `<output_name>_source0.wav`, ... , `<output_name>_source7.wav`.
 
 ## References

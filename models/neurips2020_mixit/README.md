@@ -23,9 +23,9 @@ This model checkpoint is licensed under <a href="https://www.apache.org/licenses
 
 
 ## Install TensorFlow
+
 Follow the instructions
 <a href="https://www.tensorflow.org/install">here</a>.
-
 
 ## Train the model on FUSS
 
