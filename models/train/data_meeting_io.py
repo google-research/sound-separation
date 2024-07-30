@@ -328,7 +328,7 @@ def json_to_dataset(json_file,
                   (num_utterances, 1),
                   (num_utterances, 1),
                   (num_utterances, 1)]
-  tensor_type = [np.string_, np.int32, np.int32, np.float32,
+  tensor_type = [np.bytes_, np.int32, np.int32, np.float32,
                  np.int32, np.float32]
 
   (wav_paths, diarizations, spkindices, meeting_scales, start_samples,
