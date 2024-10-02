@@ -1,0 +1,143 @@
+<html>
+  <head>
+    <title>Towards sub-millisecond latency real-time speech enhancement models on hearables (Online Supplement)</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      audio {
+        /* width: 250px; */
+        width: 20vw;
+        min-width: 100px;
+        max-width: 250px;
+      }
+      img {
+        width: 100%;
+        /* min-height: 300px; */
+        min-width: 300px;
+        max-width: 800px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      td {
+        text-align: center;
+        vertical-align: middle;
+      }
+      .container {
+        overflow-x: auto;
+      }
+      /* Solid border */
+      hr.solid {
+        border-top: 2px solid #bbb;
+      }
+  </style>
+  </head>
+  <body>
+    <div class="container pt-5 mt-5 shadow p-5 mb-5 bg-white rounded">
+      <div class="text-center">
+  <h1 style="text-align:center; font-size: 40px;">Towards sub-millisecond latency real-time speech enhancement models on hearables</h1>
+  <!-- <h2 style="text-align:center; font-size: 30px;">Online Supplement</h2> -->
+        <p class="lead fw-bold">
+          |<a
+            href="https://arxiv.org/abs/2409.18239"
+            class="btn border-white bg-white fw-bold"
+            >Paper</a
+          >|
+          <br>
+        <p class="fst-italic mb-0">
+          Artem Dementyev, Chandan K. A. Reddy,  Scott Wisdom, Navin Chatlani, John R. Hershey, Richard F. Lyon
+        </p>
+        <br>
+        <p>
+          Google
+          <br>
+
+        </p>
+
+      </div>
+      <p>
+        <h1>Overview</h1>
+        <p>
+Low latency models are critical for real-time speech enhancement applications, such as hearing aids and hearables. However, the sub-millisecond latency space for resource-constrained hearables remains underexplored. We demonstrate speech enhancement using a computationally efficient minimum-phase FIR filter, enabling sample-by-sample processing to achieve mean algorithmic latency of 0.32 ms to 1.25 ms. With a single microphone, we observe a mean SI-SDRi of 4.1 dB. The approach shows generalization with a DNSMOS increase of 0.2 on unseen audio recordings. We use a lightweight LSTM-based model of 644k parameters to generate FIR taps. We benchmark that our system can run on low-power DSP with 388 MIPS and mean end-to-end latency of 3.35 ms. We provide a comparison with baseline low-latency spectral masking techniques. We hope this work will enable a better understanding of latency and can be used to improve the comfort and usability of hearables.
+        </p>
+        <h2>Deep FIR achitecture</h2>
+        <p>
+Below is Deep FIR signal processing diagram, divided into synthesis and analysis. A new FIR filter is estimated every hop.
+        </p>
+        <img src="figs/graph_latency_v3.png" style="width: 50%;">
+    </div>
+
+
+
+<div class="container pt-5 mt-5 shadow p-5 mb-5 bg-white rounded">
+  <div class="container pt-3">
+
+
+
+<h2>Results with 0.125 ms synthesis window Deep FIR model</h2>
+<p>
+The table below provides audio samples evaluated on the CHiME-2 WSJ0 test set. The minimum phase Deep FIR filter has a mean algorithmic latency of 0.38 ms, which can potentially allow for 1.6 ms end-to-end latency on hardware.
+Notice that the proposed Deep FIR approach achieves comparable audio quality and more efficient computation in the very low latency range compared to the long short time window (LSTW) approach.
+</p>
+<table align="center">
+  <tr>
+    <td></td>
+    <td colspan="1">Example  -3dB SNR</td>
+    <td colspan="1">Example  +3 dB SNR</td>
+    <td colspan="1">Example  +9 dB SNR</td>
+  </tr>
+  <!-- '#4f2a58', '#733661', '#954466', '#b45668', '#cf6d68', '#e48767', '#f2a568', '#fac46e'-->
+  <tr bgcolor="#0000ff">
+    <td bgcolor="#0000ff"><font color="#ffffff">Noisy Mixture</font></td>
+    <td colspan="1"><audio controls style="width: 175px;"> <source src="audio/m3db_mix_440c020b.wav" type="audio/wav"> </audio></td>
+    <td colspan="1"><audio controls style="width: 175px;"> <source src="audio/3db_mix_442c020q.wav" type="audio/wav"> </audio></td>
+    <td colspan="1"><audio controls style="width: 175px;"> <source src="audio/9db_mix_446c020t.wav" type="audio/wav"> </audio></td>
+  <tr bgcolor="#4f2a58">
+    <td bgcolor="#4f2a58"><font color="#ffffff">LSTW (0.5 ms alg. latency)</font></td>
+    <td colspan="1"><audio controls style="width: 175px;"> <source src="audio/m3db_LSTW_440c020b.wav"" type="audio/wav"> </audio></td>
+    <td colspan="1"><audio controls style="width: 175px;"> <source src="audio/3db_LSTW_442c020q.wav" type="audio/wav"> </audio></td>
+    <td colspan="1"><audio controls style="width: 175px;"> <source src="audio/9db_LSTW_446c020t.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr bgcolor="#cf6d68">
+    <td bgcolor="#cf6d68"><font color="#ffffff">Proposed: Deep FIR Minimum phase (0.38 ms alg. latency)<br/></font></td>
+    <td colspan="1"><audio controls style="width: 175px;"> <source src="audio/m3db_MP_440c020b.wav" type="audio/wav"> </audio></td>
+    <td colspan="1"><audio controls style="width: 175px;"> <source src="audio/3db_MP_442c020q.wav" type="audio/wav"> </audio></td>
+    <td colspan="1"><audio controls style="width: 175px;"> <source src="audio/9db_MP_446c020t.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr bgcolor="#fac46e">
+    <td bgcolor="#fac46e"><font color="#222222">Ground-Truth Reference</font></td>
+    <td colspan="1"><audio controls style="width: 175px;"> <source src="audio/m3db_original_440c020b.wav" type="audio/wav"> </audio></td>
+    <td colspan="1"><audio controls style="width: 175px;"> <source src="audio/3db_original_442c020q.wav" type="audio/wav"> </audio></td>
+    <td colspan="1"><audio controls style="width: 175px;"> <source src="audio/9db_original_446c020t.wav" type="audio/wav"> </audio></td>
+  </tr>
+  <tr>
+    <td colspan="1"></td>
+    <td colspan="3"><hr class="solid"></td>
+    <!-- <td colspan="2"></td> -->
+  </tr>
+</table>
+
+
+
+</div>
+</div>
+
+
+
+<script>
+  let players = Array.prototype.slice.call(document.querySelectorAll('audio'));
+  players.forEach(player => {
+      player.addEventListener('play', event => {
+          players.forEach(p => {
+              if (player != p) {p.pause();}
+          });
+          player.currentTime = 0.1;
+      });
+  });
+</script>
+</body>
+</html>
