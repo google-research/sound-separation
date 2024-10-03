@@ -25,6 +25,7 @@ import os
 
 import numpy as np
 import scaper
+from tqdm import tqdm
 
 from utils import check_and_correct_example
 
@@ -138,8 +139,8 @@ class Mixer(object):
     self.sc.ref_db = self.ref_db
     self.sc.sr = self.sample_rate
 
-    for n in range(num_examps):
-      print('Generating example: {:d}/{:d}'.format(n+1, num_examps))
+    for n in tqdm(range(num_examps)):
+      # print('Generating example: {:d}/{:d}'.format(n+1, num_examps))
       example, ind_fg, ind_bg = self.generate_example(
           subset, n, num_examps, bg_file_list, fg_file_list,
           ind_fg, ind_bg)
