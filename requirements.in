@@ -1,0 +1,9 @@
+attrs
+immutabledict
+librosa
+matplotlib
+numpy
+pytest
+pytest-cov
+soundfile
+tensorflow

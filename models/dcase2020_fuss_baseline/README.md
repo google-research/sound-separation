@@ -1,4 +1,5 @@
 # README for the DCASE2020 FUSS baseline model.
+
 This model is the source separation baseline for
 <a href="http://dcase.community/challenge2020/task-sound-event-detection-and-separation-in-domestic-environments">
 DCASE2020 Challenge Task 4: Sound Event Detection and Separation in Domestic
@@ -23,10 +24,12 @@ source signals), the threshold is 20 dB measured relative to the mixture power,
 which means gradients are clipped when the error power is 20 dB below the mixture power.
 
 ## Install TensorFlow
+
 Follow the instructions
 <a href="https://www.tensorflow.org/install">here</a>.
 
 ## Evaluate a model
+
 You can download and evaluate the pretrained baseline model using the following:
 
 ```
@@ -40,6 +43,7 @@ set of FUSS to report results, which is defined by:
 ```ssdata_reverb/eval_example_list.txt```
 
 ## Train a model
+
 A pretrained baseline model is provided, but you can also train a model yourself using the following:
 
 ```
@@ -67,6 +71,7 @@ following format:
 ```
 
 ## References
+
 [1] Scott Wisdom, Hakan Erdogan, Daniel P. W. Ellis, Romain Serizel, Nicolas Turpault, Eduardo Fonseca, Justin Salamon, Prem Seetharaman, John R. Hershey,
 "What's All the FUSS About Free Universal Sound Separation Data?", 2020, in preparation.
 

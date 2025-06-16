@@ -22,7 +22,7 @@ import soundfile as sf
 def make_lists(fsd_dir):
   """Makes background and foreground source lists under fsd_dir subsets."""
   subsets = ['train', 'validation', 'eval']
-  short_cutoff = 10.0
+  short_cutoff = 3.0
 
   for subset in subsets:
     long_file_list = []

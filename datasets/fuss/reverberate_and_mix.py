@@ -168,7 +168,7 @@ def make_mix_info_subsources(mix_info, sub_source, sub_rir,
 
 
 def reverberate_and_mix(out_folder, sources_folder, rir_folder,
-                        mix_info, scale_rirs=10.0,
+                        mix_info, scale_rirs=3.0,
                         part=0, nparts=8, num_mics=1, chat=True,
                         output_align='causal'):
   """Reverberate and mix sources.
@@ -388,7 +388,7 @@ def main():
       type=int)
   parser.add_argument(
       '-sc', '--scale_rirs', help='Scale factor for RIRs.', required=False,
-      default=10.0, type=float)
+      default=3.0, type=float)
   parser.add_argument(
       '-w', '--write_mix_info',
       help='A file name to write out a list of to be reverberated and mixed '

@@ -32,23 +32,23 @@ from tensorflow.compat.v1 import estimator as tf_estimator
 
 
 def write(model_fn, input_fn, params, directory):
-  """Writes an inference graph."""
-  input_fn_params = copy.deepcopy(params)
-  input_fn_params['inference'] = True
-  input_fn_params['batch_size'] = 1
+    """Writes an inference graph."""
+    input_fn_params = copy.deepcopy(params)
+    input_fn_params['inference'] = True
+    input_fn_params['batch_size'] = 1
 
-  model_fn_params = copy.deepcopy(params)
-  model_fn_params['batch_size'] = 1
+    model_fn_params = copy.deepcopy(params)
+    model_fn_params['batch_size'] = 1
 
-  with tf.Graph().as_default() as graph:
-    features = input_fn(input_fn_params)
-    model_fn(features=features,
-             labels=None,
-             mode=tf_estimator.ModeKeys.PREDICT,
-             params=model_fn_params)
+    with tf.Graph().as_default() as graph:
+        features = input_fn(input_fn_params)
+        model_fn(features=features,
+                 labels=None,
+                 mode=tf_estimator.ModeKeys.PREDICT,
+                 params=model_fn_params)
 
-    tf.train.Saver()
-    graph_def = graph.as_graph_def(add_shapes=True)
-    tf.train.write_graph(graph_def, directory, 'inference.pbtxt')
-    meta_graph_name = os.path.join(directory, 'inference.meta')
-    tf.train.export_meta_graph(filename=meta_graph_name)
+        tf.train.Saver()
+        graph_def = graph.as_graph_def(add_shapes=True)
+        tf.train.write_graph(graph_def, directory, 'inference.pbtxt')
+        meta_graph_name = os.path.join(directory, 'inference.meta')
+        tf.train.export_meta_graph(filename=meta_graph_name)

@@ -69,74 +69,75 @@ VALIDATION_ITEMS = (
 
 
 def main():
-  parser = argparse.ArgumentParser(
-      description=('Make DESED train, validation and eval mixture and '
-                   'sources lists.'))
-  parser.add_argument(
-      '-dta', '--desed_train_audio_dir', help='DESED train audio dir',
-      required=True)
-  parser.add_argument(
-      '-dea', '--desed_eval_audio_dir', help='DESED eval audio dir',
-      required=True)
-  parser.add_argument(
-      '-o', '--outbase', help='Base part of list files.', required=True)
-  args = parser.parse_args()
+    parser = argparse.ArgumentParser(
+        description=('Make DESED train, validation and eval mixture and '
+                     'sources lists.'))
+    parser.add_argument(
+        '-dta', '--desed_train_audio_dir', help='DESED train audio dir',
+        required=True)
+    parser.add_argument(
+        '-dea', '--desed_eval_audio_dir', help='DESED eval audio dir',
+        required=True)
+    parser.add_argument(
+        '-o', '--outbase', help='Base part of list files.', required=True)
+    args = parser.parse_args()
 
-  # No need to change below this line.
-  trainval_mix_list = glob.glob('{dir}/*wav'.format(
-      dir=args.desed_train_audio_dir))
-  trainval_src_list = glob.glob('{dir}/*events/*wav'.format(
-      dir=args.desed_train_audio_dir))
-  trainval_mix_list = [w.replace(args.desed_train_audio_dir + '/', '')
-                       for w in trainval_mix_list]
-  trainval_src_list = [w.replace(args.desed_train_audio_dir + '/', '')
-                       for w in trainval_src_list]
+    # No need to change below this line.
+    trainval_mix_list = glob.glob('{dir}/*wav'.format(
+        dir=args.desed_train_audio_dir))
+    trainval_src_list = glob.glob('{dir}/*events/*wav'.format(
+        dir=args.desed_train_audio_dir))
+    trainval_mix_list = [w.replace(args.desed_train_audio_dir + '/', '')
+                         for w in trainval_mix_list]
+    trainval_src_list = [w.replace(args.desed_train_audio_dir + '/', '')
+                         for w in trainval_src_list]
 
-  validation_mix_list = VALIDATION_ITEMS.split(' ')
+    validation_mix_list = VALIDATION_ITEMS.split(' ')
 
-  print('There are {} validation items'.format(len(validation_mix_list)))
+    print('There are {} validation items'.format(len(validation_mix_list)))
 
-  # Train mix list is obtained by the difference between trainval
-  # and validation mix lists.
-  train_mix_list = []
-  for mixture in trainval_mix_list:
-    if mixture not in validation_mix_list:
-      train_mix_list.append(mixture)
+    # Train mix list is obtained by the difference between trainval
+    # and validation mix lists.
+    train_mix_list = []
+    for mixture in trainval_mix_list:
+        if mixture not in validation_mix_list:
+            train_mix_list.append(mixture)
 
-  # We also split sources between train and validation based on their mix
-  # being in validation_mix_list or not.
-  train_src_list = []
-  validation_src_list = []
-  for source in trainval_src_list:
-    source_mix = re.match(r'(.*)_events.*', source).groups(0)[0]
-    if source_mix in validation_mix_list:
-      validation_src_list.append(source)
-    else:
-      train_src_list.append(source)
+    # We also split sources between train and validation based on their mix
+    # being in validation_mix_list or not.
+    train_src_list = []
+    validation_src_list = []
+    for source in trainval_src_list:
+        source_mix = re.match(r'(.*)_events.*', source).groups(0)[0]
+        if source_mix in validation_mix_list:
+            validation_src_list.append(source)
+        else:
+            train_src_list.append(source)
 
-  # Write train and validation lists.
-  with open('{}_train.txt'.format(args.outbase), 'w') as f:
-    f.write('\n'.join(train_mix_list) + '\n')
-  with open('{}_validation.txt'.format(args.outbase), 'w') as f:
-    f.write('\n'.join(validation_mix_list) + '\n')
-  with open('{}_sources_train.txt'.format(args.outbase), 'w') as f:
-    f.write('\n'.join(train_src_list) + '\n')
-  with open('{}_sources_validation.txt'.format(args.outbase), 'w') as f:
-    f.write('\n'.join(validation_src_list) + '\n')
+    # Write train and validation lists.
+    with open('{}_train.txt'.format(args.outbase), 'w') as f:
+        f.write('\n'.join(train_mix_list) + '\n')
+    with open('{}_validation.txt'.format(args.outbase), 'w') as f:
+        f.write('\n'.join(validation_mix_list) + '\n')
+    with open('{}_sources_train.txt'.format(args.outbase), 'w') as f:
+        f.write('\n'.join(train_src_list) + '\n')
+    with open('{}_sources_validation.txt'.format(args.outbase), 'w') as f:
+        f.write('\n'.join(validation_src_list) + '\n')
 
-  # Obtain eval lists directly from the glob.glob.
-  eval_mix_list = glob.glob('{dir}/*wav'.format(dir=args.desed_eval_audio_dir))
-  eval_src_list = glob.glob('{dir}/*events/*wav'.format(
-      dir=args.desed_eval_audio_dir))
-  eval_mix_list = [w.replace(args.desed_eval_audio_dir + '/', '')
-                   for w in eval_mix_list]
-  eval_src_list = [w.replace(args.desed_eval_audio_dir + '/', '')
-                   for w in eval_src_list]
+    # Obtain eval lists directly from the glob.glob.
+    eval_mix_list = glob.glob('{dir}/*wav'.format(dir=args.desed_eval_audio_dir))
+    eval_src_list = glob.glob('{dir}/*events/*wav'.format(
+        dir=args.desed_eval_audio_dir))
+    eval_mix_list = [w.replace(args.desed_eval_audio_dir + '/', '')
+                     for w in eval_mix_list]
+    eval_src_list = [w.replace(args.desed_eval_audio_dir + '/', '')
+                     for w in eval_src_list]
 
-  with open('{}_eval.txt'.format(args.outbase), 'w') as f:
-    f.write('\n'.join(eval_mix_list) + '\n')
-  with open('{}_sources_eval.txt'.format(args.outbase), 'w') as f:
-    f.write('\n'.join(eval_src_list) + '\n')
+    with open('{}_eval.txt'.format(args.outbase), 'w') as f:
+        f.write('\n'.join(eval_mix_list) + '\n')
+    with open('{}_sources_eval.txt'.format(args.outbase), 'w') as f:
+        f.write('\n'.join(eval_src_list) + '\n')
+
 
 if __name__ == '__main__':
-  main()
+    main()

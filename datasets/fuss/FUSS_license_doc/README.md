@@ -52,7 +52,7 @@ The dataset recipe scripts support modification, so that participants may remix 
 
 ### Format
 
-All audio clips are provided as uncompressed PCM 16 bit, 16 kHz, mono audio files.
+All audio clips are provided as uncompressed PCM 16 bit, 48 kHz, mono audio files.
 
 ### Data split
 
