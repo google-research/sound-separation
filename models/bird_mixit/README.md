@@ -9,7 +9,7 @@ If you find this code useful, please cite [1] and [2].
 Two model checkpoints, one with 4 output sources and one with 8 output sources, are available on Google Cloud. These models assume input audio sampled at 22.05 kHz. The models can be downloaded using the following command, which will copy the model checkpoint files to the current folder:
 
 ```
-gsutil -m cp -r gs://gresearch/sound_separation/bird_mixit_model_checkpoints .
+gcloud storage cp --recursive gs://gresearch/sound_separation/bird_mixit_model_checkpoints .
 ```
 
 This model checkpoint is licensed under <a href="https://www.apache.org/licenses/LICENSE-2.0.txt">the Apache 2.0 license</a>.

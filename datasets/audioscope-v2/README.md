@@ -34,7 +34,7 @@ Addionally, we provide lists of the pairs of clips used to create MoMs for valid
 The CSVs are hosted on Google Cloud. They can be downloaded using the following command:
 
 ```
-gsutil -m cp -r gs://gresearch/sound_separation/audioscope_v2_yfcc100m_clip_lists .
+gcloud storage cp --recursive gs://gresearch/sound_separation/audioscope_v2_yfcc100m_clip_lists .
 ```
 
 which will copy the CSVs to the current folder.

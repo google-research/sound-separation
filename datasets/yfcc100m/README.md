@@ -10,7 +10,7 @@ for train, validation, and test clips, as well as specification of pairs of clip
 The CSVs are hosted on Google Cloud. They can be downloaded using the following command:
 
 ```
-gsutil -m cp -r gs://gresearch/sound_separation/yfcc100m_clip_lists .
+gcloud storage cp --recursive gs://gresearch/sound_separation/yfcc100m_clip_lists .
 ```
 
 which will copy the CSVs to the current folder.
